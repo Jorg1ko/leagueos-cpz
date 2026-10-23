@@ -1,0 +1,35 @@
+name: Publicar LeagueOS en Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: leagueos-pages-production
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    name: Publicar web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Preparar archivos estáticos
+        run: |
+          mkdir -p dist
+          cp index.html dist/index.html
+
+      - name: Subir a Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 91f1c143e0758ef69970b4d75629f605
+          command: pages deploy dist --project-name=leagueos-cpz --branch=main
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
