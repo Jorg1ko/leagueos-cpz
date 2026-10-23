@@ -27,7 +27,7 @@ jobs:
           cp index.html dist/index.html
 
       - name: Subir a Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 91f1c143e0758ef69970b4d75629f605
