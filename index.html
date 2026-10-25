@@ -368,6 +368,37 @@ async function adminMutation(action,payload={}){
 
 const playerRoster=["Carlos Guillén","Jorge Corbas","Eduardo Alvira","Juan Jiménez","Chema Balmori","Mariano Guillén","Jorge Delgado","Alejandro Mendívil","Javier Gimeno","Óscar Pinilla","Jaime Mengual","Felipe Echevarría","Mario Pintanel","Álvaro Esteban","Pedro Hernández","Jorge Ramón García","Marcos Domeque","Ramón Ruiz de Conejo","Ignacio Algas","Javier Royo","Marco Antonio Lamata","David Calavia","David Serrate","Roberto Moreno","Enzo Navarro","Irene Martínez","Carlos Lama","Alejandro Embid","David Martos","Carlos Vilar","Álex Aznar","Orlando Aguilar","Manuel Ángel Berges","Emilio Martín","Diego Cuervo","Dani Sevil","Pablo Oliván","Gabriel Tena","Raúl García","Antonio Estopañán"];
 const normalizePlayerSearch=value=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es').trim();
+
+const qualifyingPairs=Array.from({length:20},(_,i)=>({number:i+1,a:playerRoster[i*2],b:playerRoster[i*2+1]}));
+function renderQualifying(){
+  const filter=normalizePlayerSearch($('qualifyingSearch').value);
+  const matched=qualifyingPairs.filter(pair=>normalizePlayerSearch(pair.a+' '+pair.b).includes(filter));
+  $('qualifyingCount').textContent=matched.length+' de '+qualifyingPairs.length+' cruces';
+  const fragment=document.createDocumentFragment();
+  if(matched.length===0){
+    const missing=document.createElement('div');
+    missing.className='classification-none';
+    missing.textContent='No hay enfrentamientos que coincidan con esa búsqueda.';
+    fragment.appendChild(missing);
+  }
+  for(const match of matched){
+    const card=document.createElement('article');card.className='classification-fixture';
+    const head=document.createElement('div');head.className='classification-fixture-head';
+    const label=document.createElement('span');label.className='classification-fixture-number';
+    label.textContent='Cruce '+String(match.number).padStart(2,'0');
+    const tag=document.createElement('span');tag.className='classification-fixture-tag';tag.textContent='Horario por acordar';
+    head.append(label,tag);
+    const players=document.createElement('div');players.className='classification-fixture-players';
+    const a=document.createElement('span');a.className='classification-fixture-name';a.textContent=match.a;
+    const vs=document.createElement('span');vs.className='classification-fixture-vs';vs.textContent='VS';
+    const b=document.createElement('span');b.className='classification-fixture-name';b.textContent=match.b;
+    players.append(a,vs,b);
+    const foot=document.createElement('div');foot.className='classification-fixture-foot';
+    foot.textContent='Clasificación de octubre · No suma puntos anuales';
+    card.append(head,players,foot);fragment.appendChild(card);
+  }
+  $('qualifyingMatches').replaceChildren(fragment);
+}
 function renderPlayerRoster(){
   const filter=normalizePlayerSearch($('playerSearch').value),order=$('playerOrder').value;
   const list=playerRoster.map(name=>name);
@@ -403,6 +434,7 @@ document.querySelectorAll('[data-save]').forEach(b=>b.onclick=async()=>{
   $('matchError').textContent='';
   await adminMutation('save',{period:state.month,group:selected,match:i,scoreA:+a,scoreB:+bv});
 });renderPlayerRoster();
+renderQualifying();
 const id=+$('playerSelect').value||1,d=state.divisions.findIndex(a=>a.includes(id)),position=standings(d).findIndex(x=>x.id===id)+1,r=standings(d).find(x=>x.id===id),mine=matches(d).filter(m=>m.a===id||m.b===id);
 $('playerInfo').innerHTML='<div class="player-stats"><div class="player-stat"><span class="sub">Grupo</span><strong>'+groupLabel(d)+'</strong></div><div class="player-stat"><span class="sub">Posición</span><strong>'+position+'º</strong></div><div class="player-stat"><span class="sub">Puntos</span><strong>'+r.p+'</strong></div></div><div class="section-head"><h3>Mis partidos · Periodo '+state.month+'</h3><span class="tag">'+mine.filter(m=>state.results[m.key]).length+'/3 jugados</span></div>'+mine.map(m=>{const opponent=m.a===id?m.b:m.a;const score=state.results[m.key];return '<div class="player-match"><div><b>vs Jugador '+String(opponent).padStart(2,'0')+'</b><div class="secondary-text">'+groupFullLabel(d)+' · Pista por reservar</div></div><span class="tag '+(score?'':'pill-amber')+'">'+(score?'Resultado '+(m.a===id?score.join(' - '):score.slice().reverse().join(' - ')):'Por jugar')+'</span></div>'}).join('');
 $('closeHistory').innerHTML='<h3>Historial de periodos</h3>'+(state.history.length?state.history.map(h=>'<p>Periodo '+h.month+' cerrado · 40 jugadores conservados</p>').join(''):'<p>Aún no se ha cerrado ningún periodo.</p>');renderAdmin();}
@@ -423,6 +455,8 @@ $('goDivisions').onclick=()=>show('divisions');
 $('exportCsv').onclick=exportResults;
 $('playerSearch').oninput=renderPlayerRoster;
 $('playerOrder').onchange=renderPlayerRoster;
+$('qualifyingSearch').oninput=renderQualifying;
+$('copyDiscount').onclick=async()=>{try{await navigator.clipboard.writeText($('discountCode').textContent.trim());toast('Código copiado al portapapeles');}catch(e){toast('Selecciona el código y cópialo manualmente');}};
 $('reset').onclick=async()=>{
   if(!confirm('¿Borrar todos los resultados y reiniciar los diez grupos? No se puede deshacer.'))return;
   await adminMutation('reset');
