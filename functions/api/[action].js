@@ -111,9 +111,13 @@ export async function onRequest({request,env,params}){
   const method=request.method;
   try{
     if(action==='state'&&method==='GET'){
-      if(!env.LEAGUE_DB)return response({ready:false,revision:0,state:initial(),message:'Falta la base de datos de la liga.'});
+      // Defensa en profundidad: los datos no se entregan fuera de una sesión de administrador,
+      // incluso si se desactiva accidentalmente el middleware de la web.
+      if(!ready(env)||!await authenticated(request,env.ADMIN_PASSWORD)){
+        return error('Acceso privado. Inicia sesión como administrador.',401);
+      }
       const data=await stateRow(env.LEAGUE_DB);
-      return response({...data,ready:ready(env)});
+      return response({...data,ready:true});
     }
     if(action==='session'&&method==='GET'){
       return response({ready:ready(env),authenticated:ready(env)&&await authenticated(request,env.ADMIN_PASSWORD),demo:env.LEAGUE_DEMO==='true',setup:{databaseConnected:!!env.LEAGUE_DB,adminPasswordConfigured:typeof env.ADMIN_PASSWORD==='string'&&env.ADMIN_PASSWORD.length>=12}});
