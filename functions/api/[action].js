@@ -17,7 +17,17 @@ function response(data, code=200, cookie) {
 }
 function error(message, status=400){return response({ok:false,error:message},status)}
 function ready(env){return !!(env.LEAGUE_DB && typeof env.ADMIN_PASSWORD==='string' && env.ADMIN_PASSWORD.length>=12)}
-function sameOrigin(request){return request.headers.get('Origin')===new URL(request.url).origin && (request.headers.get('Content-Type')||'').startsWith('application/json')}
+function sameOrigin(request){
+  // Los navegadores integrados pueden omitir Origin en POST del mismo sitio.
+  // Solo se permite JSON y evidencia del mismo origen; los cross-site quedan bloqueados.
+  const ct=(request.headers.get('Content-Type')||'').split(';')[0].trim().toLowerCase();
+  if(ct!=='application/json')return false;
+  const url=new URL(request.url),origin=request.headers.get('Origin');
+  if(origin)return origin===url.origin;
+  const fetchSite=request.headers.get('Sec-Fetch-Site');
+  if(fetchSite)return fetchSite==='same-origin';
+  try{return new URL(request.headers.get('Referer')).origin===url.origin}catch(e){return false}
+}
 async function bodyJSON(request){
   if(Number(request.headers.get('Content-Length')||0)>2500) throw Error('Solicitud demasiado grande.');
   const raw=await request.text();
