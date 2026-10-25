@@ -1,0 +1,67 @@
+name: Preparar base de datos LeagueOS (una sola vez)
+
+on:
+  push:
+    paths:
+      - .github/workflows/provision-d1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  configurar:
+    name: Crear y conectar Cloudflare D1
+    runs-on: ubuntu-latest
+    env:
+      CF_ACCOUNT: 91f1c143e0758ef69970b4d75629f605
+      CLOUDFLARE_ACCOUNT_ID: 91f1c143e0758ef69970b4d75629f605
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+      - name: Crear o reutilizar base de datos (UE)
+        id: db
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT"
+          echo "Comprobando acceso D1..."
+          DBS=$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$URL/d1/database?per_page=100")
+          echo "$DBS" | jq -e '.success==true' >/dev/null
+          DB_ID=$(echo "$DBS" | jq -r '[.result[] | select(.name=="leagueos-cpz-db") | .uuid][0] // empty')
+          if [ -z "$DB_ID" ]; then
+            echo "Creando leagueos-cpz-db en la jurisdicción UE..."
+            CREATED=$(curl -fsS -X POST "$URL/d1/database" \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -H "Content-Type: application/json" \
+              --data '{"name":"leagueos-cpz-db","jurisdiction":"eu"}')
+            echo "$CREATED" | jq -e '.success==true' >/dev/null
+            DB_ID=$(echo "$CREATED" | jq -r '.result.uuid')
+          fi
+          test -n "$DB_ID" && test "$DB_ID" != "null"
+          echo "database_id=$DB_ID" >> "$GITHUB_OUTPUT"
+          echo "Base de datos encontrada/preparada: $DB_ID"
+      - name: Vincular D1 con Cloudflare Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          PAYLOAD=$(jq -n --arg id "${{ steps.db.outputs.database_id }}" \
+            '{deployment_configs:{production:{d1_databases:{LEAGUE_DB:{id:$id}}}}}')
+          RESULT=$(curl -fsS -X PATCH \
+            "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/leagueos-cpz" \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "$PAYLOAD")
+          echo "$RESULT" | jq -e '.success==true' >/dev/null
+          echo "Binding LEAGUE_DB actualizado para producción."
+      - name: Preparar despliegue
+        run: |
+          mkdir -p dist
+          cp index.html dist/index.html
+      - name: Publicar con el nuevo binding D1
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 91f1c143e0758ef69970b4d75629f605
+          command: pages deploy dist --project-name=leagueos-cpz --branch=main
