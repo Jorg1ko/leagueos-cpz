@@ -346,7 +346,7 @@ table td,table th{padding:13px 10px}table tbody tr:hover{background:#f9fcfb}
 const $=id=>document.getElementById(id), pairs=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],initial=Array.from({length:10},(_,d)=>Array.from({length:4},(_,p)=>d*4+p+1));
 let state={divisions:initial,results:{},month:1,history:[]},backendReady=false,adminAuthenticated=false,serverRevision=0,demoMode=false;let selected=0,view='home',playerFilter='',statusFilter='all';
 function groupLabel(d){return (d<5?'A':'B')+(d%5+1)}function groupFullLabel(d){return 'Grupo '+groupLabel(d)}function matches(d){return pairs.map(([a,b],i)=>({key:d+'-'+i,a:state.divisions[d][a],b:state.divisions[d][b]}))}function standings(d){const rows=state.divisions[d].map(id=>({id,p:0,w:0,l:0}));for(const m of matches(d)){const r=state.results[m.key];if(!r)continue;const win=Number(r[0])>Number(r[1])?m.a:m.b;for(const x of rows)if(x.id===m.a||x.id===m.b){if(x.id===win){x.p+=3;x.w++}else x.l++}}return rows.sort((a,b)=>b.p-a.p||b.w-a.w||a.id-b.id)}function total(){return Object.keys(state.results).length}
-function show(v){view=v;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===v));['home','divisions','matches','players','portal','settings','admin','qualifying','rules','booking'].forEach(id=>$(id).classList.toggle('hidden',id!==v));render()}document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>show(b.dataset.view));
+function show(v){view=v;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===v));if(v==='qualifying'){history.replaceState(null,'','#clasificacion')}else if(location.hash==='#clasificacion'){history.replaceState(null,'',location.pathname+location.search)}['home','divisions','matches','players','portal','settings','admin','qualifying','rules','booking'].forEach(id=>$(id).classList.toggle('hidden',id!==v));render()}document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>show(b.dataset.view));
 document.querySelectorAll('.divSelect').forEach(s=>{s.innerHTML=Array.from({length:10},(_,i)=>'<option value="'+i+'">'+groupFullLabel(i)+'</option>').join('');s.onchange=()=>{selected=+s.value;render()}});$('playerSelect').innerHTML=Array.from({length:40},(_,i)=>'<option value="'+(i+1)+'">Jugador '+String(i+1).padStart(2,'0')+'</option>').join('');$('playerSelect').onchange=render;
 function table(d){return '<table><thead><tr><th>#</th><th>Jugador</th><th>PJ</th><th>V</th><th>Pts</th></tr></thead><tbody>'+standings(d).map((x,i)=>'<tr><td>'+(i+1)+(i===0&&d>0?' ↑':i===3&&d<9?' ↓':'')+'</td><td>Jugador '+String(x.id).padStart(2,'0')+'</td><td>'+(x.w+x.l)+'</td><td>'+x.w+'</td><td><b>'+x.p+'</b></td></tr>').join('')+'</tbody></table>'}
 function divisionTiles(){return ['A','B'].map((level,l)=>'<section class="level-section level-'+level.toLowerCase()+'"><div class="level-header"><h2>Nivel '+level+'</h2><span>5 grupos · 20 jugadores</span></div><div class="division-showcase">'+Array.from({length:5},(_,i)=>{const d=l*5+i,data=standings(d);return '<section class="division-tile"><header><strong>'+groupFullLabel(d)+'</strong><span class="tier tier-'+level.toLowerCase()+'">Nivel '+level+'</span></header><ol>'+data.map((x,i)=>{const move=i===0&&d>0?'↑ Asciende a '+groupLabel(d-1):i===3&&d<9?'↓ Desciende a '+groupLabel(d+1):'Permanece';return '<li><span class="position">'+(i+1)+'.</span><div style="flex:1"><b>Jugador '+String(x.id).padStart(2,'0')+'</b><div class="muted-mini">'+(x.w+x.l)+' partidos · '+x.w+' victorias</div></div><div style="text-align:right"><b>'+x.p+' pts</b><div class="'+(move[0]==='↑'?'movement-up':move[0]==='↓'?'movement-down':'muted-mini')+'">'+move+'</div></div></li>'}).join('')+'</ol></section>'}).join('')+'</div></section>').join('')}
@@ -407,7 +407,7 @@ const qualifyingPairs=Array.from({length:20},(_,i)=>({number:i+1,a:playerRoster[
 function renderQualifying(){
   const filter=normalizePlayerSearch($('qualifyingSearch').value);
   const matched=qualifyingPairs.filter(pair=>normalizePlayerSearch(pair.a+' '+pair.b).includes(filter));
-  $('qualifyingCount').textContent=matched.length+' de '+qualifyingPairs.length+' cruces';
+  $('qualifyingCount').textContent=matched.length+' de '+qualifyingPairs.length+' partidos';
   const fragment=document.createDocumentFragment();
   if(matched.length===0){
     const missing=document.createElement('div');
@@ -419,7 +419,7 @@ function renderQualifying(){
     const card=document.createElement('article');card.className='classification-fixture';
     const head=document.createElement('div');head.className='classification-fixture-head';
     const label=document.createElement('span');label.className='classification-fixture-number';
-    label.textContent='Cruce '+String(match.number).padStart(2,'0');
+    label.textContent='Partido '+String(match.number).padStart(2,'0');
     const tag=document.createElement('span');tag.className='classification-fixture-tag';tag.textContent='Horario por acordar';
     head.append(label,tag);
     const players=document.createElement('div');players.className='classification-fixture-players';
@@ -428,7 +428,7 @@ function renderQualifying(){
     const b=document.createElement('span');b.className='classification-fixture-name';b.textContent=match.b;
     players.append(a,vs,b);
     const foot=document.createElement('div');foot.className='classification-fixture-foot';
-    foot.textContent='Clasificación de octubre · No suma puntos anuales';
+    foot.textContent='Eliminatoria de clasificación · No suma puntos anuales';
     card.append(head,players,foot);fragment.appendChild(card);
   }
   $('qualifyingMatches').replaceChildren(fragment);
@@ -490,6 +490,7 @@ $('exportCsv').onclick=exportResults;
 $('playerSearch').oninput=renderPlayerRoster;
 $('playerOrder').onchange=renderPlayerRoster;
 $('qualifyingSearch').oninput=renderQualifying;
+$('copyMatchdayLink').onclick=async()=>{const link=location.origin+location.pathname+'#clasificacion';try{await navigator.clipboard.writeText(link);toast('Enlace de la jornada copiado');}catch(e){toast('Comparte el enlace desde la barra de direcciones')}};
 $('copyDiscount').onclick=async()=>{try{await navigator.clipboard.writeText($('discountCode').textContent.trim());toast('Código copiado al portapapeles');}catch(e){toast('Selecciona el código y cópialo manualmente');}};
 $('reset').onclick=async()=>{
   if(!confirm('¿Borrar todos los resultados y reiniciar los diez grupos? No se puede deshacer.'))return;
@@ -515,5 +516,6 @@ $('adminLoginForm').onsubmit=async e=>{
   }catch(err){$('adminMessage').textContent=err.message;}
   finally{button.disabled=false;}
 };
-render();loadData();
+if(location.hash==='#clasificacion')show('qualifying');else render();loadData();
+window.addEventListener('hashchange',()=>{if(location.hash==='#clasificacion')show('qualifying')});
 </script></body></html>
