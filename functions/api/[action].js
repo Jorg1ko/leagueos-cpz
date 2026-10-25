@@ -130,7 +130,7 @@ export async function onRequest({request,env,params}){
       if(previous?.locked_until>now)return error('Demasiados intentos. Inténtalo más tarde.',429);
       const body=await bodyJSON(request);
       if(!await passwordEqual(body.password,env.ADMIN_PASSWORD)){
-        const failures=(previous?.locked_until<=now?0:(previous?.failures||0))+1;
+        const failures=((previous&&previous.locked_until>0&&previous.locked_until<=now)?0:(previous?.failures||0))+1;
         const lock=failures>=5?now+15*60*1000:0;
         await env.LEAGUE_DB.prepare('INSERT INTO login_limits (ip,failures,locked_until) VALUES(?,?,?) ON CONFLICT(ip) DO UPDATE SET failures=excluded.failures,locked_until=excluded.locked_until').bind(ip,failures,lock).run();
         return error('Credenciales incorrectas.',401);
