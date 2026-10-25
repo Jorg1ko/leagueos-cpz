@@ -233,7 +233,13 @@ table td,table th{padding:13px 10px}table tbody tr:hover{background:#f9fcfb}
 #copyMatchdayLink{border:1px solid #b7d3c7;background:#fff;color:#1c6951;border-radius:10px;padding:11px 15px;font-size:13px;font-weight:750}
 @media(max-width:760px){.matchday-feature{grid-template-columns:minmax(0,1fr) 120px;padding:21px}.matchday-instructions{grid-template-columns:1fr}}
 @media(max-width:520px){.matchday-feature{grid-template-columns:1fr}.matchday-kpis{flex-direction:row}.matchday-kpis>div{flex:1}.matchday-feature h2{font-size:21px}}
-</style></head><body><div class="layout"><aside class="sidebar"><div class="logo"><img class="sidebar-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Emblema Club Pickleball Zaragoza" loading="lazy"><span class="logo-type">League<span>OS</span></span></div><button class="nav active" data-view="home">▦ Resumen</button><button class="nav" data-view="qualifying">🏓 Jornada de clasificación</button><button class="nav" data-view="divisions">♜ Grupos A/B (demo)</button><button class="nav" data-view="matches">▤ Partidos (demo)</button><button class="nav" data-view="rules">📖 Reglamento</button><button class="nav" data-view="booking">🏓 Reservas y resultados</button><button class="nav" data-view="players">♧ Listado de jugadores</button><button class="nav" data-view="portal">◎ Zona jugador</button><button class="nav" data-view="settings">⚙ Configuración</button><button class="nav admin-nav-button" data-view="admin">🔒 Administración</button><small>Ranking CPZ · Simulación</small></aside><div class="main"><header class="top"><div class="brand-head"><img class="club-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Logotipo Club Pickleball Zaragoza"><div><div class="club-name">Club Pickleball Zaragoza</div><small>Una experiencia de liga creada con LeagueOS</small></div></div><span class="tag" id="adminBadge">PROPUESTA · NO OFICIAL</span></header><main class="content">
+
+/* LeagueOS: controls de sesión en zona privada */
+.private-session-top{display:flex;gap:12px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+#exitSite{background:#f4f8f6;color:#164e3e;border:1px solid #d0e1d7;padding:9px 13px;white-space:nowrap;font-size:12px}
+#exitSite:hover{background:#e0f0e5}
+@media(max-width:600px){.private-session-top{gap:5px}.private-session-top .tag{font-size:9px}#exitSite{padding:8px 9px;font-size:11px}}
+</style></head><body><div class="layout"><aside class="sidebar"><div class="logo"><img class="sidebar-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Emblema Club Pickleball Zaragoza" loading="lazy"><span class="logo-type">League<span>OS</span></span></div><button class="nav active" data-view="home">▦ Resumen</button><button class="nav" data-view="qualifying">🏓 Jornada de clasificación</button><button class="nav" data-view="divisions">♜ Grupos A/B (demo)</button><button class="nav" data-view="matches">▤ Partidos (demo)</button><button class="nav" data-view="rules">📖 Reglamento</button><button class="nav" data-view="booking">🏓 Reservas y resultados</button><button class="nav" data-view="players">♧ Listado de jugadores</button><button class="nav" data-view="portal">◎ Zona jugador</button><button class="nav" data-view="settings">⚙ Configuración</button><button class="nav admin-nav-button" data-view="admin">🔒 Administración</button><small>Ranking CPZ · Simulación</small></aside><div class="main"><header class="top"><div class="brand-head"><img class="club-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Logotipo Club Pickleball Zaragoza"><div><div class="club-name">Club Pickleball Zaragoza</div><small>Una experiencia de liga creada con LeagueOS</small></div></div><div class="private-session-top"><span class="tag" id="adminBadge">ADMINISTRACIÓN PRIVADA</span><button class="btn secondary" type="button" id="exitSite">Cerrar sesión</button></div></header><main class="content">
 <div id="home">
 <section class="hero hero-with-photo"><div class="hero-copy"><span class="micro">LEAGUEOS · PROPUESTA PARA EL CLUB</span><h1>Tu liga. Tus partidos.<br>Todo bajo control.</h1><p>Una nueva forma de vivir el Ranking CPZ: divisiones, resultados, rivales y movimientos mes a mes.</p><button class="btn" onclick="show('qualifying')">Ver partidos de clasificación →</button></div></section>
 <section class="matchday-feature" aria-label="Jornada de clasificación de octubre">
@@ -355,7 +361,7 @@ function exportResults(){const rows=[['Periodo','Grupo','Jugador A','Jugador B',
 function insights(){const pending=[];for(let d=0;d<10;d++)for(const m of matches(d))if(!state.results[m.key])pending.push({...m,d});$('nextFixtures').innerHTML=pending.slice(0,3).map(m=>'<div class="next-fixture"><div><b>Jugador '+String(m.a).padStart(2,'0')+' vs Jugador '+String(m.b).padStart(2,'0')+'</b><div><span>'+groupFullLabel(m.d)+' · Periodo '+state.month+'</span></div></div><span class="fixture-pill">Pendiente</span></div>').join('')||'<div class="empty-msg">Todos los partidos del periodo están completados.</div>';const p=Math.round(total()/60*100);$('completionRing').style.setProperty('--progress',p+'%');$('completionRing').dataset.progress=p+'%';$('progressSummary').textContent=total()+' de 60 encuentros'}
 
 function renderAdmin(){
-  $('adminBadge').textContent=adminAuthenticated?'ADMINISTRADOR ACTIVO':'PROPUESTA · NO OFICIAL';
+  $('adminBadge').textContent=adminAuthenticated?'ADMINISTRADOR ACTIVO':'SESIÓN NO VÁLIDA';
   $('adminLoggedIn').classList.toggle('hidden',!adminAuthenticated);
   $('adminLoggedOut').classList.toggle('hidden',adminAuthenticated);
   $('adminLoginButton').disabled=!backendReady;
@@ -364,8 +370,8 @@ function renderAdmin(){
     ? 'Conexión segura: base de datos disponible.'
     : 'Modo de consulta: falta configurar la base de datos y/o la contraseña del administrador en Cloudflare.';
   $('publicNotice').textContent=backendReady
-    ? 'La liga se consulta públicamente; solo los administradores pueden cambiar los resultados.'
-    : 'Demostración de consulta. La edición se activará cuando se conecte la base de datos y el acceso seguro.';
+    ? 'Acceso privado activo. Solo la administración autorizada puede consultar y modificar la liga.'
+    : 'El sistema está en modo privado. Configuración pendiente en el servidor.';
 }
 async function loadData(){
   try{
@@ -498,9 +504,13 @@ $('reset').onclick=async()=>{
 };
 $('openAdmin').onclick=()=>show('admin');
 $('reloadLeague').onclick=()=>loadData();
+$('exitSite').onclick=()=>$('logoutAdmin').click();
 $('logoutAdmin').onclick=async()=>{
-  try{await fetch('/api/logout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}',credentials:'same-origin'});}catch(e){}
-  adminAuthenticated=false;await loadData();show('admin');toast('Sesión cerrada');
+  try{
+    await fetch('/api/logout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}',credentials:'same-origin'});
+  }catch(e){}
+  // La navegación completa purga los datos que pudieran quedar en memoria.
+  window.location.replace('/');
 };
 $('adminLoginForm').onsubmit=async e=>{
   e.preventDefault();
