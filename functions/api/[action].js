@@ -116,7 +116,7 @@ export async function onRequest({request,env,params}){
       return response({...data,ready:ready(env)});
     }
     if(action==='session'&&method==='GET'){
-      return response({ready:ready(env),authenticated:ready(env)&&await authenticated(request,env.ADMIN_PASSWORD),demo:env.LEAGUE_DEMO==='true'});
+      return response({ready:ready(env),authenticated:ready(env)&&await authenticated(request,env.ADMIN_PASSWORD),demo:env.LEAGUE_DEMO==='true',setup:{databaseConnected:!!env.LEAGUE_DB,adminPasswordConfigured:typeof env.ADMIN_PASSWORD==='string'&&env.ADMIN_PASSWORD.length>=12}});
     }
     if(!['login','logout','save','advance','reset','simulate'].includes(action))return error('Ruta no encontrada.',404);
     if(method!=='POST')return error('Método no permitido.',405);
