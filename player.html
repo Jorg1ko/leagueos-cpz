@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#0b528b">
+<title>Mi área · RANKING INDIVIDUAL CPZ 2026/27</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--blue:#167dcb;--navy:#0c457b;--ink:#203d57;--muted:#668097;--line:#dce9f3;--soft:#eff6fd}
+*{box-sizing:border-box}body{margin:0;background:#f4f8fc;color:var(--ink);min-height:100vh}button,input{font:inherit}button{cursor:pointer}a{color:#176bab}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #67b8ef;outline-offset:2px}
+[hidden]{display:none!important}
+.shell{min-height:100vh;display:flex}
+.side{width:250px;flex-shrink:0;padding:24px 17px;border-right:1px solid #e2ecf5;background:#fff;display:flex;flex-direction:column}
+.brand{display:flex;flex-direction:column;align-items:center;text-align:center;border-bottom:1px solid #e9eff5;padding:6px 7px 22px;gap:10px}
+.brand img{width:89px;height:85px;object-fit:contain;background:#f4faff;border-radius:15px;padding:5px}
+.brand h2{font-size:14px;line-height:1.42;margin:0;color:#145b9a}
+.brand small{color:#8799aa;font-size:11px}
+.nav{margin-top:18px;display:grid;gap:6px}
+.nav button{width:100%;text-align:left;border:0;border-radius:10px;background:transparent;color:#536d85;padding:13px 15px;font-size:13px;font-weight:700}
+.nav button:hover,.nav button.active{background:#e8f3ff;color:#0e65aa}
+.nav button.active{box-shadow:inset 3px 0 #147bd1}
+.side-foot{margin-top:auto;padding:22px 10px 0;color:#8195a7;font-size:11px;line-height:1.8}
+.workspace{flex:1;min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fff;border-bottom:1px solid #e0eaf3;padding:17px clamp(20px,3vw,38px)}
+.top>div{display:flex;flex-direction:column;gap:3px}.top strong{font-size:14px;color:#245372}.top span{color:#7a90a3;font-size:11px}
+.top-actions{display:flex;align-items:center;gap:11px}
+.member-pill{background:#e9f4ff;color:#1768ab;padding:8px 11px;border-radius:20px;font-size:11px;font-weight:800}
+.action{background:var(--blue);color:#fff;border:1px solid var(--blue);border-radius:11px;padding:11px 15px;font-size:13px;font-weight:750;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.action:hover{background:#0b62a5}.action.secondary{background:#ebf4ff;border-color:#d0e5f7;color:#166ab2}.action.secondary:hover{background:#d9edff}
+.main{padding:27px clamp(18px,3vw,39px) 45px;max-width:1250px;margin:auto}
+.view{display:none}.view.active{display:block}
+.hero{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:30px;background:linear-gradient(100deg,#092f63de,#0c64adba),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/POCO-SOBRE-NOSOTROS-1024x576.jpg") center 48%/cover no-repeat;color:#fff;padding:36px 38px;min-height:225px;border-radius:19px}
+.hero small{font-size:10px;letter-spacing:1.5px;color:#bfe6ff;font-weight:900}
+.hero h1{font-size:clamp(27px,3.7vw,41px);letter-spacing:-1.15px;margin:12px 0;line-height:1.16}.hero p{margin:0;color:#d9ecfc;font-size:13px;line-height:1.7;max-width:580px}
+.hero-emblem{font-size:66px;opacity:.84;border-radius:25px;border:1px solid #ffffff4b;padding:13px}
+.subhead{margin:28px 0 15px}.subhead h2{font-size:22px;letter-spacing:-.3px;color:#1d4f7a;margin:0}.subhead p{font-size:13px;color:#7690a4;margin:6px 0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:17px 0}
+.stat{background:white;border-radius:14px;border:1px solid var(--line);padding:18px;min-width:0}
+.stat strong{display:block;font-size:19px;color:#1369ae;overflow-wrap:anywhere}.stat span{display:block;color:#758da1;font-size:11px;margin-top:7px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 6px 22px #15518409}
+.card h3{color:#214f77;margin:0 0 13px;font-size:17px}.card p{color:#70859a;font-size:13px;line-height:1.7;margin:8px 0 14px}
+.name-match{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0;padding:18px 14px;background:#f0f7fd;border-radius:13px;color:#17548d}
+.name-match b{font-size:clamp(12px,1.4vw,17px);overflow-wrap:anywhere;min-width:0;flex:1;line-height:1.35}.name-match b:last-child{text-align:right}
+.name-match span{font-size:10px;color:#7c9bb4;font-weight:900}
+.notice{padding:14px 16px;margin:17px 0;border-radius:12px;background:#f1f7fd;border:1px solid #d9e9f6;color:#52718c;font-size:12px;line-height:1.8}
+.notice strong{color:#225c8f}.notice.important{background:#fff7e6;border-color:#f2ddb5;color:#876b34}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.step{background:#fff;border-radius:14px;border:1px solid var(--line);padding:19px}
+.step h3{margin:0 0 8px;color:#1e5d95;font-size:15px}.step p{margin:0;color:#6d8296;font-size:12px;line-height:1.7}
+.video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.video{overflow:hidden;border:1px solid var(--line);border-radius:14px;background:white}
+.video-preview{aspect-ratio:16/9;background:#0c366a;position:relative}.video-preview img{display:block;width:100%;height:100%;object-fit:cover}
+.video-preview button{position:absolute;inset:0;width:100%;height:100%;border:0;background:#09275164;color:white;font-size:35px}
+.video-preview iframe{border:0;width:100%;height:100%;display:block}
+.video-copy{padding:15px}.video-copy h3{font-size:14px;line-height:1.4;color:#194e7b;margin:0 0 7px}.video-copy p{margin:0;color:#7590a4;font-size:12px;line-height:1.6}
+.channel-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.channel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px}.channel strong{display:block;color:#24527c;font-size:13px}.channel span{display:block;color:#8495a4;font-size:11px;margin:7px 0}
+.empty{padding:30px 18px;border:1px dashed #bad8ee;border-radius:14px;background:#f6fbff;text-align:center;grid-column:1/-1;color:#657e96;font-size:13px;line-height:1.7}
+.empty strong{color:#23629b;display:block;margin-bottom:6px}
+.profile{display:flex;align-items:center;gap:15px}.avatar{background:#e4f2ff;color:#0f70b7;display:grid;place-items:center;width:58px;height:58px;border-radius:16px;flex-shrink:0;font-weight:850;font-size:22px}.profile h3{margin:0 0 4px}.profile p{margin:0}
+.form{display:grid;gap:13px;max-width:500px}.form label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:750;color:#45627a}
+.form input{padding:13px 14px;border:1px solid #c9dfef;border-radius:10px;width:100%;min-width:0}
+.form .action{max-width:320px}
+.status{font-size:12px;min-height:18px;color:#1a699f}
+.footer{padding:26px 3px 0;font-size:11px;color:#8da2b4;line-height:1.6}
+@media(max-width:1000px){.side{width:210px}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:780px){.shell{display:block}.side{width:100%;padding:12px 16px;display:flex;gap:7px;border-right:0;border-bottom:1px solid var(--line)}.brand{flex-direction:row;justify-content:flex-start;text-align:left;border:0;padding:3px 0;gap:9px}.brand img{width:45px;height:45px}.brand h2{font-size:12px}.brand small{display:none}.nav{display:flex;margin:0;overflow-x:auto;gap:7px;padding:6px 0}.nav button{flex:0 0 auto;width:auto;padding:11px;font-size:11px}.side-foot{display:none}.top{padding:11px 18px}.main{padding:20px}.hero{padding:28px}.hero-emblem{display:none}.grid,.steps,.video-grid,.channel-list{grid-template-columns:1fr}}
+@media(max-width:480px){.top strong{font-size:11px}.member-pill{font-size:10px;padding:6px}.top-actions{gap:6px}.top-actions .action{padding:9px;font-size:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat strong{font-size:16px}.name-match{padding:12px 8px;gap:5px}.name-match b{font-size:12px}.hero h1{font-size:27px}}
+</style>
+</head>
+<body>
+<div id="loading" class="empty" style="margin:30px auto;max-width:650px">Verificando tu cuenta de jugador…</div>
+<div id="playerApp" class="shell" hidden>
+  <aside class="side">
+    <div class="brand"><img alt="Escudo Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp"><div><h2>RANKING INDIVIDUAL CPZ 2026/27</h2><small>Área privada de jugadores</small></div></div>
+    <nav id="playerNav" class="nav" aria-label="Zona de jugadores">
+      <button type="button" data-view="home" class="active">Inicio</button>
+      <button type="button" data-view="match">Mi partido</button>
+      <button type="button" data-view="rules">Reglamento</button>
+      <button type="button" data-view="community">Comunidad y vídeos</button>
+      <button type="button" data-view="account">Mi cuenta</button>
+    </nav>
+    <div class="side-foot">Acceso exclusivo para participantes registrados.<br>Club Pickleball Zaragoza · 2026/27</div>
+  </aside>
+  <div class="workspace">
+    <header class="top">
+      <div><strong id="headerName">Cuenta de jugador</strong><span>Acceso de jugador · Solo lectura de la competición</span></div>
+      <div class="top-actions"><span class="member-pill">JUGADOR</span><button id="logout" class="action secondary" type="button">Salir</button></div>
+    </header>
+    <main class="main">
+      <section class="view active" id="view-home">
+        <div class="hero"><div><small>RANKING INDIVIDUAL CPZ 2026/27</small><h1>Hola, <span id="helloName">jugador</span></h1><p>Esta es tu zona privada para seguir el ranking, consultar tu rival y acceder a las instrucciones oficiales de los partidos.</p></div><div class="hero-emblem" aria-hidden="true">🏓</div></div>
+        <div class="stats"><div class="stat"><strong>Individual</strong><span>Modalidad</span></div><div class="stat"><strong id="homeGroup">Pendiente</strong><span>Grupo asignado</span></div><div class="stat"><strong>2026/27</strong><span>Temporada</span></div></div>
+        <div class="grid">
+          <article class="card"><h3>Tu partido de clasificación</h3><p>Tu enfrentamiento anunciado para octubre. Es previo a la formación de los grupos iniciales y no suma puntos al ranking anual.</p><div class="name-match"><b id="myNameA">—</b><span>VS</span><b id="myOpponentA">—</b></div><button class="action" type="button" data-go="match">Ver mi partido →</button></article>
+          <article class="card"><h3>Organiza tus encuentros</h3><p>Contacta con tu rival, acordad cuándo jugar y reservad pista a través del sistema del club. Uno de los dos debe registrar el resultado al terminar.</p><div class="links"><a class="action secondary" href="https://pickleballzaragoza.taykus.com/" target="_blank" rel="noopener noreferrer">Reservar en Taykus ↗</a><button class="action secondary" type="button" data-go="rules">Consultar normas →</button></div></article>
+        </div>
+        <p class="notice important">Los grupos A/B y las clasificaciones que aparecen en la simulación del organizador <strong>todavía no están asignados a los jugadores reales</strong>. Verás tu grupo cuando el club lo confirme.</p>
+      </section>
+      <section class="view" id="view-match">
+        <div class="hero"><div><small>PARTIDOS DE CLASIFICACIÓN · OCTUBRE 2026</small><h1>Mi partido</h1><p>Encuentra a tu rival, acordad cuándo disputar el encuentro y registra el resultado mediante el formulario oficial.</p></div><div class="hero-emblem" aria-hidden="true">🏓</div></div>
+        <div class="stats"><div class="stat"><strong>31 oct</strong><span>Plazo comunicado</span></div><div class="stat"><strong>0</strong><span>Puntos para ranking anual</span></div><div class="stat"><strong id="matchGroup">Pendiente</strong><span>Grupo asignado</span></div></div>
+        <div class="card"><h3>Enfrentamiento asignado</h3><div class="name-match"><b id="myNameB">—</b><span>VS</span><b id="myOpponentB">—</b></div><p>Contacta con tu rival y organizad el partido. Si no tienes su contacto, solicita ayuda al responsable de la competición por privado.</p><div class="links"><a class="action" href="https://pickleballzaragoza.taykus.com/" target="_blank" rel="noopener noreferrer">Reservar pista ↗</a><a class="action secondary" href="https://forms.gle/KBkzGoZBhzg5qdiY6" target="_blank" rel="noopener noreferrer">Registrar resultado oficial ↗</a></div></div>
+        <p class="notice important">La fecha límite comunicada para estos partidos de clasificación fue el <strong>31 de octubre de 2026</strong>. Para cambios de plazo o futuros enfrentamientos, consulta con el organizador.</p>
+      </section>
+      <section class="view" id="view-rules">
+        <div class="hero"><div><small>RANKING INDIVIDUAL CPZ · REGLAMENTO</small><h1>Normas de competición</h1><p>Lo esencial para organizar tus partidos y participar en las jornadas del ranking.</p></div><div class="hero-emblem" aria-hidden="true">📖</div></div>
+        <div class="subhead"><h2>Cómo funciona el ranking</h2></div>
+        <div class="steps">
+          <article class="step"><h3>3 partidos mensuales</h3><p>Disputarás tres encuentros al mes con los rivales de tu grupo, una vez que el club haya realizado las asignaciones.</p></article>
+          <article class="step"><h3>Mejor de 3 sets</h3><p>Cada set se juega a 11 puntos, con una diferencia mínima de 2. Con la puntuación tradicional solo marca puntos el equipo que saca.</p></article>
+          <article class="step"><h3>Ascensos y descensos</h3><p>El primer clasificado de cada grupo asciende al superior y el último desciende al inferior al finalizar cada mes.</p></article>
+          <article class="step"><h3>Ranking anual</h3><p>Los puntos acumulados durante la temporada contarán para la clasificación del torneo final. El baremo detallado todavía no está comunicado.</p></article>
+        </div>
+        <div class="subhead"><h2>Reservas y resultados</h2></div>
+        <div class="card"><h3>Cómo reservar pista</h3><p>Todos los jugadores deben tener cuenta en Taykus. Uno de los participantes realiza la reserva y añade al rival; cada jugador paga su parte. El descuento comunicado de noviembre de 2026 es <b>RANKINGINDNOV26</b> (6 € por jugador durante una hora), aplicable únicamente desde la web y dentro del periodo anunciado.</p><div class="links"><a class="action" href="https://pickleballzaragoza.taykus.com/" target="_blank" rel="noopener noreferrer">Abrir Taykus ↗</a><a class="action secondary" href="https://forms.gle/KBkzGoZBhzg5qdiY6" target="_blank" rel="noopener noreferrer">Formulario de resultados ↗</a></div></div>
+      </section>
+      <section class="view" id="view-community">
+        <div class="hero"><div><small>PARTIDOS Y COMUNIDAD</small><h1>Comunidad y vídeos</h1><p>Descubre partidos y canales que el administrador haya autorizado y publicado en la plataforma.</p></div><div class="hero-emblem" aria-hidden="true">▶</div></div>
+        <div class="subhead"><h2>Vídeos compartidos</h2><p>El vídeo de YouTube solo se reproduce si lo seleccionas.</p></div>
+        <div class="video-grid" id="memberVideos"><div class="empty">Cargando vídeos…</div></div>
+        <div class="subhead"><h2>Canales de jugadores</h2></div>
+        <div class="channel-list" id="memberChannels"><div class="empty">Cargando canales…</div></div>
+      </section>
+      <section class="view" id="view-account">
+        <div class="hero"><div><small>MI CUENTA DE JUGADOR</small><h1>Mi perfil</h1><p>Consulta tus datos de acceso y cambia tu contraseña cuando lo necesites.</p></div><div class="hero-emblem" aria-hidden="true">◉</div></div>
+        <div class="subhead"><h2>Datos del jugador</h2></div>
+        <div class="card"><div class="profile"><div class="avatar" id="avatar">CP</div><div><h3 id="profileName">—</h3><p>Usuario: <b id="profileUsername">—</b></p><p>Grupo: <b>Pendiente de asignación</b></p></div></div></div>
+        <div class="subhead"><h2>Cambiar mi contraseña</h2><p>Si has recibido una clave provisional, puedes sustituirla por una personal.</p></div>
+        <div class="card"><form id="passwordForm" class="form">
+          <label>Contraseña actual<input id="currentPassword" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></label>
+          <label>Nueva contraseña<input id="newPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label>
+          <label>Repite la nueva contraseña<input id="newPasswordRepeat" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label>
+          <button id="passwordButton" class="action" type="submit">Actualizar contraseña</button><p id="passwordStatus" class="status" role="status"></p>
+        </form></div>
+        <p class="notice"><strong>¿Has perdido el acceso?</strong> Pide al organizador que te genere una nueva contraseña provisional. No compartas tu contraseña con otros jugadores.</p>
+      </section>
+      <footer class="footer">RANKING INDIVIDUAL CPZ 2026/27 · Área privada para participantes autorizados. La composición de grupos y resultados del ranking se incorporará cuando el club los confirme.</footer>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  let profile=null,communityLoaded=false;
+  async function getJSON(url){
+    const res=await fetch(url,{credentials:'same-origin',cache:'no-store'});
+    const data=await res.json();
+    if(!res.ok||!data.ok)throw Error(data.error||'No se pudo completar la solicitud.');
+    return data;
+  }
+  function setProfile(data){
+    profile=data;
+    for(const id of ['headerName','helloName','myNameA','myNameB','profileName'])$(id).textContent=data.name;
+    for(const id of ['myOpponentA','myOpponentB'])$(id).textContent=data.opponent||'Pendiente de asignación';
+    $('profileUsername').textContent=data.username;
+    $('avatar').textContent=data.name.split(' ').slice(0,2).map(n=>n.charAt(0)).join('').toUpperCase();
+    $('homeGroup').textContent=data.group||'Pendiente';
+    $('matchGroup').textContent=data.group||'Pendiente';
+  }
+  function view(name){
+    document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+name));
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===name));
+    if(name==='community'&&!communityLoaded)loadCommunity();
+  }
+  document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>view(button.dataset.view)));
+  document.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>view(button.dataset.go)));
+  $('logout').addEventListener('click',async function(){
+    this.disabled=true;
+    try{await fetch('/api/member/logout',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:'{}'})}catch(e){}
+    location.replace('/');
+  });
+  function empty(text){const div=document.createElement('div');div.className='empty';div.textContent=text;return div}
+  async function loadCommunity(){
+    communityLoaded=true;
+    try{
+      const data=await getJSON('/api/member/community');
+      const frag=document.createDocumentFragment();
+      for(const v of data.videos||[]){
+        if(!/^[A-Za-z0-9_-]{11}$/.test(v.youtubeId))continue;
+        const card=document.createElement('article');card.className='video';
+        const preview=document.createElement('div');preview.className='video-preview';
+        const thumbnail=document.createElement('img');thumbnail.src='https://i.ytimg.com/vi/'+v.youtubeId+'/hqdefault.jpg';thumbnail.alt='Miniatura de '+v.title;thumbnail.loading='lazy';
+        const btn=document.createElement('button');btn.type='button';btn.textContent='▶';btn.setAttribute('aria-label','Reproducir '+v.title);
+        btn.onclick=()=>{const iframe=document.createElement('iframe');iframe.src='https://www.youtube-nocookie.com/embed/'+v.youtubeId+'?rel=0';iframe.loading='lazy';iframe.title='Partido: '+v.title;iframe.referrerPolicy='strict-origin-when-cross-origin';iframe.allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';iframe.allowFullscreen=true;preview.replaceChildren(iframe)};
+        preview.append(thumbnail,btn);
+        const copy=document.createElement('div');copy.className='video-copy';
+        const h=document.createElement('h3');h.textContent=v.title;copy.append(h);
+        const details=document.createElement('p');details.textContent=[v.playerOne,v.playerTwo].filter(Boolean).join(' vs ')||v.description||'';copy.append(details);
+        card.append(preview,copy);frag.append(card);
+      }
+      $('memberVideos').replaceChildren(frag.childNodes.length?frag:empty('Todavía no se han compartido vídeos de partidos.'));
+      const channels=document.createDocumentFragment();
+      for(const c of data.channels||[]){
+        const card=document.createElement('article');card.className='channel';
+        const h=document.createElement('strong');h.textContent=c.channelName;const p=document.createElement('span');p.textContent=c.playerName;card.append(h,p);
+        if(typeof c.channelUrl==='string'&&c.channelUrl.startsWith('https://www.youtube.com/')){
+          const link=document.createElement('a');link.href=c.channelUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Ver canal en YouTube ↗';card.append(link);
+        }
+        channels.append(card);
+      }
+      $('memberChannels').replaceChildren(channels.childNodes.length?channels:empty('Aún no hay canales autorizados en esta sección.'));
+    }catch(e){
+      communityLoaded=false;
+      $('memberVideos').replaceChildren(empty('No se pueden cargar los vídeos en este momento.'));
+      $('memberChannels').replaceChildren(empty('Revisa la conexión y vuelve a abrir Comunidad.'));
+    }
+  }
+  $('passwordForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    const current=$('currentPassword').value,newPass=$('newPassword').value,confirm=$('newPasswordRepeat').value;
+    const status=$('passwordStatus');
+    if(newPass!==confirm){status.textContent='Las contraseñas nuevas no coinciden.';return}
+    if(newPass.length<12){status.textContent='La contraseña debe tener al menos 12 caracteres.';return}
+    $('passwordButton').disabled=true;status.textContent='Guardando contraseña…';
+    try{
+      const res=await fetch('/api/member/password',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({currentPassword:current,newPassword:newPass})});
+      const data=await res.json();
+      if(!res.ok||!data.ok)throw Error(data.error||'No se ha podido cambiar la contraseña.');
+      $('passwordForm').reset();
+      status.textContent='Contraseña actualizada correctamente.';
+    }catch(err){status.textContent=err.message}
+    finally{$('passwordButton').disabled=false}
+  });
+  getJSON('/api/member/me').then(data=>{
+    setProfile(data.profile);
+    $('loading').hidden=true;$('playerApp').hidden=false;
+  }).catch(()=>{
+    location.replace('/');
+  });
+})();
+</script>
+</body>
+</html>
