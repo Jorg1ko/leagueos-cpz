@@ -385,7 +385,66 @@ a{color:#106bb5}
   .club-logo{width:39px;height:39px}
   .private-session-top .tag{font-size:9px;white-space:normal}
 }
-</style></head><body><div class="layout"><aside class="sidebar"><div class="logo"><img class="sidebar-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Emblema Club Pickleball Zaragoza" loading="lazy"><span class="logo-type">RANKING INDIVIDUAL CPZ 2026/27</span></div><button class="nav active" data-view="home">▦ Resumen</button><button class="nav" data-view="qualifying">🏓 Jornada de clasificación</button><button class="nav" data-view="divisions">♜ Grupos A/B (demo)</button><button class="nav" data-view="matches">▤ Partidos (demo)</button><button class="nav" data-view="rules">📖 Reglamento</button><button class="nav" data-view="booking">🏓 Reservas y resultados</button><button class="nav" data-view="players">♧ Listado de jugadores</button><button class="nav" data-view="portal">◎ Zona jugador</button><button class="nav" data-view="settings">⚙ Configuración</button><button class="nav admin-nav-button" data-view="admin">🔒 Administración</button><small>Temporada 2026/27 · Demo de grupos</small></aside><div class="main"><header class="top"><div class="brand-head"><img class="club-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Logotipo Club Pickleball Zaragoza"><div><div class="club-name">RANKING INDIVIDUAL CPZ 2026/27</div><small>Club Pickleball Zaragoza · Competición 2026/27</small></div></div><div class="private-session-top"><span class="tag" id="adminBadge">ADMINISTRACIÓN PRIVADA</span><button class="btn secondary" type="button" id="exitSite">Cerrar sesión</button></div></header><main class="content">
+
+/* Comunidad y vídeos — azul CPZ, sin contenidos de ejemplo */
+.community-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:23px;align-items:center;padding:30px 31px;border-radius:21px;color:#fff;background:radial-gradient(circle at 95% 5%,#389ce0 0%,#0d69af 43%,#0b3e76 100%);overflow:hidden;position:relative}
+.community-hero .micro{color:#d5edff}.community-hero h1{color:#fff;font-size:clamp(26px,3.2vw,37px);line-height:1.15;letter-spacing:-1px;margin:10px 0 12px}
+.community-hero p{color:#e0effe;font-size:13px;line-height:1.7;max-width:650px;margin:0}
+.community-hero-icon{width:96px;height:96px;background:#ffffff24;border:1px solid #ffffff50;border-radius:27px;display:grid;place-items:center;font-size:38px}
+.community-figures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 23px}
+.community-figure{padding:16px 20px;border:1px solid #deebf6;background:#fff;border-radius:14px}
+.community-figure b{display:block;color:#146baf;font-size:26px}.community-figure span{color:#6a8397;font-size:12px}
+.community-section-header{margin:25px 0 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.community-section-header h2{margin:0;color:#20466e;font-size:22px}.community-section-header p{margin:6px 0 0;color:#7d8fa0;font-size:12px}
+.community-search{min-width:220px;max-width:340px;width:100%;border:1px solid #cbddeb;background:#fff;padding:12px 13px;border-radius:10px}
+.community-video-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.community-video{border:1px solid #dbe8f3;background:#fff;border-radius:15px;overflow:hidden;box-shadow:0 8px 24px #0c43720c;display:flex;flex-direction:column}
+.community-video-preview{aspect-ratio:16/9;position:relative;background:#092f5f;overflow:hidden}
+.community-video-preview>img{width:100%;height:100%;object-fit:cover;display:block}
+.community-video-preview>button{position:absolute;inset:0;width:100%;height:100%;border:0;background:#06254843;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff}
+.community-video-preview>button:hover{background:#06254870}.community-play{border:1px solid #ffffff99;background:#167ac6e8;border-radius:18px;padding:14px 23px;font-size:27px;box-shadow:0 9px 27px #0005}
+.community-video-preview iframe{width:100%;height:100%;display:block;border:0}
+.community-video-copy{padding:16px;display:flex;flex-direction:column;gap:10px;flex:1}
+.community-video-copy h3{color:#19466d;font-size:15px;line-height:1.4;margin:0;overflow-wrap:anywhere}
+.community-video-copy p{margin:0;font-size:12px;line-height:1.6;color:#637d94;overflow-wrap:anywhere}
+.community-video-copy .community-players{font-size:11px;font-weight:750;color:#236ba7}
+.community-video-copy .community-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.community-video-copy a{color:#126bb1;font-size:12px;font-weight:750;text-decoration:none}
+.community-video-copy a:hover{text-decoration:underline}
+.community-delete{background:#fff2f0;border:1px solid #f1d5cf;color:#ac4333;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:750}
+.community-empty{border:1px dashed #b8d6ed;border-radius:15px;background:#f5faff;padding:32px 22px;text-align:center;grid-column:1/-1}
+.community-empty strong{color:#164c7a;display:block;margin:8px 0}
+.community-empty p{color:#6e849b;line-height:1.7;font-size:12px;margin:0 auto;max-width:440px}
+.community-empty-icon{font-size:29px}
+.community-channels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.community-channel{background:#fff;border:1px solid #dbe8f3;border-radius:13px;padding:16px;display:flex;align-items:center;gap:13px;min-width:0}
+.community-channel-icon{width:43px;height:43px;border-radius:13px;display:grid;place-items:center;background:#ffebeb;color:#cb3232;font-weight:900;flex-shrink:0;font-size:14px}
+.community-channel-info{flex:1;min-width:0}.community-channel-info strong{display:block;font-size:13px;color:#213e59;overflow-wrap:anywhere}
+.community-channel-info span{display:block;margin:5px 0;font-size:11px;color:#72879a}
+.community-channel-info a{display:inline-block;color:#116db3;font-size:12px;text-decoration:none;font-weight:750}
+.community-channel-info a:hover{text-decoration:underline}
+.community-admin-area{margin-top:31px;border:1px solid #d8e8f7;background:linear-gradient(120deg,#f2f8ff,#fff);padding:23px;border-radius:17px}
+.community-admin-title{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:15px}
+.community-admin-title h2{margin:0;color:#174f83;font-size:21px}.community-admin-title span{font-size:10px;color:#1a6bb0;background:#deefff;padding:6px 9px;border-radius:22px;font-weight:750}
+.community-admin-area>p{font-size:13px;line-height:1.7;color:#648096;margin:0 0 19px}
+.community-admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.community-form{display:flex;flex-direction:column;gap:12px;min-width:0;padding:20px;border:1px solid #e0eaf4;border-radius:14px;background:white}
+.community-form h3{font-size:16px;color:#1b507e;margin:0 0 4px}
+.community-form label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:#3b5974}
+.community-form input,.community-form select,.community-form textarea{padding:11px 12px;border:1px solid #cdddeb;border-radius:9px;width:100%;font-size:13px;background:#fff;color:#264662}
+.community-form textarea{resize:vertical;min-height:77px}
+.community-form .community-consent{display:flex;flex-direction:row;align-items:flex-start;gap:9px;line-height:1.6;font-size:11px;color:#657b8e;font-weight:500}
+.community-consent input{width:16px;height:16px;flex-shrink:0;margin:2px 0 0}
+.community-form .btn{margin-top:auto;width:100%}
+.community-feedback{font-size:12px;min-height:19px;color:#39759c;line-height:1.5;margin:0}
+.community-hint{margin-top:15px;padding:13px 15px;border:1px solid #ddebf6;background:#f5faff;color:#597993;border-radius:12px;line-height:1.7;font-size:12px}
+.community-home-link{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 19px;margin:12px 0 0;background:#e9f4ff;border-radius:13px;border:1px solid #cfe5fa}
+.community-home-link h3{font-size:15px;margin:0 0 5px;color:#155b92}.community-home-link p{font-size:12px;line-height:1.5;margin:0;color:#6486a2}
+.community-home-link button{white-space:nowrap}
+@media(max-width:980px){.community-video-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:770px){.community-admin-grid,.community-channels{grid-template-columns:1fr}.community-hero{padding:23px}.community-hero-icon{width:68px;height:68px;font-size:27px}}
+@media(max-width:560px){.community-video-grid{grid-template-columns:1fr}.community-figures{gap:7px}.community-figure{padding:12px}.community-figure b{font-size:21px}.community-figure span{font-size:10px}.community-hero-icon{display:none}.community-hero{grid-template-columns:1fr}.community-home-link{flex-direction:column;align-items:flex-start}.community-search{max-width:100%}}
+</style></head><body><div class="layout"><aside class="sidebar"><div class="logo"><img class="sidebar-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Emblema Club Pickleball Zaragoza" loading="lazy"><span class="logo-type">RANKING INDIVIDUAL CPZ 2026/27</span></div><button class="nav active" data-view="home">▦ Resumen</button><button class="nav" data-view="qualifying">🏓 Jornada de clasificación</button><button class="nav" data-view="divisions">♜ Grupos A/B (demo)</button><button class="nav" data-view="matches">▤ Partidos (demo)</button><button class="nav" data-view="rules">📖 Reglamento</button><button class="nav" data-view="booking">🏓 Reservas y resultados</button><button class="nav" data-view="players">♧ Listado de jugadores</button><button class="nav" data-view="community">▶ Comunidad y vídeos</button><button class="nav" data-view="portal">◎ Zona jugador</button><button class="nav" data-view="settings">⚙ Configuración</button><button class="nav admin-nav-button" data-view="admin">🔒 Administración</button><small>Temporada 2026/27 · Demo de grupos</small></aside><div class="main"><header class="top"><div class="brand-head"><img class="club-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Logotipo Club Pickleball Zaragoza"><div><div class="club-name">RANKING INDIVIDUAL CPZ 2026/27</div><small>Club Pickleball Zaragoza · Competición 2026/27</small></div></div><div class="private-session-top"><span class="tag" id="adminBadge">ADMINISTRACIÓN PRIVADA</span><button class="btn secondary" type="button" id="exitSite">Cerrar sesión</button></div></header><main class="content">
 <div id="home">
 <section class="hero hero-with-photo"><div class="hero-copy"><span class="micro">RANKING INDIVIDUAL CPZ 2026/27 · PROPUESTA PARA EL CLUB</span><h1>RANKING INDIVIDUAL CPZ 2026/27</h1><p>Tu liga. Tus partidos. Todo bajo control. Consulta jornadas, rivales, resultados y clasificación de la temporada.</p><button class="btn" onclick="show('qualifying')">Ver partidos de clasificación →</button></div></section>
 <section class="matchday-feature" aria-label="Jornada de clasificación de octubre">
@@ -395,7 +454,8 @@ a{color:#106bb5}
     <div class="matchday-cta"><button class="btn" onclick="show('qualifying')">Consultar los 20 enfrentamientos →</button><button class="btn secondary" onclick="show('booking')">Cómo reservar pista</button></div>
   </div><div class="matchday-kpis"><div><strong>20</strong><span>partidos de clasificación</span></div><div><strong>31 oct</strong><span>plazo máximo para jugar</span></div></div>
 </section>
-<div class="league-shortcuts"><h2>RANKING INDIVIDUAL CPZ 2026/27</h2><p>Consulta los enfrentamientos de octubre, las normas anunciadas para noviembre y las instrucciones para reservar y registrar resultados.</p><div class="league-shortcuts-grid"><button class="league-shortcut" onclick="show('qualifying')"><strong>📅 Jornada clasificatoria</strong><span>20 enfrentamientos · límite 31 de octubre</span></button><button class="league-shortcut" onclick="show('rules')"><strong>📖 Reglamento</strong><span>3 partidos al mes · al mejor de 3 sets</span></button><button class="league-shortcut" onclick="show('booking')"><strong>🏓 Reservas y resultados</strong><span>Descuento en Taykus · formulario oficial</span></button></div></div><div class="row" style="margin-top:23px;align-items:flex-end"><div><div class="sub">PANEL DEL ORGANIZADOR · TEMPORADA SIMULADA 2026–27</div><h1 class="heading" style="margin-bottom:2px">Resumen de la competición</h1><p class="sub" style="margin:4px 0">RANKING INDIVIDUAL CPZ 2026/27 · Individual · 7 pistas · <span id="monthLabel">Periodo 1</span></p></div><span class="tag">Simulación técnica · 40 plazas</span></div><div class="admin-public-notice"><span class="sub" id="publicNotice">Los resultados son de demostración y solo un administrador puede modificarlos.</span><button class="btn secondary" id="openAdmin">Acceso administrador →</button></div><div class="cards"><div class="card"><span class="sub">Jugadores</span><strong class="kpi">40</strong><span class="tag">Plazas de ejemplo</span></div><div class="card"><span class="sub">Grupos A/B</span><strong class="kpi">10</strong><span class="tag">Simulados</span></div><div class="card"><span class="sub">Partidos/mes (demo)</span><strong class="kpi">60</strong></div><div class="card"><span class="sub">Resultados registrados</span><strong class="kpi" id="doneKpi">0</strong></div></div><div class="insight-strip"><section class="insight-card"><h3>Próximos encuentros</h3><p>Partidos pendientes del periodo actual</p><div id="nextFixtures"></div><button class="btn secondary" id="goPending">Ver todos los partidos pendientes →</button></section><section class="insight-card"><h3>Estado de la competición</h3><p>Seguimiento del mes y acciones del organizador</p><div class="row" style="justify-content:flex-start;margin:15px 0"><div class="completion-ring" id="completionRing" data-progress="0%" style="--progress:0%"></div><div><strong id="progressSummary" style="font-size:18px">0 de 60 encuentros</strong><div class="sub" style="margin-top:6px">Registrados en esta demostración</div></div></div><div class="mini-tools"><button class="btn secondary" id="exportCsv">Exportar resultados CSV</button><button class="btn secondary" id="goDivisions">Consultar clasificación</button></div></section></div><div class="section-head" style="margin-top:22px"><h3>Así se vive el pickleball en CPZ</h3><a href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#146347">Conocer el club ↗</a></div><div class="club-gallery"><div class="gallery-item"><img src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/ALQUILER-DE-PISTAS-1-scaled-e1764497323284-768x768.jpg" alt="Pistas cubiertas y actividad del Club Pickleball Zaragoza" loading="lazy"><div><b>7 pistas indoor</b><span>Un espacio para jugar durante todo el año</span></div></div><div class="gallery-item"><img src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/JUEGA-PARTIDOS-scaled-e1764497382127-768x768.jpg" alt="Partidos y comunidad de Club Pickleball Zaragoza" loading="lazy"><div><b>Comunidad y competición</b><span>Rivales, resultados y evolución dentro de la liga</span></div></div></div><p class="image-credit">Fotografías y emblema mostrados desde la web pública de Club Pickleball Zaragoza, como referencia visual de esta propuesta independiente.</p><div class="section-head"><h3>El ranking de un vistazo</h3><span class="sub">Datos en tiempo real de la simulación</span></div><div class="columns"><div class="card"><div class="row"><h3>Clasificación</h3><select class="divSelect"></select></div><div id="tableHome"></div></div><div class="card"><h3>Progreso mensual</h3><p id="progressText"></p><div class="bar"><div id="progressBar" style="width:0%"></div></div><p class="sub">Tres partidos por participante en la simulación. La puntuación real por sets aún no está integrada aquí.</p><button class="btn" onclick="show('matches')">Ver partidos de la demo →</button><div class="alert">Las reglas de ascenso y puntos son provisionales, no el reglamento oficial del CPZ.</div></div></div></div>
+<div class="league-shortcuts"><h2>RANKING INDIVIDUAL CPZ 2026/27</h2><p>Consulta los enfrentamientos de octubre, las normas anunciadas para noviembre y las instrucciones para reservar y registrar resultados.</p><div class="league-shortcuts-grid"><button class="league-shortcut" onclick="show('qualifying')"><strong>📅 Jornada clasificatoria</strong><span>20 enfrentamientos · límite 31 de octubre</span></button><button class="league-shortcut" onclick="show('rules')"><strong>📖 Reglamento</strong><span>3 partidos al mes · al mejor de 3 sets</span></button><button class="league-shortcut" onclick="show('booking')"><strong>🏓 Reservas y resultados</strong><span>Descuento en Taykus · formulario oficial</span></button></div></div><div class="community-home-link"><div><h3>▶ Comunidad y vídeos</h3><p>Canales de YouTube de los participantes y grabaciones de partidos, en un mismo espacio.</p></div><button class="btn secondary" type="button" onclick="show('community')">Explorar comunidad →</button></div>
+<div class="row" style="margin-top:23px;align-items:flex-end"><div><div class="sub">PANEL DEL ORGANIZADOR · TEMPORADA SIMULADA 2026–27</div><h1 class="heading" style="margin-bottom:2px">Resumen de la competición</h1><p class="sub" style="margin:4px 0">RANKING INDIVIDUAL CPZ 2026/27 · Individual · 7 pistas · <span id="monthLabel">Periodo 1</span></p></div><span class="tag">Simulación técnica · 40 plazas</span></div><div class="admin-public-notice"><span class="sub" id="publicNotice">Los resultados son de demostración y solo un administrador puede modificarlos.</span><button class="btn secondary" id="openAdmin">Acceso administrador →</button></div><div class="cards"><div class="card"><span class="sub">Jugadores</span><strong class="kpi">40</strong><span class="tag">Plazas de ejemplo</span></div><div class="card"><span class="sub">Grupos A/B</span><strong class="kpi">10</strong><span class="tag">Simulados</span></div><div class="card"><span class="sub">Partidos/mes (demo)</span><strong class="kpi">60</strong></div><div class="card"><span class="sub">Resultados registrados</span><strong class="kpi" id="doneKpi">0</strong></div></div><div class="insight-strip"><section class="insight-card"><h3>Próximos encuentros</h3><p>Partidos pendientes del periodo actual</p><div id="nextFixtures"></div><button class="btn secondary" id="goPending">Ver todos los partidos pendientes →</button></section><section class="insight-card"><h3>Estado de la competición</h3><p>Seguimiento del mes y acciones del organizador</p><div class="row" style="justify-content:flex-start;margin:15px 0"><div class="completion-ring" id="completionRing" data-progress="0%" style="--progress:0%"></div><div><strong id="progressSummary" style="font-size:18px">0 de 60 encuentros</strong><div class="sub" style="margin-top:6px">Registrados en esta demostración</div></div></div><div class="mini-tools"><button class="btn secondary" id="exportCsv">Exportar resultados CSV</button><button class="btn secondary" id="goDivisions">Consultar clasificación</button></div></section></div><div class="section-head" style="margin-top:22px"><h3>Así se vive el pickleball en CPZ</h3><a href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:#146347">Conocer el club ↗</a></div><div class="club-gallery"><div class="gallery-item"><img src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/ALQUILER-DE-PISTAS-1-scaled-e1764497323284-768x768.jpg" alt="Pistas cubiertas y actividad del Club Pickleball Zaragoza" loading="lazy"><div><b>7 pistas indoor</b><span>Un espacio para jugar durante todo el año</span></div></div><div class="gallery-item"><img src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/JUEGA-PARTIDOS-scaled-e1764497382127-768x768.jpg" alt="Partidos y comunidad de Club Pickleball Zaragoza" loading="lazy"><div><b>Comunidad y competición</b><span>Rivales, resultados y evolución dentro de la liga</span></div></div></div><p class="image-credit">Fotografías y emblema mostrados desde la web pública de Club Pickleball Zaragoza, como referencia visual de esta propuesta independiente.</p><div class="section-head"><h3>El ranking de un vistazo</h3><span class="sub">Datos en tiempo real de la simulación</span></div><div class="columns"><div class="card"><div class="row"><h3>Clasificación</h3><select class="divSelect"></select></div><div id="tableHome"></div></div><div class="card"><h3>Progreso mensual</h3><p id="progressText"></p><div class="bar"><div id="progressBar" style="width:0%"></div></div><p class="sub">Tres partidos por participante en la simulación. La puntuación real por sets aún no está integrada aquí.</p><button class="btn" onclick="show('matches')">Ver partidos de la demo →</button><div class="alert">Las reglas de ascenso y puntos son provisionales, no el reglamento oficial del CPZ.</div></div></div></div>
 
 <div id="qualifying" class="hidden">
   <section class="league-info-hero"><div><span class="micro">ELIMINATORIA DE CLASIFICACIÓN · OCTUBRE 2026</span><h1>Jornada de clasificación</h1><p>Ya están definidos los 20 enfrentamientos previos al inicio del ranking. Esta jornada permitirá formar los grupos iniciales de noviembre y <b>no suma puntos para el ranking anual</b>.</p></div><span class="league-hero-mark" aria-hidden="true">🏓</span></section>
@@ -458,6 +518,73 @@ a{color:#106bb5}
     <p class="roster-footer">El listado no asigna grupos, crea partidos ni modifica los resultados de la liga.</p>
   </div>
 </div>
+
+<div id="community" class="hidden">
+  <div class="community-hero">
+    <div>
+      <div class="micro">RANKING INDIVIDUAL CPZ 2026/27 · NUEVA SECCIÓN</div>
+      <h1>Comunidad y vídeos</h1>
+      <p>Los mejores momentos de la temporada, partidos grabados y canales de YouTube de nuestros jugadores. Este espacio se irá completando con contenido autorizado y compartido por sus protagonistas.</p>
+    </div>
+    <div class="community-hero-icon" aria-hidden="true">▶</div>
+  </div>
+  <div class="community-figures" aria-label="Estadísticas de la comunidad">
+    <div class="community-figure"><b id="communityVideoCount">0</b><span>Vídeos publicados</span></div>
+    <div class="community-figure"><b id="communityChannelCount">0</b><span>Canales compartidos</span></div>
+    <div class="community-figure"><b id="communityPlayerCount">0</b><span>Jugadores con canal</span></div>
+  </div>
+  <div class="community-section-header">
+    <div><h2>Partidos en vídeo</h2><p>Grabaciones subidas a YouTube y seleccionadas por el administrador.</p></div>
+    <input class="community-search" type="search" id="communitySearch" autocomplete="off" placeholder="Buscar vídeo, jugador o canal…" aria-label="Buscar vídeos y canales de YouTube">
+  </div>
+  <div class="community-hint" style="margin:0 0 15px"><b>Privacidad:</b> las miniaturas se cargan desde YouTube. El reproductor solo se conecta cuando pulsas «Ver vídeo» y utiliza el dominio youtube-nocookie.com.</div>
+  <div id="communityVideos" class="community-video-grid" aria-live="polite"><div class="community-empty">Cargando vídeos…</div></div>
+  <div class="community-section-header"><div><h2>Canales de los jugadores</h2><p>Descubre sus canales y sigue sus próximos partidos.</p></div></div>
+  <div id="communityChannels" class="community-channels" aria-live="polite"><div class="community-empty">Cargando canales…</div></div>
+  <div class="community-admin-area">
+    <div class="community-admin-title"><h2>Administrar la comunidad</h2><span>Solo administrador</span></div>
+    <p>De momento, los canales y vídeos se añaden aquí después de comprobar los enlaces y el permiso para compartirlos. Cuando existan cuentas individuales, podremos habilitar propuestas de los jugadores con aprobación previa.</p>
+    <div class="community-admin-grid">
+      <form id="communityChannelForm" class="community-form">
+        <h3>Añadir canal de YouTube</h3>
+        <label for="communityChannelPlayer">Jugador o club
+          <select id="communityChannelPlayer" required><option value="">Seleccionar participante…</option><option value="Club Pickleball Zaragoza">Club Pickleball Zaragoza</option></select>
+        </label>
+        <label for="communityChannelName">Nombre del canal
+          <input id="communityChannelName" required maxlength="100" minlength="2" autocomplete="off" placeholder="Ej. Partidos de Carlos">
+        </label>
+        <label for="communityChannelUrl">Enlace de YouTube
+          <input id="communityChannelUrl" type="url" required maxlength="400" placeholder="https://www.youtube.com/@canal" spellcheck="false">
+        </label>
+        <label class="community-consent"><input type="checkbox" id="communityChannelConsent" required>Confirmo que tengo autorización para compartir este canal y vincularlo al jugador indicado.</label>
+        <button class="btn" type="submit">Guardar canal</button>
+        <p id="communityChannelFeedback" class="community-feedback" role="status"></p>
+      </form>
+      <form id="communityVideoForm" class="community-form">
+        <h3>Añadir vídeo de partido</h3>
+        <label for="communityVideoTitle">Título del vídeo
+          <input id="communityVideoTitle" required minlength="3" maxlength="150" autocomplete="off" placeholder="Ej. Carlos Guillén vs Jorge Corbas">
+        </label>
+        <label for="communityVideoUrl">Enlace del vídeo de YouTube
+          <input id="communityVideoUrl" required type="url" maxlength="400" placeholder="https://youtu.be/…" spellcheck="false">
+        </label>
+        <label for="communityVideoPlayerOne">Jugador 1 (opcional)
+          <select id="communityVideoPlayerOne"><option value="">Sin vincular</option></select>
+        </label>
+        <label for="communityVideoPlayerTwo">Jugador 2 (opcional)
+          <select id="communityVideoPlayerTwo"><option value="">Sin vincular</option></select>
+        </label>
+        <label for="communityVideoDescription">Descripción (opcional)
+          <textarea id="communityVideoDescription" maxlength="400" placeholder="Jornada, fecha o detalles del partido"></textarea>
+        </label>
+        <label class="community-consent"><input type="checkbox" id="communityVideoConsent" required>Confirmo que el vídeo puede compartirse y que las personas que aparecen cuentan con la autorización necesaria.</label>
+        <button class="btn" type="submit">Publicar vídeo</button>
+        <p id="communityVideoFeedback" class="community-feedback" role="status"></p>
+      </form>
+    </div>
+    <div class="community-hint"><b>Cómo funciona:</b> pega enlaces de YouTube; el sistema no aloja archivos ni sube vídeos. Para retirar contenido, utiliza «Eliminar» junto al vídeo o canal. No se ha publicado ningún canal ni vídeo sin enlace y autorización.</div>
+  </div>
+</div>
 <div id="portal" class="hidden"><div class="player-hero portal-photo"><div class="micro">PORTAL DE JUGADORES · DEMO</div><h1 style="margin:9px 0 5px">Mi Ranking CPZ</h1><p style="color:#d5efe4;margin:0">Tus tres encuentros del mes, tu división y tus resultados.</p></div><div class="card" style="margin-top:14px"><label for="playerSelect" style="font-weight:700;font-size:13px">Ver la experiencia de </label> <select id="playerSelect"></select><div id="playerInfo"></div><div class="cpz-links"><a href="https://pickleballzaragoza.taykus.com/" target="_blank" rel="noopener noreferrer" class="btn" style="display:inline-block;text-decoration:none;background:#155b45;color:white">Reservar pista en Taykus ↗</a></div></div></div>
 
 <div id="admin" class="hidden">
@@ -498,7 +625,7 @@ a{color:#106bb5}
 const $=id=>document.getElementById(id), pairs=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],initial=Array.from({length:10},(_,d)=>Array.from({length:4},(_,p)=>d*4+p+1));
 let state={divisions:initial,results:{},month:1,history:[]},backendReady=false,adminAuthenticated=false,serverRevision=0,demoMode=false;let selected=0,view='home',playerFilter='',statusFilter='all';
 function groupLabel(d){return (d<5?'A':'B')+(d%5+1)}function groupFullLabel(d){return 'Grupo '+groupLabel(d)}function matches(d){return pairs.map(([a,b],i)=>({key:d+'-'+i,a:state.divisions[d][a],b:state.divisions[d][b]}))}function standings(d){const rows=state.divisions[d].map(id=>({id,p:0,w:0,l:0}));for(const m of matches(d)){const r=state.results[m.key];if(!r)continue;const win=Number(r[0])>Number(r[1])?m.a:m.b;for(const x of rows)if(x.id===m.a||x.id===m.b){if(x.id===win){x.p+=3;x.w++}else x.l++}}return rows.sort((a,b)=>b.p-a.p||b.w-a.w||a.id-b.id)}function total(){return Object.keys(state.results).length}
-function show(v){view=v;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===v));if(v==='qualifying'){history.replaceState(null,'','#clasificacion')}else if(location.hash==='#clasificacion'){history.replaceState(null,'',location.pathname+location.search)}['home','divisions','matches','players','portal','settings','admin','qualifying','rules','booking'].forEach(id=>$(id).classList.toggle('hidden',id!==v));render()}document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>show(b.dataset.view));
+function show(v){view=v;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===v));if(v==='qualifying'){history.replaceState(null,'','#clasificacion')}else if(location.hash==='#clasificacion'){history.replaceState(null,'',location.pathname+location.search)}['home','divisions','matches','players','portal','settings','admin','qualifying','rules','booking','community'].forEach(id=>$(id).classList.toggle('hidden',id!==v));render();if(v==='community')loadCommunity()}document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>show(b.dataset.view));
 document.querySelectorAll('.divSelect').forEach(s=>{s.innerHTML=Array.from({length:10},(_,i)=>'<option value="'+i+'">'+groupFullLabel(i)+'</option>').join('');s.onchange=()=>{selected=+s.value;render()}});$('playerSelect').innerHTML=Array.from({length:40},(_,i)=>'<option value="'+(i+1)+'">Jugador '+String(i+1).padStart(2,'0')+'</option>').join('');$('playerSelect').onchange=render;
 function table(d){return '<table><thead><tr><th>#</th><th>Jugador</th><th>PJ</th><th>V</th><th>Pts</th></tr></thead><tbody>'+standings(d).map((x,i)=>'<tr><td>'+(i+1)+(i===0&&d>0?' ↑':i===3&&d<9?' ↓':'')+'</td><td>Jugador '+String(x.id).padStart(2,'0')+'</td><td>'+(x.w+x.l)+'</td><td>'+x.w+'</td><td><b>'+x.p+'</b></td></tr>').join('')+'</tbody></table>'}
 function divisionTiles(){return ['A','B'].map((level,l)=>'<section class="level-section level-'+level.toLowerCase()+'"><div class="level-header"><h2>Nivel '+level+'</h2><span>5 grupos · 20 jugadores</span></div><div class="division-showcase">'+Array.from({length:5},(_,i)=>{const d=l*5+i,data=standings(d);return '<section class="division-tile"><header><strong>'+groupFullLabel(d)+'</strong><span class="tier tier-'+level.toLowerCase()+'">Nivel '+level+'</span></header><ol>'+data.map((x,i)=>{const move=i===0&&d>0?'↑ Asciende a '+groupLabel(d-1):i===3&&d<9?'↓ Desciende a '+groupLabel(d+1):'Permanece';return '<li><span class="position">'+(i+1)+'.</span><div style="flex:1"><b>Jugador '+String(x.id).padStart(2,'0')+'</b><div class="muted-mini">'+(x.w+x.l)+' partidos · '+x.w+' victorias</div></div><div style="text-align:right"><b>'+x.p+' pts</b><div class="'+(move[0]==='↑'?'movement-up':move[0]==='↓'?'movement-down':'muted-mini')+'">'+move+'</div></div></li>'}).join('')+'</ol></section>'}).join('')+'</div></section>').join('')}
@@ -604,6 +731,154 @@ function renderPlayerRoster(){
   }
   container.replaceChildren(frag);
 }
+
+/* Comunidad CPZ: todas las publicaciones requieren sesión de administrador y permiso explícito. */
+let communityData={channels:[],videos:[]};
+let communityBusy=false,communityLoaded=false;
+function communityElt(tag,klass,textValue){
+  const node=document.createElement(tag);
+  if(klass)node.className=klass;
+  if(textValue!==undefined&&textValue!==null)node.textContent=String(textValue);
+  return node;
+}
+function communityEmpty(label,detail){
+  const item=communityElt('div','community-empty');
+  item.append(communityElt('div','community-empty-icon','▶'),communityElt('strong','',label),communityElt('p','',detail));
+  return item;
+}
+function youtubeEmbed(videoId,holder){
+  if(!/^[a-zA-Z0-9_-]{11}$/.test(videoId))return;
+  const frame=document.createElement('iframe');
+  frame.src='https://www.youtube-nocookie.com/embed/'+videoId+'?rel=0';
+  frame.title='Reproductor del partido';
+  frame.loading='lazy';
+  frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  frame.allowFullscreen=true;
+  frame.referrerPolicy='strict-origin-when-cross-origin';
+  holder.replaceChildren(frame);
+}
+function renderCommunity(){
+  const term=normalizePlayerSearch($('communitySearch').value);
+  const channels=Array.isArray(communityData.channels)?communityData.channels:[];
+  const videos=Array.isArray(communityData.videos)?communityData.videos:[];
+  $('communityVideoCount').textContent=videos.length;
+  $('communityChannelCount').textContent=channels.length;
+  $('communityPlayerCount').textContent=new Set(channels.filter(c=>c.playerName!=='Club Pickleball Zaragoza').map(c=>c.playerName)).size;
+  const visibleVideos=videos.filter(v=>normalizePlayerSearch([v.title,v.playerOne,v.playerTwo,v.description].join(' ')).includes(term));
+  const visibleChannels=channels.filter(c=>normalizePlayerSearch([c.channelName,c.playerName].join(' ')).includes(term));
+  const videosFragment=document.createDocumentFragment();
+  if(!visibleVideos.length)videosFragment.append(communityEmpty(term?'No se han encontrado vídeos':'Todavía no hay vídeos publicados',term?'Prueba con otro nombre o título.':'Cuando compartamos los primeros partidos de YouTube, aparecerán aquí.'));
+  for(const video of visibleVideos){
+    if(!/^[a-zA-Z0-9_-]{11}$/.test(video.youtubeId))continue;
+    const card=communityElt('article','community-video');
+    const preview=communityElt('div','community-video-preview');
+    const thumb=document.createElement('img');
+    thumb.src='https://i.ytimg.com/vi/'+video.youtubeId+'/hqdefault.jpg';
+    thumb.alt='Miniatura del partido: '+video.title;
+    thumb.loading='lazy';
+    thumb.referrerPolicy='no-referrer';
+    const play=communityElt('button','','');
+    play.type='button';
+    play.setAttribute('aria-label','Ver vídeo: '+video.title);
+    play.append(communityElt('span','community-play','▶'));
+    play.onclick=()=>youtubeEmbed(video.youtubeId,preview);
+    preview.append(thumb,play);
+    const copy=communityElt('div','community-video-copy');
+    copy.append(communityElt('h3','',video.title));
+    const participants=[video.playerOne,video.playerTwo].filter(Boolean).join(' vs ');
+    if(participants)copy.append(communityElt('div','community-players',participants));
+    if(video.description)copy.append(communityElt('p','',video.description));
+    const foot=communityElt('div','community-foot');
+    const link=document.createElement('a');
+    link.href='https://www.youtube.com/watch?v='+video.youtubeId;
+    link.target='_blank';link.rel='noopener noreferrer';link.textContent='Abrir en YouTube ↗';
+    const remove=communityElt('button','community-delete','Eliminar');
+    remove.type='button';
+    remove.setAttribute('aria-label','Eliminar vídeo '+video.title);
+    remove.onclick=async()=>{if(confirm('¿Retirar el vídeo «'+video.title+'» de la comunidad?'))await saveCommunity('removeVideo',{id:video.id},null)};
+    foot.append(link,remove);copy.append(foot);card.append(preview,copy);videosFragment.append(card);
+  }
+  $('communityVideos').replaceChildren(videosFragment);
+  const channelFragment=document.createDocumentFragment();
+  if(!visibleChannels.length)channelFragment.append(communityEmpty(term?'No hay canales que coincidan':'Todavía no hay canales compartidos',term?'Prueba con otro nombre.':'Los canales aparecerán aquí cuando sus propietarios autoricen incluirlos.'));
+  for(const channel of visibleChannels){
+    const card=communityElt('article','community-channel');
+    card.append(communityElt('div','community-channel-icon','▶'));
+    const info=communityElt('div','community-channel-info');
+    info.append(communityElt('strong','',channel.channelName),communityElt('span','',channel.playerName));
+    if(typeof channel.channelUrl==='string'&&/^https:\/\/www\.youtube\.com\//.test(channel.channelUrl)){
+      const link=document.createElement('a');link.href=channel.channelUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Visitar canal ↗';info.append(link);
+    }
+    const remove=communityElt('button','community-delete','Eliminar');remove.type='button';
+    remove.setAttribute('aria-label','Eliminar canal de '+channel.playerName);
+    remove.onclick=async()=>{if(confirm('¿Retirar el canal «'+channel.channelName+'» de la comunidad?'))await saveCommunity('removeChannel',{id:channel.id},null)};
+    card.append(info,remove);channelFragment.append(card);
+  }
+  $('communityChannels').replaceChildren(channelFragment);
+}
+async function loadCommunity(){
+  if(communityBusy)return;
+  communityBusy=true;
+  $('communityChannelFeedback').textContent='';
+  $('communityVideoFeedback').textContent='';
+  try{
+    const res=await fetch('/api/community',{cache:'no-store',credentials:'same-origin'});
+    const data=await res.json();
+    if(!res.ok||!data.ok)throw new Error(data.error||'No se puede cargar la comunidad.');
+    communityData=data;communityLoaded=true;
+    renderCommunity();
+  }catch(err){
+    $('communityVideos').replaceChildren(communityEmpty('No se pueden cargar los vídeos',err.message));
+    $('communityChannels').replaceChildren(communityEmpty('No se pueden cargar los canales','Comprueba la conexión y vuelve a entrar en esta sección.'));
+  }finally{communityBusy=false}
+}
+async function saveCommunity(action,payload,form){
+  if(communityBusy)return;
+  communityBusy=true;
+  const feedback=action==='addChannel'?'communityChannelFeedback':'communityVideoFeedback';
+  const status=$(feedback);
+  status.textContent='Guardando cambios…';
+  try{
+    const res=await fetch('/api/community',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...payload})});
+    const data=await res.json();
+    if(!res.ok||!data.ok)throw new Error(data.error||'No se ha podido guardar el contenido.');
+    communityData=data;communityLoaded=true;
+    if(form)form.reset();
+    status.textContent='Guardado correctamente.';
+    renderCommunity();
+    toast(action==='addChannel'?'Canal publicado':action==='addVideo'?'Vídeo publicado':'Contenido retirado');
+  }catch(err){status.textContent=err.message;toast(err.message)}
+  finally{communityBusy=false}
+}
+function prepareCommunityForms(){
+  for(const selectId of ['communityChannelPlayer','communityVideoPlayerOne','communityVideoPlayerTwo']){
+    const select=$(selectId);
+    for(const name of playerRoster){
+      const option=document.createElement('option');
+      option.value=name;option.textContent=name;select.append(option);
+    }
+  }
+  $('communitySearch').oninput=renderCommunity;
+  $('communityChannelForm').onsubmit=e=>{
+    e.preventDefault();
+    saveCommunity('addChannel',{
+      playerName:$('communityChannelPlayer').value,
+      channelName:$('communityChannelName').value,
+      channelUrl:$('communityChannelUrl').value,
+      consentConfirmed:$('communityChannelConsent').checked
+    },$('communityChannelForm'));
+  };
+  $('communityVideoForm').onsubmit=e=>{
+    e.preventDefault();
+    saveCommunity('addVideo',{
+      title:$('communityVideoTitle').value,url:$('communityVideoUrl').value,
+      playerOne:$('communityVideoPlayerOne').value,playerTwo:$('communityVideoPlayerTwo').value,
+      description:$('communityVideoDescription').value,consentConfirmed:$('communityVideoConsent').checked
+    },$('communityVideoForm'));
+  };
+}
+prepareCommunityForms();
+
 function render(){if($('monthLabel'))$('monthLabel').textContent='Periodo '+state.month;document.querySelectorAll('.divSelect').forEach(s=>s.value=selected);$('doneKpi').textContent=total();$('progressText').textContent=total()+' / 60 partidos completados';$('progressBar').style.width=(total()/60*100)+'%';$('tableHome').innerHTML=table(selected);$('tableDiv').innerHTML=table(selected);$('divisionShowcase').innerHTML=divisionTiles();insights();$('matchList').innerHTML=matches(selected).map((m,i)=>({...m,i})).filter(m=>statusFilter==='all'||(statusFilter==='done'?!!state.results[m.key]:!state.results[m.key])).map(m=>{
   const i=m.i,r=state.results[m.key]||['',''];
   const controls=adminAuthenticated
