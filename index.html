@@ -444,7 +444,47 @@ a{color:#106bb5}
 @media(max-width:980px){.community-video-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:770px){.community-admin-grid,.community-channels{grid-template-columns:1fr}.community-hero{padding:23px}.community-hero-icon{width:68px;height:68px;font-size:27px}}
 @media(max-width:560px){.community-video-grid{grid-template-columns:1fr}.community-figures{gap:7px}.community-figure{padding:12px}.community-figure b{font-size:21px}.community-figure span{font-size:10px}.community-hero-icon{display:none}.community-hero{grid-template-columns:1fr}.community-home-link{flex-direction:column;align-items:flex-start}.community-search{max-width:100%}}
-</style></head><body><div class="layout"><aside class="sidebar"><div class="logo"><img class="sidebar-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Emblema Club Pickleball Zaragoza" loading="lazy"><span class="logo-type">RANKING INDIVIDUAL CPZ 2026/27</span></div><button class="nav active" data-view="home">▦ Resumen</button><button class="nav" data-view="qualifying">🏓 Jornada de clasificación</button><button class="nav" data-view="divisions">♜ Grupos A/B (demo)</button><button class="nav" data-view="matches">▤ Partidos (demo)</button><button class="nav" data-view="rules">📖 Reglamento</button><button class="nav" data-view="booking">🏓 Reservas y resultados</button><button class="nav" data-view="players">♧ Listado de jugadores</button><button class="nav" data-view="community">▶ Comunidad y vídeos</button><button class="nav" data-view="portal">◎ Zona jugador</button><button class="nav" data-view="settings">⚙ Configuración</button><button class="nav admin-nav-button" data-view="admin">🔒 Administración</button><small>Temporada 2026/27 · Demo de grupos</small></aside><div class="main"><header class="top"><div class="brand-head"><img class="club-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Logotipo Club Pickleball Zaragoza"><div><div class="club-name">RANKING INDIVIDUAL CPZ 2026/27</div><small>Club Pickleball Zaragoza · Competición 2026/27</small></div></div><div class="private-session-top"><span class="tag" id="adminBadge">ADMINISTRACIÓN PRIVADA</span><button class="btn secondary" type="button" id="exitSite">Cerrar sesión</button></div></header><main class="content">
+
+/* Cuentas y perfiles de jugadores — administración con identidad azul CPZ */
+.accounts-hero{background:linear-gradient(105deg,#093c75,#1478c9);padding:27px 30px;border-radius:20px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.accounts-hero h1{font-size:29px;color:white;letter-spacing:-.65px;margin:8px 0}.accounts-hero p{font-size:13px;color:#e0f1ff;line-height:1.7;max-width:700px;margin:0}
+.accounts-hero-mark{background:#ffffff25;border:1px solid #ffffff55;border-radius:20px;padding:18px;font-size:36px}
+.accounts-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 20px}
+.accounts-stat{background:#fff;border:1px solid #dbe8f3;border-radius:14px;padding:18px}
+.accounts-stat strong{display:block;font-size:26px;color:#0f6bb6}.accounts-stat span{display:block;margin-top:5px;font-size:12px;color:#72869b}
+.accounts-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:15px}
+.accounts-card{background:#fff;border:1px solid #dce9f4;border-radius:16px;padding:22px;min-width:0}
+.accounts-card h2{font-size:19px;color:#174e81;margin:0 0 9px}
+.accounts-card>p{font-size:12px;color:#72889e;line-height:1.65;margin:0 0 19px}
+.accounts-form{display:grid;gap:13px}
+.accounts-form label{display:flex;flex-direction:column;gap:7px;font-size:12px;color:#385d80;font-weight:750}
+.accounts-form input,.accounts-form select{font-size:13px;padding:11px 12px;width:100%;border-radius:9px;border:1px solid #cdddED;background:#fff;color:#224b70}
+.accounts-form .help{font-size:11px;color:#8297a9;line-height:1.6;margin:0}
+.accounts-inline{display:flex;gap:8px;align-items:stretch}
+.accounts-inline input{flex:1;min-width:0}
+.accounts-inline button{white-space:nowrap;border:1px solid #bdd7ef;color:#146aaa;border-radius:9px;background:#eaf5ff;font-size:11px;font-weight:750;padding:0 12px}
+.accounts-admin-list{display:grid;gap:10px;max-height:640px;overflow:auto}
+.accounts-row{border:1px solid #e0eaf4;background:#fff;border-radius:12px;padding:14px}
+.accounts-row-top{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.accounts-row strong{display:block;color:#224565;font-size:13px;overflow-wrap:anywhere}
+.accounts-row small{display:block;font-size:11px;color:#6f899d;margin-top:5px}
+.account-state{border-radius:20px;font-size:10px;font-weight:850;padding:5px 8px;white-space:nowrap}
+.account-state.active{background:#e1f3e8;color:#1e784a}.account-state.disabled{background:#f9e7e5;color:#a34b42}
+.accounts-row-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.accounts-row-actions button{font-size:11px;font-weight:750;border-radius:8px;padding:8px 10px;background:#eaf4ff;border:1px solid #cbdfee;color:#176cad}
+.accounts-row-actions .warn{background:#fff1ef;border-color:#f0d7ce;color:#ab4e40}
+.accounts-empty{border:1px dashed #bbd5ec;border-radius:13px;padding:24px;text-align:center;color:#66839d;background:#f5faff;font-size:12px;line-height:1.7}
+.accounts-secret{border:1px solid #b6d5ee;background:#f0f8ff;padding:18px;border-radius:15px;margin:16px 0}
+.accounts-secret h3{font-size:15px;color:#0e5b9c;margin:0 0 9px}
+.accounts-secret p{font-size:12px;color:#607b92;line-height:1.65;margin:0 0 10px}
+.accounts-secret code{background:#fff;border:1px solid #d0e4f6;color:#143e69;padding:6px 9px;border-radius:7px;display:block;font-size:13px;overflow-wrap:anywhere;margin:6px 0 12px}
+.accounts-secret-actions{display:flex;gap:8px;flex-wrap:wrap}
+.accounts-secret-actions button{font-size:11px;font-weight:750;border-radius:8px;border:1px solid #c4dcec;padding:10px 12px;color:#126bad;background:#fff}
+.accounts-note{padding:15px;background:#f0f7ff;border:1px solid #d5e8f8;color:#577692;border-radius:12px;line-height:1.7;font-size:12px;margin:15px 0}
+.accounts-feedback{min-height:19px;font-size:12px;color:#37719c;line-height:1.55;margin:0}
+@media(max-width:940px){.accounts-layout{grid-template-columns:1fr}.accounts-admin-list{max-height:none}}
+@media(max-width:560px){.accounts-hero{padding:22px}.accounts-hero-mark{display:none}.accounts-hero h1{font-size:25px}.accounts-stats{gap:8px}.accounts-stat{padding:13px}.accounts-stat strong{font-size:21px}.accounts-stat span{font-size:10px}}
+</style></head><body><div class="layout"><aside class="sidebar"><div class="logo"><img class="sidebar-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Emblema Club Pickleball Zaragoza" loading="lazy"><span class="logo-type">RANKING INDIVIDUAL CPZ 2026/27</span></div><button class="nav active" data-view="home">▦ Resumen</button><button class="nav" data-view="qualifying">🏓 Jornada de clasificación</button><button class="nav" data-view="divisions">♜ Grupos A/B (demo)</button><button class="nav" data-view="matches">▤ Partidos (demo)</button><button class="nav" data-view="rules">📖 Reglamento</button><button class="nav" data-view="booking">🏓 Reservas y resultados</button><button class="nav" data-view="players">♧ Listado de jugadores</button><button class="nav" data-view="accounts">🔐 Cuentas de jugadores</button><button class="nav" data-view="community">▶ Comunidad y vídeos</button><button class="nav" data-view="portal">◎ Zona jugador</button><button class="nav" data-view="settings">⚙ Configuración</button><button class="nav admin-nav-button" data-view="admin">🔒 Administración</button><small>Temporada 2026/27 · Demo de grupos</small></aside><div class="main"><header class="top"><div class="brand-head"><img class="club-logo" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" alt="Logotipo Club Pickleball Zaragoza"><div><div class="club-name">RANKING INDIVIDUAL CPZ 2026/27</div><small>Club Pickleball Zaragoza · Competición 2026/27</small></div></div><div class="private-session-top"><span class="tag" id="adminBadge">ADMINISTRACIÓN PRIVADA</span><button class="btn secondary" type="button" id="exitSite">Cerrar sesión</button></div></header><main class="content">
 <div id="home">
 <section class="hero hero-with-photo"><div class="hero-copy"><span class="micro">RANKING INDIVIDUAL CPZ 2026/27 · PROPUESTA PARA EL CLUB</span><h1>RANKING INDIVIDUAL CPZ 2026/27</h1><p>Tu liga. Tus partidos. Todo bajo control. Consulta jornadas, rivales, resultados y clasificación de la temporada.</p><button class="btn" onclick="show('qualifying')">Ver partidos de clasificación →</button></div></section>
 <section class="matchday-feature" aria-label="Jornada de clasificación de octubre">
@@ -619,13 +659,58 @@ a{color:#106bb5}
     <p class="sub" id="settingsMessage"></p>
   </div>
 </div>
+
+<div id="accounts" class="hidden">
+  <section class="accounts-hero">
+    <div><span class="micro" style="color:#d1edff">ACCESOS PRIVADOS · ADMINISTRACIÓN CPZ</span><h1>Cuentas de jugadores</h1><p>Da de alta a los participantes del ranking con un usuario y una contraseña provisional únicos. Cada jugador entrará a su zona privada y solo verá su perfil, rival, normas y contenidos autorizados.</p></div>
+    <span class="accounts-hero-mark" aria-hidden="true">🔐</span>
+  </section>
+  <div class="accounts-stats">
+    <div class="accounts-stat"><strong id="accountsTotal">0</strong><span>Cuentas creadas</span></div>
+    <div class="accounts-stat"><strong id="accountsEnabled">0</strong><span>Accesos activos</span></div>
+    <div class="accounts-stat"><strong id="accountsMissing">40</strong><span>Participantes pendientes</span></div>
+  </div>
+  <div class="accounts-note"><b>Seguridad:</b> solo tú puedes crear o desactivar cuentas. Las contraseñas se guardan cifradas mediante un algoritmo de derivación de claves; el texto original se muestra únicamente al darlas de alta o restablecerlas. No las compartas en grupos públicos.</div>
+  <div class="accounts-layout">
+    <section class="accounts-card">
+      <h2>Crear un perfil de jugador</h2>
+      <p>Selecciona un participante de los 40 confirmados. El sistema vinculará automáticamente el rival de clasificación, pero no asignará grupos aún.</p>
+      <form id="createAccountForm" class="accounts-form">
+        <label for="accountPlayerName">Jugador
+          <select id="accountPlayerName" required><option value="">Seleccionar jugador…</option></select>
+        </label>
+        <label for="accountUsername">Nombre de usuario
+          <input id="accountUsername" required minlength="3" maxlength="32" pattern="[a-z0-9][a-z0-9._-]{2,31}" autocomplete="off" placeholder="Ej. carlos.guillen" spellcheck="false">
+        </label>
+        <label for="accountPassword">Contraseña provisional
+          <div class="accounts-inline"><input type="text" id="accountPassword" required minlength="12" maxlength="128" autocomplete="off" spellcheck="false" aria-label="Contraseña provisional"><button type="button" id="generateAccountPassword">Generar</button></div>
+        </label>
+        <p class="help">Se recomienda utilizar la contraseña aleatoria generada; el jugador podrá cambiarla después.</p>
+        <button class="btn" type="submit" id="createAccountButton">Crear cuenta privada</button>
+        <p id="accountsMessage" class="accounts-feedback" role="status"></p>
+      </form>
+      <div id="issuedCredentials" class="accounts-secret hidden" aria-live="polite">
+        <h3>Cuenta creada o clave renovada</h3>
+        <p>Guarda estas credenciales y entrégalas únicamente al jugador correspondiente. La contraseña no podrá volver a consultarse aquí.</p>
+        <strong style="color:#194b79;font-size:12px" id="issuedPlayer"></strong>
+        <code id="issuedUsername"></code><code id="issuedPassword"></code>
+        <div class="accounts-secret-actions"><button type="button" id="copyIssued">Copiar credenciales</button><button type="button" id="hideIssued">Ocultar clave</button></div>
+      </div>
+    </section>
+    <section class="accounts-card">
+      <div class="row"><h2>Accesos registrados</h2><button class="btn secondary" type="button" id="refreshAccounts">Actualizar</button></div>
+      <p>Restablece contraseñas cuando un jugador las olvide o desactiva su cuenta para revocarle el acceso.</p>
+      <div id="accountsList" class="accounts-admin-list"><div class="accounts-empty">Cargando cuentas…</div></div>
+    </section>
+  </div>
+</div>
 <div id="settings" class="hidden"><h1 class="heading">Configuración de ejemplo</h1><div class="card"><p><b>Modalidad:</b> individual (dobles pendiente)</p><p><b>Estructura:</b> 5 grupos en nivel A y 5 en nivel B, 4 jugadores cada uno.</p><p><b>Partidos:</b> 3 por jugador y mes</p><p><b>Puntuación de la demo:</b> 3 puntos por victoria · 0 por derrota. El club no ha especificado aún el baremo del ranking anual.</p><p><b>Partido oficial:</b> al mejor de 3 sets a 11 puntos, con diferencia mínima de 2.</p><p><b>Ascensos y descensos (provisional):</b> asciende el primer clasificado y desciende el cuarto de cada grupo. Los movimientos son entre grupos consecutivos de A1 a B5. En A1 no hay ascenso; en B5 no hay descenso.</p><div class="alert">El orden jerárquico de grupos A1–A5 y B1–B5 es provisional y debe confirmarse con el club, así como la puntuación y los desempates.</div><p class="sub">La modificación de marcadores, la simulación y el cierre del periodo requieren iniciar sesión como administrador. El acceso está en la sección <b>Administración</b>.</p><div id="closeHistory" class="sub"></div></div></div>
 <p class="footnote">RANKING INDIVIDUAL CPZ 2026/27 · Propuesta independiente para Club Pickleball Zaragoza. Las normas, fechas y precios de las secciones informativas proceden del comunicado proporcionado por el club para 2026/27. Las clasificaciones y marcadores de la demo no son oficiales. Fotografías y emblema procedentes de su sitio web público; su uso definitivo requiere autorización. No incorporar nuevos datos personales sin autorización.</p></main></div></div>
 <script>
 const $=id=>document.getElementById(id), pairs=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],initial=Array.from({length:10},(_,d)=>Array.from({length:4},(_,p)=>d*4+p+1));
 let state={divisions:initial,results:{},month:1,history:[]},backendReady=false,adminAuthenticated=false,serverRevision=0,demoMode=false;let selected=0,view='home',playerFilter='',statusFilter='all';
 function groupLabel(d){return (d<5?'A':'B')+(d%5+1)}function groupFullLabel(d){return 'Grupo '+groupLabel(d)}function matches(d){return pairs.map(([a,b],i)=>({key:d+'-'+i,a:state.divisions[d][a],b:state.divisions[d][b]}))}function standings(d){const rows=state.divisions[d].map(id=>({id,p:0,w:0,l:0}));for(const m of matches(d)){const r=state.results[m.key];if(!r)continue;const win=Number(r[0])>Number(r[1])?m.a:m.b;for(const x of rows)if(x.id===m.a||x.id===m.b){if(x.id===win){x.p+=3;x.w++}else x.l++}}return rows.sort((a,b)=>b.p-a.p||b.w-a.w||a.id-b.id)}function total(){return Object.keys(state.results).length}
-function show(v){view=v;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===v));if(v==='qualifying'){history.replaceState(null,'','#clasificacion')}else if(location.hash==='#clasificacion'){history.replaceState(null,'',location.pathname+location.search)}['home','divisions','matches','players','portal','settings','admin','qualifying','rules','booking','community'].forEach(id=>$(id).classList.toggle('hidden',id!==v));render();if(v==='community')loadCommunity()}document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>show(b.dataset.view));
+function show(v){view=v;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===v));if(v==='qualifying'){history.replaceState(null,'','#clasificacion')}else if(location.hash==='#clasificacion'){history.replaceState(null,'',location.pathname+location.search)}['home','divisions','matches','players','portal','settings','admin','qualifying','rules','booking','community','accounts'].forEach(id=>$(id).classList.toggle('hidden',id!==v));render();if(v==='community')loadCommunity();if(v==='accounts')loadAccounts()}document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>show(b.dataset.view));
 document.querySelectorAll('.divSelect').forEach(s=>{s.innerHTML=Array.from({length:10},(_,i)=>'<option value="'+i+'">'+groupFullLabel(i)+'</option>').join('');s.onchange=()=>{selected=+s.value;render()}});$('playerSelect').innerHTML=Array.from({length:40},(_,i)=>'<option value="'+(i+1)+'">Jugador '+String(i+1).padStart(2,'0')+'</option>').join('');$('playerSelect').onchange=render;
 function table(d){return '<table><thead><tr><th>#</th><th>Jugador</th><th>PJ</th><th>V</th><th>Pts</th></tr></thead><tbody>'+standings(d).map((x,i)=>'<tr><td>'+(i+1)+(i===0&&d>0?' ↑':i===3&&d<9?' ↓':'')+'</td><td>Jugador '+String(x.id).padStart(2,'0')+'</td><td>'+(x.w+x.l)+'</td><td>'+x.w+'</td><td><b>'+x.p+'</b></td></tr>').join('')+'</tbody></table>'}
 function divisionTiles(){return ['A','B'].map((level,l)=>'<section class="level-section level-'+level.toLowerCase()+'"><div class="level-header"><h2>Nivel '+level+'</h2><span>5 grupos · 20 jugadores</span></div><div class="division-showcase">'+Array.from({length:5},(_,i)=>{const d=l*5+i,data=standings(d);return '<section class="division-tile"><header><strong>'+groupFullLabel(d)+'</strong><span class="tier tier-'+level.toLowerCase()+'">Nivel '+level+'</span></header><ol>'+data.map((x,i)=>{const move=i===0&&d>0?'↑ Asciende a '+groupLabel(d-1):i===3&&d<9?'↓ Desciende a '+groupLabel(d+1):'Permanece';return '<li><span class="position">'+(i+1)+'.</span><div style="flex:1"><b>Jugador '+String(x.id).padStart(2,'0')+'</b><div class="muted-mini">'+(x.w+x.l)+' partidos · '+x.w+' victorias</div></div><div style="text-align:right"><b>'+x.p+' pts</b><div class="'+(move[0]==='↑'?'movement-up':move[0]==='↓'?'movement-down':'muted-mini')+'">'+move+'</div></div></li>'}).join('')+'</ol></section>'}).join('')+'</div></section>').join('')}
@@ -878,6 +963,138 @@ function prepareCommunityForms(){
   };
 }
 prepareCommunityForms();
+
+
+/* Gestión de cuentas de jugadores, exclusiva para la sesión de administración. */
+let accountRecords=[],accountsBusy=false,accountsLoaded=false,issuedUser='',issuedPass='';
+const safeAccountText=value=>String(value??'');
+function generateStrongMemberPassword(){
+  const bytes=crypto.getRandomValues(new Uint8Array(18));
+  return btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function displayIssued(name,username,pass){
+  issuedUser=username;issuedPass=pass;
+  $('issuedPlayer').textContent=name;
+  $('issuedUsername').textContent='Usuario: '+username;
+  $('issuedPassword').textContent='Contraseña provisional: '+pass;
+  $('issuedCredentials').classList.remove('hidden');
+}
+function hideIssued(){
+  issuedUser='';issuedPass='';
+  $('issuedPassword').textContent='';
+  $('issuedCredentials').classList.add('hidden');
+}
+function usernameFromName(name){
+  return name.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().trim().replace(/\s+/g,'.').replace(/[^a-z0-9._-]/g,'').slice(0,32);
+}
+function accountCell(tag,klass,textValue){
+  const node=document.createElement(tag);
+  if(klass)node.className=klass;
+  if(textValue!==undefined)node.textContent=safeAccountText(textValue);
+  return node;
+}
+function renderAccounts(){
+  $('accountsTotal').textContent=accountRecords.length;
+  $('accountsEnabled').textContent=accountRecords.filter(a=>a.enabled===1).length;
+  $('accountsMissing').textContent=Math.max(0,playerRoster.length-accountRecords.length);
+  const used=new Set(accountRecords.map(a=>a.playerName));
+  for(const option of $('accountPlayerName').options){
+    if(!option.value)continue;
+    option.disabled=used.has(option.value);
+  }
+  if(used.has($('accountPlayerName').value)){
+    $('accountPlayerName').value='';
+    $('accountUsername').value='';
+  }
+  const frag=document.createDocumentFragment();
+  if(!accountRecords.length)frag.append(accountCell('div','accounts-empty','Todavía no se han creado cuentas de jugadores. Selecciona a alguien en el formulario de la izquierda.'));
+  for(const account of accountRecords){
+    const card=accountCell('article','accounts-row');
+    const head=accountCell('div','accounts-row-top');
+    const summary=accountCell('div','');
+    summary.append(accountCell('strong','',account.playerName),accountCell('small','','@'+account.username+' · Rival: '+(account.opponentName||'Sin asignar')));
+    const status=accountCell('span','account-state '+(account.enabled===1?'active':'disabled'),account.enabled===1?'Activo':'Desactivado');
+    head.append(summary,status);
+    const actions=accountCell('div','accounts-row-actions');
+    const reset=accountCell('button','','Restablecer contraseña');
+    reset.type='button';
+    reset.onclick=async()=>{
+      if(!confirm('¿Restablecer la contraseña de '+account.playerName+'? La anterior dejará de funcionar.'))return;
+      const password=generateStrongMemberPassword();
+      await mutateAccount('resetPassword',{id:account.id,password},account.playerName,account.username,password);
+    };
+    const toggle=accountCell('button',account.enabled===1?'warn':'',account.enabled===1?'Desactivar acceso':'Activar acceso');
+    toggle.type='button';
+    toggle.onclick=async()=>{
+      const enabled=account.enabled!==1;
+      if(!confirm((enabled?'¿Activar el acceso de ':'¿Desactivar la cuenta de ')+account.playerName+'?'))return;
+      await mutateAccount('setEnabled',{id:account.id,enabled},null,null,null);
+    };
+    actions.append(reset,toggle);card.append(head,actions);frag.append(card);
+  }
+  $('accountsList').replaceChildren(frag);
+}
+async function loadAccounts(){
+  if(accountsBusy)return;
+  accountsBusy=true;
+  try{
+    const res=await fetch('/api/accounts',{credentials:'same-origin',cache:'no-store'});
+    const data=await res.json();
+    if(!res.ok||!data.ok)throw new Error(data.error||'No se pudieron cargar las cuentas.');
+    accountRecords=data.accounts||[];accountsLoaded=true;
+    $('accountsMessage').textContent='';
+    renderAccounts();
+  }catch(e){
+    $('accountsList').replaceChildren(accountCell('div','accounts-empty','No se pueden consultar las cuentas: '+e.message));
+  }finally{accountsBusy=false}
+}
+async function mutateAccount(action,payload,name,username,password){
+  if(accountsBusy)return false;
+  accountsBusy=true;
+  $('accountsMessage').textContent='Guardando cambios…';
+  try{
+    const res=await fetch('/api/accounts',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...payload})});
+    const data=await res.json();
+    if(!res.ok||!data.ok)throw new Error(data.error||'No se pudo guardar el cambio.');
+    accountRecords=data.accounts||[];accountsLoaded=true;renderAccounts();
+    if(name&&password)displayIssued(name,username,password);
+    $('accountsMessage').textContent='Cambios guardados.';
+    toast(action==='create'?'Cuenta creada':action==='resetPassword'?'Contraseña restablecida':'Acceso actualizado');
+    return true;
+  }catch(e){
+    $('accountsMessage').textContent=e.message;toast(e.message);return false;
+  }finally{accountsBusy=false}
+}
+function prepareAccountsUI(){
+  for(const name of playerRoster){
+    const opt=document.createElement('option');opt.value=name;opt.textContent=name;
+    $('accountPlayerName').append(opt);
+  }
+  $('accountPlayerName').onchange=()=>{
+    const name=$('accountPlayerName').value;
+    $('accountUsername').value=name?usernameFromName(name):'';
+    $('accountPassword').value=name?generateStrongMemberPassword():'';
+    hideIssued();
+  };
+  $('generateAccountPassword').onclick=()=>{$('accountPassword').value=generateStrongMemberPassword()};
+  $('createAccountForm').onsubmit=async event=>{
+    event.preventDefault();
+    if(!$('accountPlayerName').value)return;
+    const name=$('accountPlayerName').value,username=$('accountUsername').value.trim().toLowerCase(),password=$('accountPassword').value;
+    const done=await mutateAccount('create',{playerName:name,username,password},name,username,password);
+    if(done){$('createAccountForm').reset();$('accountPassword').value='';}
+  };
+  $('refreshAccounts').onclick=loadAccounts;
+  $('hideIssued').onclick=hideIssued;
+  $('copyIssued').onclick=async()=>{
+    if(!issuedUser||!issuedPass)return;
+    const message='RANKING INDIVIDUAL CPZ 2026/27\nAcceso: https://leagueos-cpz.pages.dev/\nUsuario: '+issuedUser+'\nContraseña provisional: '+issuedPass+'\nAl entrar, cambia tu contraseña desde Mi cuenta.';
+    try{await navigator.clipboard.writeText(message);toast('Credenciales copiadas para entrega privada');}
+    catch(e){toast('No se pudo copiar. Selecciona las credenciales manualmente.')}
+  };
+}
+prepareAccountsUI();
 
 function render(){if($('monthLabel'))$('monthLabel').textContent='Periodo '+state.month;document.querySelectorAll('.divSelect').forEach(s=>s.value=selected);$('doneKpi').textContent=total();$('progressText').textContent=total()+' / 60 partidos completados';$('progressBar').style.width=(total()/60*100)+'%';$('tableHome').innerHTML=table(selected);$('tableDiv').innerHTML=table(selected);$('divisionShowcase').innerHTML=divisionTiles();insights();$('matchList').innerHTML=matches(selected).map((m,i)=>({...m,i})).filter(m=>statusFilter==='all'||(statusFilter==='done'?!!state.results[m.key]:!state.results[m.key])).map(m=>{
   const i=m.i,r=state.results[m.key]||['',''];
