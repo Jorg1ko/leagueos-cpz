@@ -25,6 +25,7 @@ jobs:
         run: |
           mkdir -p dist
           cp index.html dist/index.html
+          cp player.html dist/player.html
 
       - name: Subir a Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
