@@ -72,6 +72,20 @@ export async function onRequest({request,env,params}){
       const row=await member(request,env);
       return respond({ok:true,authenticated:!!row,role:row?'player':null});
     }
+    if(action==='community'&&request.method==='GET'){
+      const row=await member(request,env);
+      if(!row)return fail('Inicia sesión como jugador.',401);
+      try{
+        const [v,c]=await Promise.all([
+          env.LEAGUE_DB.prepare('SELECT youtube_id AS youtubeId,title,player_one AS playerOne,player_two AS playerTwo,description FROM cpz_youtube_videos ORDER BY id DESC LIMIT 60').all(),
+          env.LEAGUE_DB.prepare('SELECT channel_name AS channelName,player_name AS playerName,channel_url AS channelUrl FROM cpz_youtube_channels ORDER BY id DESC LIMIT 80').all()
+        ]);
+        return respond({ok:true,videos:v.results||[],channels:c.results||[]});
+      }catch(err){
+        // La biblioteca es opcional y puede no estar inicializada.
+        return respond({ok:true,videos:[],channels:[]});
+      }
+    }
     if(action==='me'&&request.method==='GET'){
       const row=await member(request,env);
       if(!row)return fail('Inicia sesión como jugador.',401);
