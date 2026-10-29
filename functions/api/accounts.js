@@ -140,6 +140,7 @@ async function prepare(db){
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_media (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, instagram TEXT NOT NULL DEFAULT '', share_social INTEGER NOT NULL DEFAULT 0, photo_data TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_privacy_events (id INTEGER PRIMARY KEY AUTOINCREMENT, account_id INTEGER NOT NULL, purpose TEXT NOT NULL, granted INTEGER NOT NULL, actor TEXT NOT NULL, recorded_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_privacy_ack (account_id INTEGER PRIMARY KEY, revision INTEGER NOT NULL, acknowledged_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_identity (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, share_name INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 }
 async function logPermission(db,id,purpose,granted,actor){
   await db.prepare('INSERT INTO cpz_privacy_events (account_id,purpose,granted,actor) VALUES(?,?,?,?)')
@@ -147,7 +148,7 @@ async function logPermission(db,id,purpose,granted,actor){
 }
 async function records(db){
   const result=await db.prepare(
-    "SELECT a.id,a.player_name AS playerName,a.username,a.enabled,a.opponent_name AS opponentName,a.created_at AS createdAt,COALESCE(c.whatsapp_phone,'') AS whatsappPhone,COALESCE(c.share_with_opponent,0) AS shareWithOpponent,COALESCE(p.email,'') AS email,COALESCE(p.group_label,'') AS groupLabel,COALESCE(m.instagram,'') AS instagram,COALESCE(m.share_social,0) AS shareSocial,CASE WHEN LENGTH(COALESCE(m.photo_data,''))>0 THEN 1 ELSE 0 END AS hasPhoto FROM cpz_player_accounts a LEFT JOIN cpz_player_contacts c ON c.account_id=a.id LEFT JOIN cpz_player_profiles p ON p.account_id=a.id LEFT JOIN cpz_player_media m ON m.account_id=a.id ORDER BY a.player_name COLLATE NOCASE LIMIT 2000"
+    "SELECT a.id,a.player_name AS playerName,a.username,a.enabled,a.opponent_name AS opponentName,a.created_at AS createdAt,COALESCE(c.whatsapp_phone,'') AS whatsappPhone,COALESCE(c.share_with_opponent,0) AS shareWithOpponent,COALESCE(p.email,'') AS email,COALESCE(p.group_label,'') AS groupLabel,COALESCE(m.instagram,'') AS instagram,COALESCE(m.share_social,0) AS shareSocial,COALESCE(i.share_name,0) AS shareName,CASE WHEN substr(a.username,1,5)=CHAR(97,110,111,110,95) THEN 1 ELSE 0 END AS isPlaceholder,CASE WHEN LENGTH(COALESCE(m.photo_data,''))>0 THEN 1 ELSE 0 END AS hasPhoto FROM cpz_player_accounts a LEFT JOIN cpz_player_contacts c ON c.account_id=a.id LEFT JOIN cpz_player_profiles p ON p.account_id=a.id LEFT JOIN cpz_player_media m ON m.account_id=a.id LEFT JOIN cpz_player_identity i ON i.account_id=a.id ORDER BY a.player_name COLLATE NOCASE LIMIT 2000"
   ).all();
   const accounts=result.results||[];
   return {ok:true,accounts,totalPlayers:accounts.length};
@@ -193,7 +194,7 @@ export async function onRequest({request,env}){
       const email=cleanEmail(body.email);
       const group=typeof body.groupLabel==='string'?body.groupLabel.trim():'';
       const contact=contactInput(body);
-      if(!validName(playerName)||!userRe.test(username)||!validPassword(body.password)||email===null||!validGroup(group)||!contact)
+      if(!validName(playerName)||!userRe.test(username)||username.startsWith('anon_')||!validPassword(body.password)||email===null||!validGroup(group)||!contact)
         return fail('Comprueba nombre, usuario, email, contraseña y teléfono. La contraseña debe tener al menos 12 caracteres.');
       if(await env.LEAGUE_DB.prepare('SELECT id FROM cpz_player_accounts WHERE lower(player_name)=lower(?) OR username=? COLLATE NOCASE LIMIT 1').bind(playerName,username).first())
         return fail('Ya existe un jugador con ese nombre o usuario.',409);
