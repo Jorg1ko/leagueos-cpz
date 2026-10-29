@@ -236,6 +236,16 @@
       </section>
       <section class="view" id="view-account">
         <div class="hero"><div><small>MI CUENTA DE JUGADOR</small><h1>Mi perfil</h1><p>Consulta tus datos de acceso y cambia tu contraseña cuando lo necesites.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-user"></use></svg></div></div>
+        <div id="privacyPlayerPanel" class="card" style="margin-top:16px">
+          <h3>Privacidad de mi perfil</h3>
+          <p id="privacyPlayerDescription">Puedes consultar qué datos se guardan y quién puede verlos.</p>
+          <p><a href="/legal.html" target="_blank" rel="noopener noreferrer">Consultar privacidad y condiciones de uso ↗</a></p>
+          <form id="privacyReadForm" class="form" hidden>
+            <label class="contact-consent"><input id="privacyReadCheckbox" type="checkbox" required> Confirmo que he recibido y leído la información de privacidad aprobada por el organizador. Esto no autoriza a compartir mi teléfono, foto ni Instagram.</label>
+            <button type="submit" class="action" id="privacyReadButton">Registrar lectura del aviso</button>
+          </form>
+          <p class="status" id="privacyReadStatus" role="status"></p>
+        </div>
         <div class="subhead"><h2>Datos del jugador</h2></div>
         <div class="card"><div class="profile"><div class="avatar" id="avatar"><span id="avatarInitials">CP</span><img id="avatarImage" alt="Mi foto de perfil" hidden></div><div><h3 id="profileName">—</h3><p>Usuario: <b id="profileUsername">—</b></p><p>Grupo: <b id="profileGroup">Pendiente</b></p><a id="myInstagramLink" class="profile-instagram" target="_blank" rel="noopener noreferrer" hidden></a></div></div></div>
         <div class="subhead"><h2>Foto e Instagram</h2><p>Personaliza tu perfil. La foto y tu Instagram serán privados hasta que autorices expresamente mostrarlos a tu rival.</p></div>
@@ -250,7 +260,7 @@
             </label>
             <label class="contact-consent"><input id="profileSocialConsent" type="checkbox"> Autorizo a que mi foto e Instagram se muestren exclusivamente al rival que me asignen.</label>
             <div class="links"><button class="action" id="saveProfileMedia" type="submit">Guardar foto e Instagram</button><button class="action secondary" id="removeProfilePhoto" type="button">Quitar foto</button></div>
-            <p class="contact-help">Puedes cambiar o retirar la foto, el Instagram o su permiso de visibilidad cuando quieras. El administrador puede gestionar el perfil.</p>
+            <p class="contact-help">Permiso voluntario e independiente del WhatsApp: puedes cambiarlo o retirarlo desde aquí. El administrador solo debe activarlo si tiene tu autorización. <a href="/legal.html" target="_blank" rel="noopener noreferrer">Información de privacidad</a>.</p>
             <p id="profileMediaStatus" class="status" role="status"></p>
           </form>
         </div>
@@ -268,7 +278,7 @@
               <input id="myWhatsappPhone" type="tel" autocomplete="tel" inputmode="tel" maxlength="45" placeholder="+34 6XX XXX XXX">
             </label>
             <label class="contact-consent"><input id="shareWhatsappWithOpponent" type="checkbox"> Autorizo que el jugador que sea mi rival asignado pueda ver mi número y contactar conmigo por WhatsApp.</label>
-            <p class="contact-help">Puedes guardar el número sin compartirlo. Si desmarcas la casilla, dejaremos de mostrarlo a tu rival en la plataforma. Introduce el prefijo del país para números internacionales; para móviles españoles puedes escribir las 9 cifras.</p>
+            <p class="contact-help">Guardar el teléfono no implica compartirlo. Puedes desmarcar la casilla en cualquier momento. Solo se mostrará al rival asignado y con acceso activo; las copias previamente obtenidas fuera de esta web no pueden borrarse desde aquí. <a href="/legal.html" target="_blank" rel="noopener noreferrer">Información de privacidad</a>.</p>
             <button class="action" type="submit" id="saveContactButton">Guardar mi WhatsApp</button>
             <p id="contactStatus" class="status" role="status"></p>
           </form>
@@ -282,7 +292,7 @@
         </form></div>
         <p class="notice"><strong>¿Has perdido el acceso?</strong> Pide al organizador que te genere una nueva contraseña provisional. No compartas tu contraseña con otros jugadores.</p>
       </section>
-      <footer class="footer">RANKING INDIVIDUAL CPZ 2026/27 · Área privada para participantes autorizados. La composición de grupos y resultados del ranking se incorporará cuando el club los confirme.</footer>
+      <footer class="footer">RANKING INDIVIDUAL CPZ 2026/27 · Área privada para participantes autorizados. <a href="/legal.html" target="_blank" rel="noopener noreferrer">Privacidad y condiciones de uso</a>. La composición de grupos y resultados del ranking se incorporará cuando el club los confirme.</footer>
     </main>
   </div>
 </div>
@@ -299,6 +309,13 @@
   }
   function setProfile(data){
     profile=data;
+    $('privacyReadForm').hidden=!(data.legalApproved&&data.privacyNeedsAcknowledgement);
+    $('privacyReadCheckbox').checked=false;
+    $('privacyPlayerDescription').textContent=!data.legalApproved
+      ?'El aviso de privacidad está disponible como borrador informativo, pero el organizador todavía debe validar su identidad, el contacto para derechos y los plazos de conservación. Los permisos para compartir datos permanecen separados y son voluntarios.'
+      :data.privacyNeedsAcknowledgement
+        ?'La información de privacidad ha sido validada por el organizador. Puedes confirmar que la has leído; esto no equivale a autorizar la difusión de datos.'
+        :'Información legal publicada y lectura registrada. Puedes retirar los permisos de WhatsApp y foto/Instagram cuando quieras.';
     for(const id of ['headerName','myNameA','myNameB','profileName'])$(id).textContent=data.name;
     $('helloName').textContent=data.preferredName||data.name;
     for(const id of ['myOpponentA','myOpponentB'])$(id).textContent=data.opponent||'Pendiente de asignación';
@@ -511,6 +528,23 @@
     }catch(e){$('profileMediaStatus').textContent=e.message}
     finally{$('removeProfilePhoto').disabled=false}
   };
+  $('privacyReadForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    const status=$('privacyReadStatus');
+    if(!$('privacyReadCheckbox').checked){status.textContent='Marca la casilla después de leer el aviso.';return}
+    $('privacyReadButton').disabled=true;status.textContent='Registrando lectura…';
+    try{
+      const res=await fetch('/api/member/acknowledge',{
+        method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({confirmRead:true})
+      });
+      const data=await res.json();
+      if(!res.ok||!data.ok)throw Error(data.error||'No se pudo registrar la lectura.');
+      setProfile(data.profile);
+      status.textContent='Lectura registrada. Los permisos de difusión siguen bajo tu control.';
+    }catch(error){status.textContent=error.message}
+    finally{$('privacyReadButton').disabled=false}
+  });
   $('detailsForm').addEventListener('submit',async function(e){
     e.preventDefault();
     const email=$('myEmail').value.trim(),preferredName=$('myPreferredName').value.trim();
