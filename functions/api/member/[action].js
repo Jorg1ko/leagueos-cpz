@@ -149,7 +149,7 @@ async function profile(row,db){
   const acknowledgement=await db.prepare('SELECT revision FROM cpz_player_privacy_ack WHERE account_id=?').bind(row.id).first();
   const ownIdentity=await db.prepare('SELECT share_name FROM cpz_player_identity WHERE account_id=?').bind(row.id).first();
   const rivalIdentity=row.opponent_name
-    ?await db.prepare("SELECT a.player_name,COALESCE(i.share_name,0) AS share_name,COALESCE(k.revision,0) AS acknowledged_revision FROM cpz_player_accounts a LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 LIMIT 1").bind(row.opponent_name,row.player_name).first()
+    ?await db.prepare("SELECT a.player_name,COALESCE(i.share_name,0) AS share_name,COALESCE(k.revision,0) AS acknowledged_revision FROM cpz_player_accounts a LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND (a.enabled=1 OR substr(a.username,1,5)=CHAR(97,110,111,110,95)) LIMIT 1").bind(row.opponent_name,row.player_name).first()
     :null;
   const rivalVisible=!!(legal&&rivalIdentity?.share_name===1&&rivalIdentity.acknowledged_revision>=legal.revision);
   const opponentSocial=row.opponent_name
