@@ -218,6 +218,15 @@ export async function onRequest({request,env}){
         if(/constraint|unique/i.test(String(e)))return fail('Ese nombre o usuario ya existe.',409);
         throw e;
       }
+    }else if(action==='createPlaceholder'){
+      const token=Array.from(crypto.getRandomValues(new Uint8Array(6)),n=>n.toString(16).padStart(2,'0')).join('');
+      const playerName='Jugador X '+token.slice(0,6).toUpperCase();
+      const username='anon_'+token;
+      const salt=crypto.getRandomValues(new Uint8Array(16));
+      const temporaryPassword=Array.from(crypto.getRandomValues(new Uint8Array(24)),n=>n.toString(16).padStart(2,'0')).join('');
+      const digest=await passwordHash(temporaryPassword,salt,env.ADMIN_PASSWORD);
+      await env.LEAGUE_DB.prepare('INSERT INTO cpz_player_accounts (player_name,username,password_salt,password_hash,opponent_name,enabled) VALUES(?,?,?,?,?,0)')
+        .bind(playerName,username,b64(salt),digest,'').run();
     }else if(action==='setMedia'){
       const id=identifier(body.id);
       const handle=instagramHandle(body.instagram);
