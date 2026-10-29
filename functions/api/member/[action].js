@@ -127,6 +127,21 @@ export async function onRequest({request,env,params}){
         return respond({ok:true,videos:[],channels:[]});
       }
     }
+    if(action==='results'&&request.method==='GET'){
+      const row=await member(request,env);
+      if(!row)return fail('Inicia sesión como jugador.',401);
+      try{
+        const data=await env.LEAGUE_DB.prepare(
+          "SELECT r.played_at AS date,r.round_label AS round,r.group_label AS groupLabel,a.player_name AS player1,b.player_name AS player2,r.sets_json AS setsJson,r.winner_id AS winnerId FROM cpz_match_results r JOIN cpz_player_accounts a ON a.id=r.player_one_id JOIN cpz_player_accounts b ON b.id=r.player_two_id WHERE r.player_one_id=? OR r.player_two_id=? ORDER BY r.played_at DESC,r.id DESC LIMIT 150"
+        ).bind(row.id,row.id).all();
+        return respond({ok:true,results:(data.results||[]).map(r=>({
+          date:r.date,round:r.round,groupLabel:r.groupLabel,player1:r.player1,player2:r.player2,
+          sets:JSON.parse(r.setsJson),winner:r.winnerId===row.id?'Yo':'Rival'
+        }))});
+      }catch(e){
+        return respond({ok:true,results:[]});
+      }
+    }
     if(action==='me'&&request.method==='GET'){
       const row=await member(request,env);
       if(!row)return fail('Inicia sesión como jugador.',401);
