@@ -34,7 +34,7 @@
     if(name==='players')loadPlayers();
     if(name==='results')loadResults();
     if(name==='videos')loadVideos();
-    if(name==='legal')loadLegalSettings();
+    if(name==='legal'){loadLegalSettings();loadConsentAudit()}
   }
   document.querySelectorAll('[data-view],[data-target]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view||b.dataset.target)));
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
@@ -84,7 +84,8 @@
     const name=f.playerName.value.trim(),username=f.username.value.trim().toLowerCase(),password=f.password.value;
     const ok=await updatePlayer('create',{
       playerName:name,username,password,email:f.email.value,whatsappPhone:f.whatsappPhone.value,
-      shareWithOpponent:f.shareWithOpponent.checked,groupLabel:f.groupLabel.value
+      shareWithOpponent:f.shareWithOpponent.checked,groupLabel:f.groupLabel.value,
+      privacyInformed:f.privacyInformed.checked
     });
     if(ok){issue(name,username,password);form.reset();f.username.dataset.edited='';}
   };
@@ -278,6 +279,33 @@
       say('legalAdminStatus','');
     }catch(e){say('legalAdminStatus',e.message)}
   }
+  async function loadConsentAudit(){
+    const container=$('consentAudit');
+    try{
+      const data=await api('/api/accounts?audit=1');
+      const records=data.events||[];
+      container.replaceChildren();
+      if(!records.length){container.textContent='Todavía no hay permisos registrados; los cambios nuevos aparecerán aquí.';return}
+      const meanings={
+        whatsapp_opponent:'Compartir WhatsApp con el rival',
+        photo_instagram_opponent:'Compartir foto e Instagram con el rival',
+        privacy_notice_read:'Lectura del aviso confirmada por el jugador',
+        privacy_notice_delivered:'Entrega del aviso declarada por administración'
+      };
+      const frag=document.createDocumentFragment();
+      for(const event of records){
+        const el=document.createElement('article');el.className='player-card';
+        const name=document.createElement('strong');name.textContent=event.playerName||'Cuenta eliminada';
+        const details=document.createElement('p');details.className='small';
+        const action=event.granted===1?'Sí / registrado':'No / retirado o pendiente';
+        const actor=event.actor==='player'?'Acción del jugador':'Declaración administrativa';
+        details.textContent=[meanings[event.purpose]||event.purpose,action,actor,event.recordedAt].join(' · ');
+        el.append(name,details);frag.append(el);
+      }
+      container.append(frag);
+    }catch(err){container.textContent='No se pudo consultar el registro: '+err.message}
+  }
+  $('reloadConsentAudit').onclick=loadConsentAudit;
   $('legalForm').onsubmit=async e=>{
     e.preventDefault();
     const f=e.currentTarget.elements;
