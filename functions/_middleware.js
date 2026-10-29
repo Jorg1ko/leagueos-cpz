@@ -97,6 +97,16 @@ async function initializeFreshSeason(env){
   const db=env.LEAGUE_DB;
   if(!db)return;
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_season_bootstrap (key TEXT PRIMARY KEY, applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  // Segunda limpieza: elimina las divisiones numeradas y resultados que quedaran
+  // guardados en el antiguo módulo de simulación, sin tocar cuentas nuevas.
+  await db.prepare("CREATE TABLE IF NOT EXISTS league_state (id INTEGER PRIMARY KEY, payload TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0)").run();
+  const legacyDone=await db.prepare("SELECT key FROM cpz_season_bootstrap WHERE key='retire_legacy_league_state_v1'").first();
+  if(!legacyDone){
+    await db.batch([
+      db.prepare("UPDATE league_state SET payload=?, revision=revision+1 WHERE id=1 AND NOT EXISTS (SELECT 1 FROM cpz_season_bootstrap WHERE key='retire_legacy_league_state_v1')").bind(JSON.stringify({divisions:[],results:{},month:1,history:[]})),
+      db.prepare("INSERT OR IGNORE INTO cpz_season_bootstrap (key) VALUES ('retire_legacy_league_state_v1')")
+    ]);
+  }
   const migrated=await db.prepare("SELECT key FROM cpz_season_bootstrap WHERE key='fresh_manual_roster_2026_v1'").first();
   if(migrated)return;
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, player_name TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE COLLATE NOCASE, password_salt TEXT NOT NULL, password_hash TEXT NOT NULL, enabled INTEGER NOT NULL DEFAULT 1, session_version INTEGER NOT NULL DEFAULT 1, opponent_name TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
