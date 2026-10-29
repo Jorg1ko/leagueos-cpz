@@ -2,7 +2,9 @@
 // Únicamente accesible con la sesión original del administrador.
 const ADMIN_COOKIE='__Host-leagueos_admin';
 const AGE=8*60*60;
-const ITERATIONS=310000;
+// Cloudflare Workers refuses PBKDF2 over 100,000 iterations in production.
+// A secret HMAC pepper protects stored hashes even if the D1 database leaks.
+const ITERATIONS=100000;
 const te=new TextEncoder();
 const fail=(message,status=400)=>respond({ok:false,error:message},status);
 function respond(data,status=200){
@@ -42,8 +44,10 @@ async function parseJSON(request){
   return JSON.parse(raw);
 }
 function b64(bytes){return btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
-async function passwordHash(password,salt){
-  const key=await crypto.subtle.importKey('raw',te.encode(password),'PBKDF2',false,['deriveBits']);
+async function passwordHash(password,salt,secret){
+  const pepperKey=await crypto.subtle.importKey('raw',te.encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  const peppered=await crypto.subtle.sign('HMAC',pepperKey,te.encode('CPZ_MEMBER_PWD_V1:'+password));
+  const key=await crypto.subtle.importKey('raw',peppered,'PBKDF2',false,['deriveBits']);
   return b64(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:ITERATIONS},key,256)));
 }
 function validPassword(s){return typeof s==='string'&&s.length>=12&&s.length<=128}
@@ -117,14 +121,17 @@ export async function onRequest({request,env}){
       if(await env.LEAGUE_DB.prepare('SELECT id FROM cpz_player_accounts WHERE lower(player_name)=lower(?) OR username=? COLLATE NOCASE LIMIT 1').bind(playerName,username).first())
         return fail('Ya existe un jugador con ese nombre o usuario.',409);
       const salt=crypto.getRandomValues(new Uint8Array(16));
-      const digest=await passwordHash(body.password,salt);
+      const digest=await passwordHash(body.password,salt,env.ADMIN_PASSWORD);
       try{
-        const inserted=await env.LEAGUE_DB.prepare('INSERT INTO cpz_player_accounts (player_name,username,password_salt,password_hash,opponent_name) VALUES(?,?,?,?,?)')
-          .bind(playerName,username,b64(salt),digest,'').run();
-        const id=inserted.meta?.last_row_id;
-        if(!id)throw Error('No se pudo obtener el ID del jugador');
-        await storeContact(env.LEAGUE_DB,id,contact);
-        await saveProfile(env.LEAGUE_DB,id,email,group);
+        // D1 batch is transactional; a failed profile/contact cannot leave a half-created account.
+        await env.LEAGUE_DB.batch([
+          env.LEAGUE_DB.prepare('INSERT INTO cpz_player_accounts (player_name,username,password_salt,password_hash,opponent_name) VALUES(?,?,?,?,?)')
+            .bind(playerName,username,b64(salt),digest,''),
+          env.LEAGUE_DB.prepare('INSERT INTO cpz_player_contacts (account_id,whatsapp_phone,share_with_opponent) SELECT id,?,? FROM cpz_player_accounts WHERE username=? COLLATE NOCASE')
+            .bind(contact.phone,contact.shared,username),
+          env.LEAGUE_DB.prepare('INSERT INTO cpz_player_profiles (account_id,email,group_label) SELECT id,?,? FROM cpz_player_accounts WHERE username=? COLLATE NOCASE')
+            .bind(email,group,username)
+        ]);
       }catch(e){
         if(/constraint|unique/i.test(String(e)))return fail('Ese nombre o usuario ya existe.',409);
         throw e;
@@ -185,7 +192,7 @@ export async function onRequest({request,env}){
       const id=identifier(body.id);
       if(!id||!validPassword(body.password))return fail('Selecciona una cuenta y una contraseña provisional de al menos 12 caracteres.');
       const salt=crypto.getRandomValues(new Uint8Array(16));
-      const digest=await passwordHash(body.password,salt);
+      const digest=await passwordHash(body.password,salt,env.ADMIN_PASSWORD);
       const changed=await env.LEAGUE_DB.prepare('UPDATE cpz_player_accounts SET password_salt=?,password_hash=?,session_version=session_version+1 WHERE id=?')
         .bind(b64(salt),digest,id).run();
       if(changed.meta?.changes!==1)return fail('Cuenta no encontrada.',404);
