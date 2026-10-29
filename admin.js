@@ -584,8 +584,34 @@
       $('importCommit').disabled=false;
     }
   };
+  function renderRecentResults(){
+    const panel=$('adminRecentResults');
+    if(!panel)return;
+    const recent=results.slice(0,4);
+    panel.replaceChildren();
+    if(!recent.length){
+      const message=document.createElement('div');message.className='tour-empty';
+      const title=document.createElement('strong');title.textContent='Sin partidos confirmados todavía';
+      const detail=document.createElement('span');detail.textContent='Importa un Excel de la competición para que los encuentros aparezcan aquí.';
+      message.append(title,detail);panel.append(message);return;
+    }
+    const fragment=document.createDocumentFragment();
+    recent.forEach((r,i)=>{
+      const card=document.createElement('article');card.className='tour-match';
+      const number=document.createElement('span');number.className='tour-match-number';number.textContent=String(i+1).padStart(2,'0');
+      const content=document.createElement('div');content.className='tour-match-content';
+      const meta=document.createElement('span');meta.className='tour-match-meta';meta.textContent=[r.date,r.round,r.groupLabel].filter(Boolean).join(' · ');
+      const names=document.createElement('strong');names.className='tour-match-names';names.textContent=r.player1+'  vs  '+r.player2;
+      content.append(meta,names);
+      const score=document.createElement('span');score.className='tour-match-score';
+      score.textContent=(r.sets||[]).map(set=>Array.isArray(set)?set.join('–'):'').filter(Boolean).join('  /  ')||'Resultado registrado';
+      card.append(number,content,score);fragment.append(card);
+    });
+    panel.append(fragment);
+  }
   function renderResults(){
     stats();$('resultLabel').textContent=results.length+' resultados guardados';
+    renderRecentResults();
     if(!results.length){$('resultTable').innerHTML='<div class="empty">Aún no hay resultados. Importa el primer Excel cuando estén creadas las cuentas.</div>';return}
     const table=document.createElement('table'),head=document.createElement('thead'),body=document.createElement('tbody');
     head.innerHTML='<tr><th>Fecha</th><th>Jornada</th><th>Grupo</th><th>Jugadores</th><th>Marcadores</th><th>Ganador</th><th>Acción</th></tr>';
