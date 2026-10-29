@@ -201,7 +201,7 @@ export async function onRequest({request,env,params}){
         const hiddenRows=await env.LEAGUE_DB.prepare(
           "SELECT a.player_name AS name FROM cpz_player_accounts a LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id LEFT JOIN cpz_legal_settings l ON l.id=1 AND l.approved=1 WHERE COALESCE(i.share_name,0)<>1 OR l.revision IS NULL OR COALESCE(k.revision,0)<l.revision LIMIT 2000"
         ).all();
-        const lower=s=>String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLocaleLowerCase('es').trim().replace(/\\s+/g,' ');
+        const lower=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es').trim().replace(/\s+/g,' ');
         const protectedNames=(hiddenRows.results||[]).map(x=>lower(x.name)).filter(x=>x&&!x.startsWith('jugador x'));
         const exposesName=values=>protectedNames.some(name=>values.some(value=>lower(value).includes(name)));
         return respond({
