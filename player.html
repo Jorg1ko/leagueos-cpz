@@ -197,19 +197,43 @@
   <div class="workspace">
     <header class="top">
       <div><strong id="headerName">Cuenta de jugador</strong><span>Acceso de jugador · Solo lectura de la competición</span></div>
-      <div class="top-actions"><span class="member-pill">JUGADOR</span><button id="logout" class="action secondary" type="button">Salir</button></div>
+      <div class="top-actions"><span class="member-pill"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-lock"></use></svg> JUGADOR</span><button id="logout" class="action secondary" type="button">Salir</button></div>
     </header>
     <main class="main">
       <section class="view active" id="view-home">
-        <div class="hero"><div><small>RANKING INDIVIDUAL CPZ 2026/27</small><h1>Hola, <span id="helloName">jugador</span></h1><p>Esta es tu zona privada para seguir el ranking, consultar tu rival y acceder a las instrucciones oficiales de los partidos.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-paddle"></use></svg></div></div>
-        <div class="stats"><div class="stat"><strong>Individual</strong><span>Modalidad</span></div><div class="stat"><strong id="homeGroup">Pendiente</strong><span>Grupo asignado</span></div><div class="stat"><strong>2026/27</strong><span>Temporada</span></div></div>
+        <div class="hero hero-home">
+          <div class="hero-home-copy">
+            <span class="hero-kicker"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-ball"></use></svg> ÁREA PRIVADA · TEMPORADA 2026/27</span>
+            <h1>¡Hola, <span id="helloName">jugador</span>!</h1>
+            <p>Tu temporada, en un solo lugar. Consulta el próximo rival, organiza el encuentro y sigue los resultados confirmados del ranking.</p>
+            <div class="hero-home-actions">
+              <button class="action hero-cta" type="button" data-go="match">Ver mi próximo partido <span aria-hidden="true">→</span></button>
+              <button class="action hero-cta-outline" type="button" data-go="results">Mis resultados <span aria-hidden="true">↗</span></button>
+            </div>
+          </div>
+          <div class="hero-home-season" aria-hidden="true">
+            <span class="hero-home-icon"><svg class="cpz-icon"><use href="#cpz-paddle"></use></svg></span>
+            <span>RANKING INDIVIDUAL</span>
+            <strong>CPZ</strong>
+            <small>2026 / 27</small>
+          </div>
+        </div>
+        <div class="stats stats-home">
+          <div class="stat"><span class="stat-icon stat-icon-blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-paddle"></use></svg></span><strong>Individual</strong><span>Modalidad de juego</span></div>
+          <div class="stat"><span class="stat-icon stat-icon-green"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><strong id="homeGroup">Pendiente</strong><span>Mi grupo asignado</span></div>
+          <div class="stat"><span class="stat-icon stat-icon-orange"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-trophy"></use></svg></span><strong>2026/27</strong><span>Temporada del ranking</span></div>
+        </div>
         <div class="grid">
-          <article class="card"><h3>Tu próximo rival</h3><p>Cuando el administrador te asigne un enfrentamiento, lo verás aquí. Si tu rival ha autorizado WhatsApp, podrás escribirle directamente.</p><div class="name-match"><b id="myNameA">—</b><span>VS</span><b id="myOpponentA">—</b></div>
+          <article class="card card-rival"><div class="card-header"><span class="card-symbol card-symbol-blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-duel"></use></svg></span><span class="card-eyebrow">TU PRÓXIMO ENCUENTRO</span></div><h3>Tu próximo rival</h3><p>Cuando el organizador te asigne un enfrentamiento, lo verás aquí. Solo se muestran los datos que el rival ha autorizado.</p><div class="name-match"><b id="myNameA">—</b><span>VS</span><b id="myOpponentA">—</b></div>
             <div id="opponentSocialHome" class="opponent-social" hidden><img id="opponentPhotoHome" alt="Foto de mi rival" hidden><a id="opponentInstagramHome" target="_blank" rel="noopener noreferrer" hidden></a></div>
             <div class="match-quick-actions"><a id="whatsappOpponentHome" class="action whatsapp-action" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" hidden>Contactar por WhatsApp ↗</a><a class="action secondary" href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Reservar pista ↗</a></div>
             <p class="whatsapp-hint" id="whatsappOpponentHomeHint" role="status">El contacto de WhatsApp estará disponible si tu rival lo autoriza.</p>
             <button class="action secondary" type="button" data-go="match" style="margin-top:10px">Ver detalles del partido →</button></article>
-          <article class="card"><h3>Organiza tus encuentros</h3><p>Contacta con tu rival, acordad cuándo jugar y reservad pista a través del sistema del club. Uno de los dos debe registrar el resultado al terminar.</p><div class="links"><a class="action secondary" href="https://pickleballzaragoza.taykus.com/" target="_blank" rel="noopener noreferrer">Reservar en Taykus ↗</a><button class="action secondary" type="button" data-go="rules">Consultar normas →</button></div></article>
+          <article class="card card-booking">
+            <div class="booking-visual" aria-hidden="true"><span><svg class="cpz-icon"><use href="#cpz-court"></use></svg> CLUB PICKLEBALL ZARAGOZA</span></div>
+            <div class="card-header"><span class="card-symbol card-symbol-green"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-court"></use></svg></span><span class="card-eyebrow">PRACTICA TU DEPORTE</span></div>
+            <h3>Reserva tu pista</h3>
+            <p>Acordad cuándo jugar y reservad pista en Taykus. La administración incorporará los resultados oficiales una vez revisados.</p><div class="links"><a class="action secondary" href="https://pickleballzaragoza.taykus.com/" target="_blank" rel="noopener noreferrer">Reservar en Taykus ↗</a><button class="action secondary" type="button" data-go="rules">Consultar normas →</button></div></article>
         </div>
         <p class="notice important">La administración asignará los rivales y grupos cuando estén confirmados. No se muestran clasificaciones ficticias ni partidos de demostración.</p>
       </section>
@@ -659,12 +683,20 @@
       if(!records.length){container.append(empty('Todavía no hay resultados tuyos importados desde Excel.'));return}
       for(const match of records){
         const row=document.createElement('article');
-        row.style.padding='14px 0';row.style.borderBottom='1px solid #e4edf6';
+        row.className='result-row';
+        const outcome=document.createElement('span');
+        const victory=match.winner==='Yo';
+        outcome.className='result-outcome '+(victory?'result-outcome-win':'result-outcome-loss');
+        outcome.textContent=victory?'Victoria':'Derrota';
+        const content=document.createElement('div');content.className='result-content';
         const title=document.createElement('strong');
         title.textContent=match.player1+' vs '+match.player2;
         const details=document.createElement('p');
-        details.textContent=match.date+' · '+match.round+' · '+(match.groupLabel||'Sin grupo')+' · '+match.sets.map(v=>v.join('-')).join(' / ')+' · '+(match.winner==='Yo'?'Victoria':'Derrota');
-        row.append(title,details);container.append(row);
+        details.textContent=match.date+' · '+match.round+' · '+(match.groupLabel||'Sin grupo');
+        const scores=document.createElement('span');scores.className='result-sets';
+        scores.textContent=match.sets.map(v=>v.join(' - ')).join('  /  ');
+        content.append(title,details);
+        row.append(content,scores,outcome);container.append(row);
       }
     }catch(e){$('memberResults').replaceChildren(empty('No se pudieron cargar tus resultados.'))}
   }
