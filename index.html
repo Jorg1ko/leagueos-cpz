@@ -84,6 +84,7 @@
   <button class="nav" data-view="results" type="button"><svg class="cpz-icon"><use href="#cpz-trophy"></use></svg>Resultados y Excel</button>
   <button class="nav" data-view="videos" type="button"><svg class="cpz-icon"><use href="#cpz-play"></use></svg>Comunidad y vídeos</button>
   <button class="nav" data-view="booking" type="button"><svg class="cpz-icon"><use href="#cpz-court"></use></svg>Reservas y normas</button>
+  <button class="nav" data-view="legal" type="button"><svg class="cpz-icon"><use href="#cpz-lock"></use></svg>Privacidad y datos legales</button>
  </nav>
  <div class="sidefoot">Solo administrador autorizado.<br>Club Pickleball Zaragoza · 2026/27</div>
 </aside>
@@ -119,7 +120,8 @@
        <label>Usuario<input name="username" maxlength="32" minlength="3" pattern="[a-z0-9][a-z0-9._-]{2,31}" required autocomplete="off" autocapitalize="off" placeholder="nombre.apellido"></label>
        <label>Correo electrónico<input type="email" name="email" maxlength="160" autocomplete="off" placeholder="correo@ejemplo.com"></label>
        <label>WhatsApp (opcional)<input name="whatsappPhone" type="tel" maxlength="45" inputmode="tel" placeholder="+34 600 000 000"></label>
-       <label class="checkbox"><input name="shareWithOpponent" type="checkbox"> El jugador ha autorizado compartir su número con su rival asignado.</label>
+       <label class="checkbox"><input name="shareWithOpponent" type="checkbox"> Declaro disponer de autorización concreta del jugador para compartir su número solo con su rival; se registrará mi declaración.</label>
+       <p class="status">Antes de dar de alta un participante, facilítale el <a href="/legal.html" target="_blank" rel="noopener noreferrer">aviso de privacidad</a>. La información no sustituye al consentimiento independiente para mostrar WhatsApp o imágenes.</p>
        <label>Grupo (opcional)<input name="groupLabel" maxlength="35" placeholder="Ej. A1; dejar vacío si aún no está confirmado"></label>
        <label>Contraseña provisional
          <span class="inline-input"><input type="text" name="password" minlength="12" maxlength="128" required autocomplete="off" spellcheck="false"><button type="button" class="button secondary" id="generatePass">Generar</button></span>
@@ -190,13 +192,38 @@
    <div class="card"><h3>Resultados de competición</h3><p>Cuando haya resultados, podrás cargarlos desde el Excel del club y consultarlos en «Resultados y Excel».</p><button type="button" class="button secondary" data-target="results">Ver resultados</button></div>
   </div>
 </section>
-<footer class="footer">RANKING INDIVIDUAL CPZ 2026/27 · Solo cuentas autorizadas. Sin jugadores precargados ni datos de demostración.</footer>
+<section class="view" id="page-legal" hidden>
+  <div class="hero"><small>PROTECCIÓN DE DATOS · CONFIGURACIÓN DEL ORGANIZADOR</small><h1>Privacidad y datos legales</h1><p>Completa la información del verdadero responsable de la competición antes de afirmar que el aviso de privacidad es definitivo. Publicar estos datos requiere la autorización del organizador.</p></div>
+  <div class="notice warn" id="legalConfigNotice"><strong>Por verificar:</strong> la identidad del responsable, el correo para derechos, el domicilio, la base jurídica y los criterios de conservación. Esta plataforma no es necesariamente propiedad de quien organiza la competición.</div>
+  <div class="grid2">
+   <article class="card"><h3>Datos que debe confirmar el organizador</h3>
+    <form id="legalForm" class="form">
+      <label>Identidad legal del responsable de los datos<input name="responsibleName" minlength="4" maxlength="180" required placeholder="Denominación o nombre legal, autorizado por el organizador"></label>
+      <label>Correo específico para privacidad y derechos<input name="contactEmail" type="email" maxlength="160" required placeholder="contacto autorizado"></label>
+      <label>Dirección postal del responsable<input name="postalAddress" minlength="4" maxlength="320" required placeholder="Domicilio de la entidad responsable"></label>
+      <label>Base jurídica del tratamiento ordinario<textarea name="legalBasis" minlength="4" maxlength="600" required placeholder="Ej. ejecución de la relación de participación; fundamento concreto confirmado por el responsable"></textarea></label>
+      <label>Conservación y supresión de datos<textarea name="retentionNote" minlength="4" maxlength="550" required placeholder="Periodo de conservación aprobado y criterios de eliminación"></textarea></label>
+      <label class="checkbox"><input name="confirmAuthorized" type="checkbox" required> Confirmo que el organizador responsable me ha autorizado a publicar esta información y ha revisado la base jurídica y los plazos indicados.</label>
+      <button class="button" type="submit" id="legalSave">Publicar información legal validada</button>
+      <p class="status" id="legalAdminStatus" role="status"></p>
+    </form>
+   </article>
+   <article class="card"><h3>Antes de publicar</h3>
+    <p>El aviso básico y las condiciones ya son consultables antes de iniciar sesión, pero se indican como provisionales mientras falte identificar al responsable.</p>
+    <p>No utilices tu nombre ni el de otra persona o entidad como responsable sin su autorización. El administrador técnico y quien organiza la liga pueden tener obligaciones diferentes.</p>
+    <p>El responsable debe revisar también qué contrato de tratamiento se ha formalizado con el proveedor técnico y qué garantías ofrece Cloudflare para el almacenamiento de los datos.</p>
+    <div class="actions"><a href="/legal.html" target="_blank" rel="noopener noreferrer" class="button secondary">Abrir aviso de privacidad ↗</a></div>
+    <p id="legalRevision" class="status">Estado: pendiente de confirmar.</p>
+   </article>
+  </div>
+</section>
+<footer class="footer">RANKING INDIVIDUAL CPZ 2026/27 · Solo cuentas autorizadas. Sin jugadores precargados ni datos de demostración. · <a href="/legal.html" target="_blank" rel="noopener noreferrer">Privacidad y condiciones</a></footer>
 </main></div></div>
 <dialog id="editDialog"><div class="dialog-body"><h3>Editar perfil</h3><form id="editForm" class="form">
  <input name="id" type="hidden"><label>Nombre oficial<input name="playerName" maxlength="100" required></label>
  <label>Correo electrónico<input name="email" maxlength="160" type="email"></label>
  <label>WhatsApp<input name="whatsappPhone" maxlength="45" type="tel"></label>
- <label class="checkbox"><input name="shareWithOpponent" type="checkbox"> Tiene permiso para compartir WhatsApp con su rival.</label>
+ <label class="checkbox"><input name="shareWithOpponent" type="checkbox"> Confirmo que el jugador ha autorizado compartir WhatsApp con su rival. Guardaremos el cambio de permiso.</label>
  <label>Grupo<input name="groupLabel" maxlength="35"></label>
  <div class="actions"><button type="submit" class="button">Guardar perfil</button><button class="button ghost" type="button" data-close="editDialog">Cancelar</button></div>
  <p class="status" id="editStatus"></p></form>
@@ -211,7 +238,7 @@
    </div>
    <label>Seleccionar foto del jugador<input id="adminSocialFile" type="file" accept="image/jpeg,image/png,image/webp"></label>
    <label>Instagram (@usuario o enlace)<input name="instagram" type="text" placeholder="@usuario" maxlength="150" autocomplete="off" autocapitalize="none" spellcheck="false"></label>
-   <label class="checkbox"><input name="shareSocial" type="checkbox"> El jugador ha autorizado que su foto e Instagram se muestren a su rival asignado.</label>
+   <label class="checkbox"><input name="shareSocial" type="checkbox"> Confirmo que el jugador ha autorizado mostrar su foto e Instagram solo a su rival. Guardaremos el cambio de permiso.</label>
    <div class="actions"><button id="saveSocialAdmin" class="button" type="submit">Guardar foto e Instagram</button><button id="adminRemovePhoto" class="button warning" type="button">Quitar foto</button></div>
    <p id="socialAdminStatus" class="status" role="status"></p>
  </form>
