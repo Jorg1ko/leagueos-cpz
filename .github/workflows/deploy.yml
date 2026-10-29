@@ -26,6 +26,7 @@ jobs:
           mkdir -p dist
           cp index.html dist/index.html
           cp player.html dist/player.html
+          cp legal.html dist/legal.html
           cp admin.css dist/admin.css
           cp admin.js dist/admin.js
 
