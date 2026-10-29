@@ -195,7 +195,20 @@ export async function onRequest({request,env,params}){
           env.LEAGUE_DB.prepare('SELECT youtube_id AS youtubeId,title,player_one AS playerOne,player_two AS playerTwo,description FROM cpz_youtube_videos ORDER BY id DESC LIMIT 60').all(),
           env.LEAGUE_DB.prepare('SELECT channel_name AS channelName,player_name AS playerName,channel_url AS channelUrl FROM cpz_youtube_channels ORDER BY id DESC LIMIT 80').all()
         ]);
-        return respond({ok:true,videos:v.results||[],channels:c.results||[]});
+        // Names in older video/channel titles can also reveal identity.
+        // Hide such entries from players while the named member has not opted in.
+        await contactSchema(env.LEAGUE_DB);
+        const hiddenRows=await env.LEAGUE_DB.prepare(
+          "SELECT a.player_name AS name FROM cpz_player_accounts a LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id LEFT JOIN cpz_legal_settings l ON l.id=1 AND l.approved=1 WHERE COALESCE(i.share_name,0)<>1 OR l.revision IS NULL OR COALESCE(k.revision,0)<l.revision LIMIT 2000"
+        ).all();
+        const lower=s=>String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLocaleLowerCase('es').trim().replace(/\\s+/g,' ');
+        const protectedNames=(hiddenRows.results||[]).map(x=>lower(x.name)).filter(x=>x&&!x.startsWith('jugador x'));
+        const exposesName=values=>protectedNames.some(name=>values.some(value=>lower(value).includes(name)));
+        return respond({
+          ok:true,
+          videos:(v.results||[]).filter(video=>!exposesName([video.playerOne,video.playerTwo,video.title,video.description])),
+          channels:(c.results||[]).filter(channel=>!exposesName([channel.playerName,channel.channelName,channel.channelUrl]))
+        });
       }catch(err){
         // La biblioteca es opcional y puede no estar inicializada.
         return respond({ok:true,videos:[],channels:[]});
