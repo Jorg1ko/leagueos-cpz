@@ -439,3 +439,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .fx-toast.fx-toast-visible{opacity:1;transform:translateY(0);animation:cpz-toast-arrive .35s cubic-bezier(.2,.8,.2,1)}
 @media(max-width:520px){.fx-toast{bottom:14px;right:14px;left:14px;max-width:none;text-align:center}}
 @media(prefers-reduced-motion:reduce){.fx-toast,.fx-toast.fx-toast-visible{animation:none;transition:none;transform:none}}
+
+
+/* Lectura de cada vista: progreso discreto en la barra superior. */
+.top{position:sticky}
+.top:after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
+  pointer-events:none;background:linear-gradient(90deg,#1493e4,#4ed8f5,#81ecff);
+  transform-origin:left center;transform:scaleX(var(--cpz-read-progress,0));
+  box-shadow:0 0 12px #39c8f875;transition:transform .12s linear;
+}
+@media(max-width:760px){.top{position:relative}}
+@media(prefers-reduced-motion:reduce){.top:after{transition:none;box-shadow:none}}
