@@ -56,7 +56,7 @@
   $('hideIssued').onclick=()=>{issued=null;$('issuedPass').textContent='';$('issuedBox').hidden=true};
   $('copyIssued').onclick=async()=>{
     if(!issued)return;
-    const text='RANKING INDIVIDUAL CPZ 2026/27\nhttps://leagueos-cpz.pages.dev/\nJugador: '+issued.name+'\nUsuario: '+issued.username+'\nContraseña provisional: '+issued.password+'\nPuedes cambiarla desde Mi cuenta.';
+    const text='RANKING INDIVIDUAL CPZ 2026/27\nAcceso directo de jugador: https://leagueos-cpz.pages.dev/?role=player\nElige «Soy jugador», NO «Administrador».\nJugador: '+issued.name+'\nNombre de usuario: '+issued.username+'\nContraseña provisional: '+issued.password+'\nPuedes cambiarla desde Mi cuenta.';
     try{await navigator.clipboard.writeText(text);say('playerStatus','Datos copiados. Entrégalos solamente al jugador.')}
     catch(e){say('playerStatus','Copia manualmente las credenciales mostradas.')}
   };
