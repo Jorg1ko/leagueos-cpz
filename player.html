@@ -345,6 +345,116 @@ body{color:var(--ink);background:radial-gradient(ellipse 65% 30% at 90% -10%,#dd
   .nav button,.stat,.action{transition:none!important}
 }
 
+
+
+/* CPZ Motion · Efectos deportivos en perfiles, resultados y navegación */
+@keyframes cpz-pop-in{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:translateZ(0)}}
+@keyframes cpz-beam{0%,20%{opacity:0;transform:translateX(-130%) skewX(-18deg)}38%{opacity:.3}60%,100%{opacity:0;transform:translateX(220%) skewX(-18deg)}}
+@keyframes cpz-float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+@keyframes cpz-paddle{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(8deg) scale(1.08)}}
+@keyframes cpz-ripple{from{transform:translate(-50%,-50%) scale(0);opacity:.35}to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+@keyframes cpz-badge-gleam{0%,30%,100%{background-position:100% 50%}55%{background-position:0 50%}}
+::selection{background:#a1ddff;color:#07355b}
+html{scroll-padding-top:90px}
+.side .brand img{transition:transform .32s,box-shadow .32s}
+.side .brand:hover img{transform:rotate(5deg) scale(1.045);box-shadow:0 15px 33px #001125ab}
+.nav button{position:relative;overflow:hidden;isolation:isolate}
+.nav button .cpz-icon{transition:transform .25s,color .25s}
+.nav button:hover .cpz-icon{transform:scale(1.14) rotate(-7deg)}
+.nav button.active .cpz-icon{filter:drop-shadow(0 1px 3px #ffffff4e)}
+.member-pill{position:relative;gap:8px}
+.member-pill:before{
+  content:"";height:7px;width:7px;border-radius:50%;background:#10ba91;
+  box-shadow:0 0 0 3px #10ba9126;flex-shrink:0;
+}
+.hero{transition:box-shadow .3s}
+.hero:before{
+  content:"";position:absolute;z-index:0;inset:-12%;
+  background:linear-gradient(112deg,transparent 10%,#ffffff00 34%,#a7e5ff23 51%,#ffffff00 68%,transparent 90%);
+  transform:translateX(-130%) skewX(-18deg);
+  animation:cpz-beam 11.5s ease-in-out 1.5s infinite;
+  pointer-events:none;
+}
+.hero > *{position:relative;z-index:1}
+.hero:after{z-index:0}
+.hero-kicker .cpz-icon{animation:cpz-paddle 5s ease-in-out infinite}
+.hero-home-season{animation:cpz-float 7s ease-in-out infinite}
+.hero-home-season .hero-home-icon{transition:transform .34s,background .34s}
+.hero-home-season:hover .hero-home-icon{transform:rotate(-9deg) scale(1.08);background:#ffffff38}
+.hero-home-actions .action{position:relative;overflow:hidden}
+.hero-home-actions .action > span:last-child{transition:transform .2s}
+.hero-home-actions .action:hover > span:last-child{transform:translateX(5px)}
+.card,.step,.stat,.channel,.video{
+  --fx-x:50%;--fx-y:50%;position:relative;isolation:isolate;
+}
+.card:before,.step:before,.stat:before{
+  content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;
+  pointer-events:none;opacity:0;transition:opacity .25s;
+  background:radial-gradient(260px circle at var(--fx-x) var(--fx-y),#60baff1b,transparent 75%);
+}
+.card > *,.step > *,.stat > *{position:relative;z-index:1}
+.card:hover:before,.step:hover:before,.stat:hover:before{opacity:1}
+.card,.stat,.step{transition:transform .22s,box-shadow .22s,border-color .22s}
+.card:hover,.step:hover{transform:translateY(-3px);box-shadow:0 18px 37px #0d47701c;border-color:#c3e0f4}
+.stat:hover{transform:translateY(-3px);box-shadow:0 14px 31px #1150801c}
+.stat-icon{transition:transform .3s,box-shadow .3s}
+.stat:hover .stat-icon{transform:rotate(-8deg) scale(1.1);box-shadow:0 8px 18px #0b7bc71c}
+.card-symbol{transition:transform .3s}
+.card:hover .card-symbol{transform:scale(1.12) rotate(-8deg)}
+.card-booking{overflow:hidden}
+.booking-visual{position:relative;isolation:isolate;transition:background-position .35s}
+.booking-visual:after{
+  content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 32%,#c7f0ff2a 50%,transparent 70%);
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.card-booking:hover .booking-visual:after{opacity:1}
+.booking-visual span{z-index:1}
+.name-match{transition:border-color .22s,box-shadow .22s}
+.card-rival:hover .name-match{border-color:#b0ddf5;box-shadow:0 5px 17px #0d89d718}
+.name-match span{background-size:200% 100%;background-image:linear-gradient(115deg,#0d8be4,#1260a9,#0d8be4);animation:cpz-badge-gleam 7s ease-in-out infinite}
+.action{position:relative;overflow:hidden;isolation:isolate;touch-action:manipulation}
+.action:not(:disabled):active{transform:translateY(1px) scale(.985)}
+.fx-ripple{
+  position:absolute!important;z-index:3!important;left:var(--ripple-x);top:var(--ripple-y);
+  width:360px;height:360px;border-radius:50%;pointer-events:none!important;
+  background:radial-gradient(circle,#ffffffa8,#ffffff40 33%,transparent 72%);
+  animation:cpz-ripple .58s ease-out forwards;
+}
+.action.secondary .fx-ripple,.nav .fx-ripple{background:radial-gradient(circle,#3da7ea81,#3da7ea33 34%,transparent 72%)}
+.view.active > .hero,.view.active > .subhead{animation:cpz-pop-in .46s ease-out both}
+.view.active > .stats > .stat,.view.active > .grid > .card,.view.active > .steps > .step{
+  animation:cpz-pop-in .5s ease-out both;
+}
+.view.active > .stats > :nth-child(2),.view.active > .grid > :nth-child(2),.view.active > .steps > :nth-child(2){animation-delay:.075s}
+.view.active > .stats > :nth-child(3),.view.active > .steps > :nth-child(3){animation-delay:.15s}
+.view.active > .steps > :nth-child(4){animation-delay:.225s}
+.result-row{transition:background .2s,padding .2s}
+.result-row:hover{background:#f5fbff;padding-left:10px;padding-right:10px;border-radius:12px}
+.result-outcome-win{background:linear-gradient(110deg,#dff9ee,#edfef6,#dff9ee);background-size:220% 100%;animation:cpz-badge-gleam 5s ease-in-out infinite}
+.result-outcome-win:before{content:"★ ";color:#108d63}
+.profile .avatar{transition:transform .3s,box-shadow .3s}
+.profile:hover .avatar{transform:rotate(-5deg) scale(1.045);box-shadow:0 9px 21px #116eb82c}
+.privacy-welcome[open]{animation:cpz-pop-in .25s cubic-bezier(.2,.8,.2,1)}
+.privacy-welcome[open]::backdrop{animation:cpz-backdrop .2s ease-out}
+@keyframes cpz-backdrop{from{opacity:0}to{opacity:1}}
+input[type="checkbox"]{accent-color:#0e81ce}
+button:focus-visible,a:focus-visible,input:focus-visible{
+  outline:3px solid #6ac3f8;outline-offset:3px;
+}
+@media(max-width:780px){
+  html{scroll-padding-top:12px}
+  .hero-home-season{animation:none}
+  .nav button:hover,.card:hover,.stat:hover,.step:hover{transform:none}
+  .card:before,.step:before,.stat:before{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .hero:before{display:none}
+  .hero-home-season{animation:none}
+  .view.active > .hero,.view.active > .stats > .stat,.view.active > .grid > .card,.view.active > .steps > .step{opacity:1!important;transform:none!important}
+  .fx-ripple{display:none!important}
+}
+
 </style>
 </head>
 <body>
