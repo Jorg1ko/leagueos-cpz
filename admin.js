@@ -409,7 +409,7 @@
     return sets;
   }
   function interpret(rawRows){
-    const members=new Map(accounts.filter(a=>a.enabled===1).map(a=>[clean(a.playerName),a]));
+    const members=new Map(accounts.filter(a=>a.enabled===1||a.isPlaceholder===1).map(a=>[clean(a.playerName),a]));
     const rows=[],issues=[],seen=new Set();
     if(!rawRows.length)issues.push('El archivo no tiene filas de resultados.');
     if(rawRows.length>200)issues.push('El máximo es de 200 partidos por archivo.');
