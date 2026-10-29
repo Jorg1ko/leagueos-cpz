@@ -110,6 +110,9 @@ async function contactSchema(db){
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_contacts (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, whatsapp_phone TEXT NOT NULL DEFAULT '', share_with_opponent INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_profiles (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, email TEXT NOT NULL DEFAULT '', group_label TEXT NOT NULL DEFAULT '', preferred_name TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_media (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, instagram TEXT NOT NULL DEFAULT '', share_social INTEGER NOT NULL DEFAULT 0, photo_data TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_privacy_events (id INTEGER PRIMARY KEY AUTOINCREMENT, account_id INTEGER NOT NULL, purpose TEXT NOT NULL, granted INTEGER NOT NULL, actor TEXT NOT NULL, recorded_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_privacy_ack (account_id INTEGER PRIMARY KEY, revision INTEGER NOT NULL, acknowledged_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_legal_settings (id INTEGER PRIMARY KEY CHECK (id=1), responsible_name TEXT NOT NULL DEFAULT '', contact_email TEXT NOT NULL DEFAULT '', postal_address TEXT NOT NULL DEFAULT '', retention_note TEXT NOT NULL DEFAULT '', legal_basis TEXT NOT NULL DEFAULT '', approved INTEGER NOT NULL DEFAULT 0, revision INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 }
 function cleanEmail(v){
   if(typeof v!=='string'||v.length>160)return null;
@@ -141,6 +144,8 @@ async function profile(row,db){
   const own=await db.prepare('SELECT whatsapp_phone,share_with_opponent FROM cpz_player_contacts WHERE account_id=?').bind(row.id).first();
   const details=await db.prepare('SELECT email,group_label,preferred_name FROM cpz_player_profiles WHERE account_id=?').bind(row.id).first();
   const social=await db.prepare("SELECT instagram,share_social,CASE WHEN LENGTH(photo_data)>0 THEN 1 ELSE 0 END AS has_photo FROM cpz_player_media WHERE account_id=?").bind(row.id).first();
+  const legal=await db.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
+  const acknowledgement=await db.prepare('SELECT revision FROM cpz_player_privacy_ack WHERE account_id=?').bind(row.id).first();
   const opponentSocial=row.opponent_name
     ?await db.prepare("SELECT m.instagram AS instagram, CASE WHEN LENGTH(m.photo_data)>0 THEN 1 ELSE 0 END AS has_photo FROM cpz_player_accounts a JOIN cpz_player_media m ON m.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND m.share_social=1 LIMIT 1")
       .bind(row.opponent_name,row.player_name).first()
@@ -160,7 +165,9 @@ async function profile(row,db){
     instagram:social?.instagram||'',shareSocial:social?.share_social===1,
     hasPhoto:social?.has_photo===1,
     opponentInstagram:opponentSocial?.instagram||null,
-    opponentHasPhoto:opponentSocial?.has_photo===1
+    opponentHasPhoto:opponentSocial?.has_photo===1,
+    legalApproved:!!legal,legalRevision:legal?.revision||0,
+    privacyNeedsAcknowledgement:!!legal&&(!acknowledgement||acknowledgement.revision<legal.revision)
   };
 }
 export async function onRequest({request,env,params}){
@@ -220,10 +227,24 @@ export async function onRequest({request,env,params}){
       if(!row)return fail('Inicia sesión como jugador.',401);
       return respond({ok:true,role:'player',profile:await profile(row,env.LEAGUE_DB)});
     }
-    if(!['login','logout','password','contact','details','media'].includes(action))return fail('Ruta no encontrada.',404);
+    if(!['login','logout','password','contact','details','media','acknowledge'].includes(action))return fail('Ruta no encontrada.',404);
     if(request.method!=='POST')return fail('Método no permitido.',405);
     if(!originOK(request))return fail('Origen no autorizado.',403);
     if(action==='logout')return respond({ok:true,authenticated:false},200,clear);
+    if(action==='acknowledge'){
+      const row=await member(request,env);
+      if(!row)return fail('Necesitas iniciar sesión como jugador.',401);
+      const data=await body(request);
+      if(data?.confirmRead!==true)return fail('Marca la casilla si has leído la información de privacidad.');
+      await contactSchema(env.LEAGUE_DB);
+      const settings=await env.LEAGUE_DB.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
+      if(!settings)return fail('El aviso de privacidad aún está pendiente de aprobación del organizador.',409);
+      await env.LEAGUE_DB.batch([
+        env.LEAGUE_DB.prepare('INSERT INTO cpz_player_privacy_ack(account_id,revision,acknowledged_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(account_id) DO UPDATE SET revision=excluded.revision,acknowledged_at=CURRENT_TIMESTAMP').bind(row.id,settings.revision),
+        env.LEAGUE_DB.prepare("INSERT INTO cpz_privacy_events(account_id,purpose,granted,actor) VALUES(?,'privacy_notice_read',1,'player')").bind(row.id)
+      ]);
+      return respond({ok:true,profile:await profile(row,env.LEAGUE_DB)});
+    }
     if(action==='media'){
       const row=await member(request,env);
       if(!row)return fail('Necesitas iniciar sesión como jugador.',401);
@@ -232,15 +253,13 @@ export async function onRequest({request,env,params}){
       if(handle===null||photo===null||typeof data?.shareSocial!=='boolean')
         return fail('Instagram o fotografía inválidos. Usa una foto JPEG comprimida menor de 85 KB.');
       await contactSchema(env.LEAGUE_DB);
-      if(photo===undefined){
-        await env.LEAGUE_DB.prepare(
-          "INSERT INTO cpz_player_media(account_id,instagram,share_social) VALUES(?,?,?) ON CONFLICT(account_id) DO UPDATE SET instagram=excluded.instagram,share_social=excluded.share_social,updated_at=CURRENT_TIMESTAMP"
-        ).bind(row.id,handle,data.shareSocial?1:0).run();
-      }else{
-        await env.LEAGUE_DB.prepare(
-          "INSERT INTO cpz_player_media(account_id,instagram,share_social,photo_data) VALUES(?,?,?,?) ON CONFLICT(account_id) DO UPDATE SET instagram=excluded.instagram,share_social=excluded.share_social,photo_data=excluded.photo_data,updated_at=CURRENT_TIMESTAMP"
-        ).bind(row.id,handle,data.shareSocial?1:0,photo).run();
-      }
+      const mediaUpdate=photo===undefined
+        ?env.LEAGUE_DB.prepare("INSERT INTO cpz_player_media(account_id,instagram,share_social) VALUES(?,?,?) ON CONFLICT(account_id) DO UPDATE SET instagram=excluded.instagram,share_social=excluded.share_social,updated_at=CURRENT_TIMESTAMP").bind(row.id,handle,data.shareSocial?1:0)
+        :env.LEAGUE_DB.prepare("INSERT INTO cpz_player_media(account_id,instagram,share_social,photo_data) VALUES(?,?,?,?) ON CONFLICT(account_id) DO UPDATE SET instagram=excluded.instagram,share_social=excluded.share_social,photo_data=excluded.photo_data,updated_at=CURRENT_TIMESTAMP").bind(row.id,handle,data.shareSocial?1:0,photo);
+      await env.LEAGUE_DB.batch([
+        mediaUpdate,
+        env.LEAGUE_DB.prepare("INSERT INTO cpz_privacy_events(account_id,purpose,granted,actor) VALUES(?,'photo_instagram_opponent',?,'player')").bind(row.id,data.shareSocial?1:0)
+      ]);
       return respond({ok:true,profile:await profile(row,env.LEAGUE_DB)});
     }
     if(action==='details'){
@@ -264,8 +283,10 @@ export async function onRequest({request,env,params}){
       if(phone===null||typeof shared!=='boolean'||(shared&&!phone))
         return fail('Número de WhatsApp inválido o falta confirmar la autorización para compartirlo.');
       await contactSchema(env.LEAGUE_DB);
-      await env.LEAGUE_DB.prepare('INSERT INTO cpz_player_contacts (account_id,whatsapp_phone,share_with_opponent,updated_at) VALUES(?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(account_id) DO UPDATE SET whatsapp_phone=excluded.whatsapp_phone,share_with_opponent=excluded.share_with_opponent,updated_at=CURRENT_TIMESTAMP')
-        .bind(row.id,phone,shared?1:0).run();
+      await env.LEAGUE_DB.batch([
+        env.LEAGUE_DB.prepare('INSERT INTO cpz_player_contacts (account_id,whatsapp_phone,share_with_opponent,updated_at) VALUES(?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(account_id) DO UPDATE SET whatsapp_phone=excluded.whatsapp_phone,share_with_opponent=excluded.share_with_opponent,updated_at=CURRENT_TIMESTAMP').bind(row.id,phone,shared?1:0),
+        env.LEAGUE_DB.prepare("INSERT INTO cpz_privacy_events(account_id,purpose,granted,actor) VALUES(?,'whatsapp_opponent',?,'player')").bind(row.id,shared?1:0)
+      ]);
       return respond({ok:true,profile:await profile(row,env.LEAGUE_DB)});
     }
     if(action==='password'){
