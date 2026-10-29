@@ -42,9 +42,13 @@ function originOK(request){
   try{return new URL(request.headers.get('Referer')).origin===base}catch{return false}
 }
 async function body(request){
-  if(Number(request.headers.get('Content-Length')||0)>2000)throw Error('Solicitud demasiado grande.');
-  const raw=await request.text();if(raw.length>2000)throw Error('Solicitud demasiado grande.');
-  return JSON.parse(raw);
+  const max=145000;
+  if(Number(request.headers.get('Content-Length')||0)>max)throw Error('Solicitud demasiado grande.');
+  const raw=await request.text();
+  if(raw.length>max)throw Error('Solicitud demasiado grande.');
+  const result=JSON.parse(raw);
+  if(raw.length>2000&&result?.photoData===undefined)throw Error('Solicitud demasiado grande.');
+  return result;
 }
 async function digest(pass,salt,secret){
   const pepperKey=await crypto.subtle.importKey('raw',te.encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
@@ -61,9 +65,51 @@ async function passwordEqual(pass,row,secret){
     return diff===0;
   }catch{return false}
 }
+function instagramHandle(value){
+  if(value===undefined||value===null||value==='')return '';
+  if(typeof value!=='string'||value.length>150)return null;
+  let v=value.trim();
+  if(!v)return '';
+  if(/^https?:\/\//i.test(v)){
+    try{
+      const u=new URL(v);
+      if(u.protocol!=='https:'||!['instagram.com','www.instagram.com'].includes(u.hostname))return null;
+      const parts=u.pathname.split('/').filter(Boolean);
+      if(parts.length!==1)return null;
+      v=parts[0];
+    }catch{return null}
+  }else if(v.startsWith('@'))v=v.slice(1);
+  v=v.toLowerCase();
+  return /^[a-z0-9._]{1,30}$/.test(v)&&!v.includes('..')&&!v.startsWith('.')&&!v.endsWith('.')?v:null;
+}
+function validateImage(data){
+  if(data===undefined)return undefined;
+  if(data==='')return '';
+  if(typeof data!=='string'||data.length>115000)return null;
+  const m=/^data:image\/jpeg;base64,([A-Za-z0-9+/]+={0,2})$/.exec(data);
+  if(!m)return null;
+  try{
+    const raw=atob(m[1]);
+    if(raw.length<150||raw.length>85000)return null;
+    if(raw.charCodeAt(0)!==255||raw.charCodeAt(1)!==216||raw.charCodeAt(2)!==255||
+       raw.charCodeAt(raw.length-2)!==255||raw.charCodeAt(raw.length-1)!==217)return null;
+    return data;
+  }catch{return null}
+}
+function imageResponse(data){
+  const valid=validateImage(data);
+  if(!valid||typeof valid!=='string')return new Response(null,{status:404,headers:{'Cache-Control':'private, no-store'}});
+  const bytes=Uint8Array.from(atob(valid.slice('data:image/jpeg;base64,'.length)),c=>c.charCodeAt(0));
+  return new Response(bytes,{headers:{
+    'Content-Type':'image/jpeg','Cache-Control':'private, no-store, max-age=0',
+    'X-Content-Type-Options':'nosniff','Content-Disposition':'inline',
+    'Referrer-Policy':'no-referrer','X-Robots-Tag':'noindex'
+  }});
+}
 async function contactSchema(db){
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_contacts (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, whatsapp_phone TEXT NOT NULL DEFAULT '', share_with_opponent INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_profiles (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, email TEXT NOT NULL DEFAULT '', group_label TEXT NOT NULL DEFAULT '', preferred_name TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_media (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, instagram TEXT NOT NULL DEFAULT '', share_social INTEGER NOT NULL DEFAULT 0, photo_data TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 }
 function cleanEmail(v){
   if(typeof v!=='string'||v.length>160)return null;
@@ -94,6 +140,11 @@ async function profile(row,db){
   await contactSchema(db);
   const own=await db.prepare('SELECT whatsapp_phone,share_with_opponent FROM cpz_player_contacts WHERE account_id=?').bind(row.id).first();
   const details=await db.prepare('SELECT email,group_label,preferred_name FROM cpz_player_profiles WHERE account_id=?').bind(row.id).first();
+  const social=await db.prepare("SELECT instagram,share_social,CASE WHEN LENGTH(photo_data)>0 THEN 1 ELSE 0 END AS has_photo FROM cpz_player_media WHERE account_id=?").bind(row.id).first();
+  const opponentSocial=row.opponent_name
+    ?await db.prepare("SELECT m.instagram AS instagram, CASE WHEN LENGTH(m.photo_data)>0 THEN 1 ELSE 0 END AS has_photo FROM cpz_player_accounts a JOIN cpz_player_media m ON m.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND m.share_social=1 LIMIT 1")
+      .bind(row.opponent_name,row.player_name).first()
+    :null;
   // La agenda no es pública: solo se entrega el número del rival efectivamente asignado,
   // si su cuenta sigue activa, el emparejamiento es recíproco y ha autorizado compartirlo.
   const opponent=row.opponent_name
@@ -105,7 +156,11 @@ async function profile(row,db){
     group:details?.group_label||null,email:details?.email||'',preferredName:details?.preferred_name||'',
     whatsappPhone:own?.whatsapp_phone||'',
     shareWithOpponent:own?.share_with_opponent===1,
-    opponentWhatsapp:opponent?.phone||null
+    opponentWhatsapp:opponent?.phone||null,
+    instagram:social?.instagram||'',shareSocial:social?.share_social===1,
+    hasPhoto:social?.has_photo===1,
+    opponentInstagram:opponentSocial?.instagram||null,
+    opponentHasPhoto:opponentSocial?.has_photo===1
   };
 }
 export async function onRequest({request,env,params}){
@@ -145,15 +200,49 @@ export async function onRequest({request,env,params}){
         return respond({ok:true,results:[]});
       }
     }
+    if(action==='photo'&&request.method==='GET'){
+      const row=await member(request,env);
+      if(!row)return fail('Acceso exclusivo de jugadores.',401);
+      await contactSchema(env.LEAGUE_DB);
+      const other=new URL(request.url).searchParams.get('opponent')==='1';
+      if(other){
+        if(!row.opponent_name)return fail('No hay rival asignado.',404);
+        const result=await env.LEAGUE_DB.prepare(
+          "SELECT m.photo_data FROM cpz_player_accounts a JOIN cpz_player_media m ON m.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND m.share_social=1 LIMIT 1"
+        ).bind(row.opponent_name,row.player_name).first();
+        return imageResponse(result?.photo_data);
+      }
+      const result=await env.LEAGUE_DB.prepare("SELECT photo_data FROM cpz_player_media WHERE account_id=?").bind(row.id).first();
+      return imageResponse(result?.photo_data);
+    }
     if(action==='me'&&request.method==='GET'){
       const row=await member(request,env);
       if(!row)return fail('Inicia sesión como jugador.',401);
       return respond({ok:true,role:'player',profile:await profile(row,env.LEAGUE_DB)});
     }
-    if(!['login','logout','password','contact','details'].includes(action))return fail('Ruta no encontrada.',404);
+    if(!['login','logout','password','contact','details','media'].includes(action))return fail('Ruta no encontrada.',404);
     if(request.method!=='POST')return fail('Método no permitido.',405);
     if(!originOK(request))return fail('Origen no autorizado.',403);
     if(action==='logout')return respond({ok:true,authenticated:false},200,clear);
+    if(action==='media'){
+      const row=await member(request,env);
+      if(!row)return fail('Necesitas iniciar sesión como jugador.',401);
+      const data=await body(request);
+      const handle=instagramHandle(data?.instagram),photo=validateImage(data?.photoData);
+      if(handle===null||photo===null||typeof data?.shareSocial!=='boolean')
+        return fail('Instagram o fotografía inválidos. Usa una foto JPEG comprimida menor de 85 KB.');
+      await contactSchema(env.LEAGUE_DB);
+      if(photo===undefined){
+        await env.LEAGUE_DB.prepare(
+          "INSERT INTO cpz_player_media(account_id,instagram,share_social) VALUES(?,?,?) ON CONFLICT(account_id) DO UPDATE SET instagram=excluded.instagram,share_social=excluded.share_social,updated_at=CURRENT_TIMESTAMP"
+        ).bind(row.id,handle,data.shareSocial?1:0).run();
+      }else{
+        await env.LEAGUE_DB.prepare(
+          "INSERT INTO cpz_player_media(account_id,instagram,share_social,photo_data) VALUES(?,?,?,?) ON CONFLICT(account_id) DO UPDATE SET instagram=excluded.instagram,share_social=excluded.share_social,photo_data=excluded.photo_data,updated_at=CURRENT_TIMESTAMP"
+        ).bind(row.id,handle,data.shareSocial?1:0,photo).run();
+      }
+      return respond({ok:true,profile:await profile(row,env.LEAGUE_DB)});
+    }
     if(action==='details'){
       const row=await member(request,env);
       if(!row)return fail('Necesitas iniciar sesión como jugador.',401);
