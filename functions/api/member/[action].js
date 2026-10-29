@@ -112,6 +112,7 @@ async function contactSchema(db){
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_media (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, instagram TEXT NOT NULL DEFAULT '', share_social INTEGER NOT NULL DEFAULT 0, photo_data TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_privacy_events (id INTEGER PRIMARY KEY AUTOINCREMENT, account_id INTEGER NOT NULL, purpose TEXT NOT NULL, granted INTEGER NOT NULL, actor TEXT NOT NULL, recorded_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_privacy_ack (account_id INTEGER PRIMARY KEY, revision INTEGER NOT NULL, acknowledged_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_identity (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, share_name INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_legal_settings (id INTEGER PRIMARY KEY CHECK (id=1), responsible_name TEXT NOT NULL DEFAULT '', contact_email TEXT NOT NULL DEFAULT '', postal_address TEXT NOT NULL DEFAULT '', retention_note TEXT NOT NULL DEFAULT '', legal_basis TEXT NOT NULL DEFAULT '', approved INTEGER NOT NULL DEFAULT 0, revision INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 }
 function cleanEmail(v){
@@ -146,18 +147,23 @@ async function profile(row,db){
   const social=await db.prepare("SELECT instagram,share_social,CASE WHEN LENGTH(photo_data)>0 THEN 1 ELSE 0 END AS has_photo FROM cpz_player_media WHERE account_id=?").bind(row.id).first();
   const legal=await db.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
   const acknowledgement=await db.prepare('SELECT revision FROM cpz_player_privacy_ack WHERE account_id=?').bind(row.id).first();
+  const ownIdentity=await db.prepare('SELECT share_name FROM cpz_player_identity WHERE account_id=?').bind(row.id).first();
+  const rivalIdentity=row.opponent_name
+    ?await db.prepare("SELECT a.player_name,COALESCE(i.share_name,0) AS share_name,COALESCE(k.revision,0) AS acknowledged_revision FROM cpz_player_accounts a LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 LIMIT 1").bind(row.opponent_name,row.player_name).first()
+    :null;
+  const rivalVisible=!!(legal&&rivalIdentity?.share_name===1&&rivalIdentity.acknowledged_revision>=legal.revision);
   const opponentSocial=row.opponent_name
-    ?await db.prepare("SELECT m.instagram AS instagram, CASE WHEN LENGTH(m.photo_data)>0 THEN 1 ELSE 0 END AS has_photo FROM cpz_player_accounts a JOIN cpz_player_media m ON m.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND m.share_social=1 LIMIT 1")
+    ?await db.prepare("SELECT m.instagram AS instagram, CASE WHEN LENGTH(m.photo_data)>0 THEN 1 ELSE 0 END AS has_photo FROM cpz_player_accounts a JOIN cpz_player_media m ON m.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND m.share_social=1 AND EXISTS (SELECT 1 FROM cpz_player_identity i JOIN cpz_player_privacy_ack k ON k.account_id=i.account_id JOIN cpz_legal_settings l ON l.id=1 AND l.approved=1 WHERE i.account_id=a.id AND i.share_name=1 AND k.revision>=l.revision) LIMIT 1")
       .bind(row.opponent_name,row.player_name).first()
     :null;
   // La agenda no es pública: solo se entrega el número del rival efectivamente asignado,
   // si su cuenta sigue activa, el emparejamiento es recíproco y ha autorizado compartirlo.
   const opponent=row.opponent_name
-    ?await db.prepare("SELECT c.whatsapp_phone AS phone FROM cpz_player_accounts a JOIN cpz_player_contacts c ON c.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND c.share_with_opponent=1 AND c.whatsapp_phone<>'' LIMIT 1")
+    ?await db.prepare("SELECT c.whatsapp_phone AS phone FROM cpz_player_accounts a JOIN cpz_player_contacts c ON c.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND c.share_with_opponent=1 AND c.whatsapp_phone<>'' AND EXISTS (SELECT 1 FROM cpz_player_identity i JOIN cpz_player_privacy_ack k ON k.account_id=i.account_id JOIN cpz_legal_settings l ON l.id=1 AND l.approved=1 WHERE i.account_id=a.id AND i.share_name=1 AND k.revision>=l.revision) LIMIT 1")
       .bind(row.opponent_name,row.player_name).first()
     :null;
   return {
-    name:row.player_name,username:row.username,opponent:row.opponent_name||null,
+    name:row.player_name,username:row.username,opponent:rivalIdentity?(rivalVisible?rivalIdentity.player_name:'Jugador X'):null,
     group:details?.group_label||null,email:details?.email||'',preferredName:details?.preferred_name||'',
     whatsappPhone:own?.whatsapp_phone||'',
     shareWithOpponent:own?.share_with_opponent===1,
@@ -167,7 +173,10 @@ async function profile(row,db){
     opponentInstagram:opponentSocial?.instagram||null,
     opponentHasPhoto:opponentSocial?.has_photo===1,
     legalApproved:!!legal,legalRevision:legal?.revision||0,
-    privacyNeedsAcknowledgement:!!legal&&(!acknowledgement||acknowledgement.revision<legal.revision)
+    privacyNeedsAcknowledgement:!!legal&&(!acknowledgement||acknowledgement.revision<legal.revision),
+    shareName:!!(legal&&acknowledgement&&acknowledgement.revision>=legal.revision&&ownIdentity?.share_name===1),
+    canShareName:!!(legal&&acknowledgement&&acknowledgement.revision>=legal.revision),
+    opponentPrivate:!!rivalIdentity&&!rivalVisible
   };
 }
 export async function onRequest({request,env,params}){
@@ -196,11 +205,16 @@ export async function onRequest({request,env,params}){
       const row=await member(request,env);
       if(!row)return fail('Inicia sesión como jugador.',401);
       try{
+        await contactSchema(env.LEAGUE_DB);
+        const legal=await env.LEAGUE_DB.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
         const data=await env.LEAGUE_DB.prepare(
-          "SELECT r.played_at AS date,r.round_label AS round,r.group_label AS groupLabel,a.player_name AS player1,b.player_name AS player2,r.sets_json AS setsJson,r.winner_id AS winnerId FROM cpz_match_results r JOIN cpz_player_accounts a ON a.id=r.player_one_id JOIN cpz_player_accounts b ON b.id=r.player_two_id WHERE r.player_one_id=? OR r.player_two_id=? ORDER BY r.played_at DESC,r.id DESC LIMIT 150"
+          "SELECT r.played_at AS date,r.round_label AS round,r.group_label AS groupLabel,r.player_one_id AS player1Id,r.player_two_id AS player2Id,a.player_name AS player1,b.player_name AS player2,COALESCE(i1.share_name,0) AS share1,COALESCE(i2.share_name,0) AS share2,COALESCE(k1.revision,0) AS ack1,COALESCE(k2.revision,0) AS ack2,r.sets_json AS setsJson,r.winner_id AS winnerId FROM cpz_match_results r JOIN cpz_player_accounts a ON a.id=r.player_one_id JOIN cpz_player_accounts b ON b.id=r.player_two_id LEFT JOIN cpz_player_identity i1 ON i1.account_id=a.id LEFT JOIN cpz_player_identity i2 ON i2.account_id=b.id LEFT JOIN cpz_player_privacy_ack k1 ON k1.account_id=a.id LEFT JOIN cpz_player_privacy_ack k2 ON k2.account_id=b.id WHERE r.player_one_id=? OR r.player_two_id=? ORDER BY r.played_at DESC,r.id DESC LIMIT 150"
         ).bind(row.id,row.id).all();
+        const displayName=(id,name,share,ack)=>id===row.id||(legal&&share===1&&ack>=legal.revision)?name:'Jugador X';
         return respond({ok:true,results:(data.results||[]).map(r=>({
-          date:r.date,round:r.round,groupLabel:r.groupLabel,player1:r.player1,player2:r.player2,
+          date:r.date,round:r.round,groupLabel:r.groupLabel,
+          player1:displayName(r.player1Id,r.player1,r.share1,r.ack1),
+          player2:displayName(r.player2Id,r.player2,r.share2,r.ack2),
           sets:JSON.parse(r.setsJson),winner:r.winnerId===row.id?'Yo':'Rival'
         }))});
       }catch(e){
@@ -215,7 +229,7 @@ export async function onRequest({request,env,params}){
       if(other){
         if(!row.opponent_name)return fail('No hay rival asignado.',404);
         const result=await env.LEAGUE_DB.prepare(
-          "SELECT m.photo_data FROM cpz_player_accounts a JOIN cpz_player_media m ON m.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND m.share_social=1 LIMIT 1"
+          "SELECT m.photo_data FROM cpz_player_accounts a JOIN cpz_player_media m ON m.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND m.share_social=1 AND EXISTS (SELECT 1 FROM cpz_player_identity i JOIN cpz_player_privacy_ack k ON k.account_id=i.account_id JOIN cpz_legal_settings l ON l.id=1 AND l.approved=1 WHERE i.account_id=a.id AND i.share_name=1 AND k.revision>=l.revision) LIMIT 1"
         ).bind(row.opponent_name,row.player_name).first();
         return imageResponse(result?.photo_data);
       }
@@ -227,7 +241,7 @@ export async function onRequest({request,env,params}){
       if(!row)return fail('Inicia sesión como jugador.',401);
       return respond({ok:true,role:'player',profile:await profile(row,env.LEAGUE_DB)});
     }
-    if(!['login','logout','password','contact','details','media','acknowledge'].includes(action))return fail('Ruta no encontrada.',404);
+    if(!['login','logout','password','contact','details','media','acknowledge','identity'].includes(action))return fail('Ruta no encontrada.',404);
     if(request.method!=='POST')return fail('Método no permitido.',405);
     if(!originOK(request))return fail('Origen no autorizado.',403);
     if(action==='logout')return respond({ok:true,authenticated:false},200,clear);
@@ -242,6 +256,24 @@ export async function onRequest({request,env,params}){
       await env.LEAGUE_DB.batch([
         env.LEAGUE_DB.prepare('INSERT INTO cpz_player_privacy_ack(account_id,revision,acknowledged_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(account_id) DO UPDATE SET revision=excluded.revision,acknowledged_at=CURRENT_TIMESTAMP').bind(row.id,settings.revision),
         env.LEAGUE_DB.prepare("INSERT INTO cpz_privacy_events(account_id,purpose,granted,actor) VALUES(?,'privacy_notice_read',1,'player')").bind(row.id)
+      ]);
+      return respond({ok:true,profile:await profile(row,env.LEAGUE_DB)});
+    }
+    if(action==='identity'){
+      const row=await member(request,env);
+      if(!row)return fail('Necesitas iniciar sesión como jugador.',401);
+      const data=await body(request);
+      if(typeof data?.shareName!=='boolean')return fail('Indica si quieres compartir el nombre.',400);
+      await contactSchema(env.LEAGUE_DB);
+      if(data.shareName){
+        const legal=await env.LEAGUE_DB.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
+        const acknowledgement=await env.LEAGUE_DB.prepare('SELECT revision FROM cpz_player_privacy_ack WHERE account_id=?').bind(row.id).first();
+        if(!legal||!acknowledgement||acknowledgement.revision<legal.revision)
+          return fail('Primero lee y confirma el aviso legal aprobado por el organizador.',409);
+      }
+      await env.LEAGUE_DB.batch([
+        env.LEAGUE_DB.prepare("INSERT INTO cpz_player_identity(account_id,share_name,updated_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(account_id) DO UPDATE SET share_name=excluded.share_name,updated_at=CURRENT_TIMESTAMP").bind(row.id,data.shareName?1:0),
+        env.LEAGUE_DB.prepare("INSERT INTO cpz_privacy_events(account_id,purpose,granted,actor) VALUES(?,'identity_opponent',?,'player')").bind(row.id,data.shareName?1:0)
       ]);
       return respond({ok:true,profile:await profile(row,env.LEAGUE_DB)});
     }
