@@ -139,6 +139,7 @@ async function prepare(db){
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_profiles (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, email TEXT NOT NULL DEFAULT '', group_label TEXT NOT NULL DEFAULT '', preferred_name TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_media (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, instagram TEXT NOT NULL DEFAULT '', share_social INTEGER NOT NULL DEFAULT 0, photo_data TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_privacy_events (id INTEGER PRIMARY KEY AUTOINCREMENT, account_id INTEGER NOT NULL, purpose TEXT NOT NULL, granted INTEGER NOT NULL, actor TEXT NOT NULL, recorded_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_privacy_ack (account_id INTEGER PRIMARY KEY, revision INTEGER NOT NULL, acknowledged_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 }
 async function logPermission(db,id,purpose,granted,actor){
   await db.prepare('INSERT INTO cpz_privacy_events (account_id,purpose,granted,actor) VALUES(?,?,?,?)')
@@ -208,7 +209,9 @@ export async function onRequest({request,env}){
           env.LEAGUE_DB.prepare('INSERT INTO cpz_player_profiles (account_id,email,group_label) SELECT id,?,? FROM cpz_player_accounts WHERE username=? COLLATE NOCASE')
             .bind(email,group,username),
           env.LEAGUE_DB.prepare("INSERT INTO cpz_privacy_events(account_id,purpose,granted,actor) SELECT id,'whatsapp_opponent',?,'admin_declared' FROM cpz_player_accounts WHERE username=? COLLATE NOCASE")
-            .bind(contact.shared,username)
+            .bind(contact.shared,username),
+          env.LEAGUE_DB.prepare("INSERT INTO cpz_privacy_events(account_id,purpose,granted,actor) SELECT id,'privacy_notice_delivered',?,'admin_declared' FROM cpz_player_accounts WHERE username=? COLLATE NOCASE")
+            .bind(body.privacyInformed===true?1:0,username)
         ]);
       }catch(e){
         if(/constraint|unique/i.test(String(e)))return fail('Ese nombre o usuario ya existe.',409);
@@ -278,6 +281,7 @@ export async function onRequest({request,env}){
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_profiles WHERE account_id=?').bind(id),
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_media WHERE account_id=?').bind(id),
         env.LEAGUE_DB.prepare('DELETE FROM cpz_privacy_events WHERE account_id=?').bind(id),
+        env.LEAGUE_DB.prepare('DELETE FROM cpz_player_privacy_ack WHERE account_id=?').bind(id),
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_accounts WHERE id=?').bind(id)
       ]);
     }else if(action==='resetPassword'){
