@@ -88,9 +88,39 @@ function protectResponse(response){
   headers.set('X-Robots-Tag','noindex, nofollow');
   return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
 }
+
+// Inicialización única de la temporada: se retiran cuentas de prueba/anteriores
+// y resultados antiguos, sin modificar la contraseña secreta del administrador.
+// D1 ejecuta batch como una transacción: si falla, ningún borrado queda a medias.
+// La condición SQL impide que una petición concurrente borre cuentas nuevas.
+async function initializeFreshSeason(env){
+  const db=env.LEAGUE_DB;
+  if(!db)return;
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_season_bootstrap (key TEXT PRIMARY KEY, applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  const migrated=await db.prepare("SELECT key FROM cpz_season_bootstrap WHERE key='fresh_manual_roster_2026_v1'").first();
+  if(migrated)return;
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, player_name TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE COLLATE NOCASE, password_salt TEXT NOT NULL, password_hash TEXT NOT NULL, enabled INTEGER NOT NULL DEFAULT 1, session_version INTEGER NOT NULL DEFAULT 1, opponent_name TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_contacts (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, whatsapp_phone TEXT NOT NULL DEFAULT '', share_with_opponent INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_profiles (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, email TEXT NOT NULL DEFAULT '', group_label TEXT NOT NULL DEFAULT '', preferred_name TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_member_attempts (login_key TEXT PRIMARY KEY, failures INTEGER NOT NULL, locked_until INTEGER NOT NULL)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_match_results (id INTEGER PRIMARY KEY AUTOINCREMENT, match_key TEXT NOT NULL UNIQUE, played_at TEXT NOT NULL, round_label TEXT NOT NULL, group_label TEXT NOT NULL DEFAULT '', player_one_id INTEGER NOT NULL, player_two_id INTEGER NOT NULL, sets_json TEXT NOT NULL, winner_id INTEGER NOT NULL, source_file TEXT NOT NULL DEFAULT '', imported_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  const pending="NOT EXISTS (SELECT 1 FROM cpz_season_bootstrap WHERE key='fresh_manual_roster_2026_v1')";
+  await db.batch([
+    db.prepare("DELETE FROM cpz_match_results WHERE "+pending),
+    db.prepare("DELETE FROM cpz_player_contacts WHERE "+pending),
+    db.prepare("DELETE FROM cpz_player_profiles WHERE "+pending),
+    db.prepare("DELETE FROM cpz_member_attempts WHERE "+pending),
+    db.prepare("DELETE FROM cpz_player_accounts WHERE "+pending),
+    db.prepare("INSERT OR IGNORE INTO cpz_season_bootstrap (key) VALUES ('fresh_manual_roster_2026_v1')")
+  ]);
+}
 export async function onRequest(context){
   const {request,env}=context;
   const path=new URL(request.url).pathname;
+  try{await initializeFreshSeason(env)}catch(e){
+    console.error('CPZ one-time season setup failed',e?.name||'database');
+    return new Response('No se puede iniciar la temporada. Revisa la conexión de la base de datos.',{status:503,headers:{'Cache-Control':'no-store'}});
+  }
   // Puertas públicas únicas: el propio login, logout y comprobación de sesión.
   const publicRoutes=['/api/login','/api/logout','/api/session','/api/member/login','/api/member/logout','/api/member/session'];
   if(publicRoutes.includes(path))return context.next();
