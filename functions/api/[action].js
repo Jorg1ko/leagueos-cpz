@@ -60,6 +60,13 @@ async function passwordEqual(a,b){
   return diff===0;
 }
 
+async function loginAttempts(db,ip){
+  // Esta tabla controla los intentos fallidos del administrador en D1.
+  // Se crea si todavía no existe, sin borrar ni modificar registros anteriores.
+  await db.prepare("CREATE TABLE IF NOT EXISTS login_limits (ip TEXT PRIMARY KEY, failures INTEGER NOT NULL DEFAULT 0, locked_until INTEGER NOT NULL DEFAULT 0)").run();
+  return await db.prepare('SELECT failures, locked_until FROM login_limits WHERE ip=?').bind(ip).first();
+}
+
 export async function onRequest({request,env,params}){
   const action=params.action;
   const method=request.method;
