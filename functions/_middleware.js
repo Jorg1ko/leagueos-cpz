@@ -135,6 +135,12 @@ export async function onRequest(context){
   const publicRoutes=['/api/login','/api/logout','/api/session','/api/member/login','/api/member/logout','/api/member/session'];
   if(publicRoutes.includes(path))return context.next();
 
+  // A dedicated player login link must work even when the same browser still
+  // holds an administrator cookie. The successful member login clears that cookie.
+  const url=new URL(request.url);
+  if((path==='/'||path==='/index.html')&&url.searchParams.get('role')==='player'&&
+     (request.method==='GET'||request.method==='HEAD'))return privateLogin(request);
+
   const admin=await authenticated(request,env.ADMIN_PASSWORD);
   const player=admin?null:await playerSession(request,env);
 
