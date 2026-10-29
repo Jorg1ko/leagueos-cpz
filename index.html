@@ -482,6 +482,13 @@ a{color:#106bb5}
 .accounts-secret-actions button{font-size:11px;font-weight:750;border-radius:8px;border:1px solid #c4dcec;padding:10px 12px;color:#126bad;background:#fff}
 .accounts-note{padding:15px;background:#f0f7ff;border:1px solid #d5e8f8;color:#577692;border-radius:12px;line-height:1.7;font-size:12px;margin:15px 0}
 .accounts-feedback{min-height:19px;font-size:12px;color:#37719c;line-height:1.55;margin:0}
+.accounts-form .accounts-consent,.accounts-contact-edit .accounts-consent{display:flex;flex-direction:row;align-items:flex-start;gap:9px;color:#58758e;line-height:1.55;font-size:12px;font-weight:500}
+.accounts-consent input[type="checkbox"]{flex-shrink:0;width:17px;height:17px;margin:1px 0 0}
+.accounts-contact-edit{margin-top:13px;padding:13px;border:1px solid #d6e6f3;background:#f6fbff;border-radius:12px;display:grid;gap:11px}
+.accounts-contact-edit label{font-weight:700;font-size:12px;color:#385d80;display:grid;gap:7px}
+.accounts-contact-edit input[type="tel"]{width:100%;padding:10px 11px;border:1px solid #cbdfee;border-radius:8px;background:white}
+.accounts-contact-edit button{padding:10px 12px;border-radius:9px;border:1px solid #bbd4ea;color:#125d98;background:white;font-size:12px;font-weight:750}
+.accounts-contact-edit button.btn{background:#167dcb;color:white;border-color:#167dcb}
 @media(max-width:940px){.accounts-layout{grid-template-columns:1fr}.accounts-admin-list{max-height:none}}
 @media(max-width:560px){.accounts-hero{padding:22px}.accounts-hero-mark{display:none}.accounts-hero h1{font-size:25px}.accounts-stats{gap:8px}.accounts-stat{padding:13px}.accounts-stat strong{font-size:21px}.accounts-stat span{font-size:10px}}
 
@@ -765,6 +772,11 @@ a{color:#106bb5}
           <div class="accounts-inline"><input type="text" id="accountPassword" required minlength="12" maxlength="128" autocomplete="off" spellcheck="false" aria-label="Contraseña provisional"><button type="button" id="generateAccountPassword">Generar</button></div>
         </label>
         <p class="help">Se recomienda utilizar la contraseña aleatoria generada; el jugador podrá cambiarla después.</p>
+        <label for="accountWhatsappPhone">WhatsApp del jugador (opcional)
+          <input type="tel" id="accountWhatsappPhone" autocomplete="off" inputmode="tel" maxlength="45" placeholder="+34 6XX XXX XXX">
+        </label>
+        <label class="accounts-consent" for="accountShareWhatsapp"><input id="accountShareWhatsapp" type="checkbox"> El jugador me ha autorizado a mostrar su WhatsApp exclusivamente a su rival asignado.</label>
+        <p class="help">Puedes guardar el teléfono sin compartirlo y activar el permiso después. Se aceptan números internacionales con prefijo + o móviles españoles de 9 cifras.</p>
         <button class="btn" type="submit" id="createAccountButton">Crear cuenta privada</button>
         <p id="accountsMessage" class="accounts-feedback" role="status"></p>
       </form>
@@ -1093,6 +1105,8 @@ function renderAccounts(){
     const head=accountCell('div','accounts-row-top');
     const summary=accountCell('div','');
     summary.append(accountCell('strong','',account.playerName),accountCell('small','','@'+account.username+' · Rival: '+(account.opponentName||'Sin asignar')));
+    if(account.whatsappPhone)summary.append(accountCell('small','','WhatsApp: '+account.whatsappPhone+' · '+(account.shareWithOpponent===1?'Compartido con rival':'Solo privado')));
+    else summary.append(accountCell('small','','WhatsApp no facilitado'));
     const status=accountCell('span','account-state '+(account.enabled===1?'active':'disabled'),account.enabled===1?'Activo':'Desactivado');
     head.append(summary,status);
     const actions=accountCell('div','accounts-row-actions');
@@ -1110,7 +1124,36 @@ function renderAccounts(){
       if(!confirm((enabled?'¿Activar el acceso de ':'¿Desactivar la cuenta de ')+account.playerName+'?'))return;
       await mutateAccount('setEnabled',{id:account.id,enabled},null,null,null);
     };
-    actions.append(reset,toggle);card.append(head,actions);frag.append(card);
+    const edit=accountCell('button','','Editar WhatsApp');
+    edit.type='button';
+    const contactForm=document.createElement('form');
+    contactForm.className='accounts-contact-edit hidden';
+    const contactLabel=accountCell('label','','WhatsApp del jugador');
+    const phoneInput=document.createElement('input');
+    phoneInput.type='tel';phoneInput.inputMode='tel';phoneInput.maxLength=45;
+    phoneInput.placeholder='+34 6XX XXX XXX';phoneInput.value=account.whatsappPhone||'';
+    contactLabel.append(phoneInput);
+    const consentLabel=accountCell('label','accounts-consent','');
+    const consentBox=document.createElement('input');
+    consentBox.type='checkbox';consentBox.checked=account.shareWithOpponent===1;
+    consentLabel.append(consentBox,document.createTextNode(' Autorizado por el jugador para compartir con su rival.'));
+    const submit=accountCell('button','btn','Guardar contacto');
+    submit.type='submit';
+    const cancel=accountCell('button','','Cancelar');
+    cancel.type='button';cancel.onclick=()=>contactForm.classList.add('hidden');
+    contactForm.append(contactLabel,consentLabel,submit,cancel);
+    contactForm.onsubmit=async event=>{
+      event.preventDefault();
+      await mutateAccount('setContact',{
+        id:account.id,whatsappPhone:phoneInput.value,shareWithOpponent:consentBox.checked
+      },null,null,null);
+    };
+    edit.onclick=()=>{
+      contactForm.classList.toggle('hidden');
+      if(!contactForm.classList.contains('hidden'))phoneInput.focus();
+    };
+    actions.append(edit,reset,toggle);
+    card.append(head,actions,contactForm);frag.append(card);
   }
   $('accountsList').replaceChildren(frag);
 }
@@ -1139,7 +1182,7 @@ async function mutateAccount(action,payload,name,username,password){
     accountRecords=data.accounts||[];accountsLoaded=true;renderAccounts();
     if(name&&password)displayIssued(name,username,password);
     $('accountsMessage').textContent='Cambios guardados.';
-    toast(action==='create'?'Cuenta creada':action==='resetPassword'?'Contraseña restablecida':'Acceso actualizado');
+    toast(action==='create'?'Cuenta creada':action==='resetPassword'?'Contraseña restablecida':action==='setContact'?'WhatsApp actualizado':'Acceso actualizado');
     return true;
   }catch(e){
     $('accountsMessage').textContent=e.message;toast(e.message);return false;
@@ -1161,7 +1204,10 @@ function prepareAccountsUI(){
     event.preventDefault();
     if(!$('accountPlayerName').value)return;
     const name=$('accountPlayerName').value,username=$('accountUsername').value.trim().toLowerCase(),password=$('accountPassword').value;
-    const done=await mutateAccount('create',{playerName:name,username,password},name,username,password);
+    const done=await mutateAccount('create',{
+      playerName:name,username,password,whatsappPhone:$('accountWhatsappPhone').value,
+      shareWithOpponent:$('accountShareWhatsapp').checked
+    },name,username,password);
     if(done){$('createAccountForm').reset();$('accountPassword').value='';}
   };
   $('refreshAccounts').onclick=loadAccounts;
