@@ -49,11 +49,30 @@ async function passwordHash(password,salt){
 }
 function validPassword(s){return typeof s==='string'&&s.length>=12&&s.length<=128}
 const userRe=/^[a-z0-9][a-z0-9._-]{2,31}$/;
+function normalizedPhone(value){
+  if(value===null||value===undefined||value==='')return '';
+  if(typeof value!=='string'||value.length>45)return null;
+  let raw=value.trim().replace(/[\s().-]/g,'');
+  if(raw.startsWith('00'))raw='+'+raw.slice(2);
+  if(/^[67]\d{8}$/.test(raw))raw='+34'+raw;
+  else if(/^34[67]\d{8}$/.test(raw))raw='+'+raw;
+  return /^\+[1-9]\d{7,14}$/.test(raw)?raw:null;
+}
+function contactInput(body){
+  const phone=normalizedPhone(body.whatsappPhone);
+  if(phone===null||typeof body.shareWithOpponent!=='boolean'||(body.shareWithOpponent&&!phone))return null;
+  return {phone,shared:body.shareWithOpponent?1:0};
+}
+async function storeContact(db,id,contact){
+  await db.prepare('INSERT INTO cpz_player_contacts (account_id,whatsapp_phone,share_with_opponent,updated_at) VALUES(?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(account_id) DO UPDATE SET whatsapp_phone=excluded.whatsapp_phone,share_with_opponent=excluded.share_with_opponent,updated_at=CURRENT_TIMESTAMP')
+    .bind(id,contact.phone,contact.shared).run();
+}
 async function prepare(db){
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, player_name TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE COLLATE NOCASE, password_salt TEXT NOT NULL, password_hash TEXT NOT NULL, enabled INTEGER NOT NULL DEFAULT 1, session_version INTEGER NOT NULL DEFAULT 1, opponent_name TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_contacts (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, whatsapp_phone TEXT NOT NULL DEFAULT '', share_with_opponent INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
 }
 async function records(db){
-  const result=await db.prepare('SELECT id, player_name AS playerName, username, enabled, opponent_name AS opponentName, created_at AS createdAt FROM cpz_player_accounts ORDER BY player_name COLLATE NOCASE LIMIT 100').all();
+  const result=await db.prepare("SELECT a.id,a.player_name AS playerName,a.username,a.enabled,a.opponent_name AS opponentName,a.created_at AS createdAt,COALESCE(c.whatsapp_phone,'') AS whatsappPhone,COALESCE(c.share_with_opponent,0) AS shareWithOpponent FROM cpz_player_accounts a LEFT JOIN cpz_player_contacts c ON c.account_id=a.id ORDER BY a.player_name COLLATE NOCASE LIMIT 100").all();
   return {ok:true,accounts:result.results||[],totalPlayers:roster.length};
 }
 function identifier(value){
@@ -76,17 +95,29 @@ export async function onRequest({request,env}){
       if(!roster.includes(playerName))return fail('Selecciona uno de los participantes registrados.');
       if(!userRe.test(username))return fail('El usuario debe tener entre 3 y 32 caracteres: letras sin tildes, números, punto, guion o guion bajo.');
       if(!validPassword(body.password))return fail('La contraseña provisional debe tener entre 12 y 128 caracteres.');
+      const contact=contactInput(body);
+      if(!contact)return fail('Número de WhatsApp inválido o falta indicar si puede compartirse con el rival.');
       const index=roster.indexOf(playerName);
       const opponentName=roster[index%2?index-1:index+1];
       const salt=crypto.getRandomValues(new Uint8Array(16));
       const digest=await passwordHash(body.password,salt);
       try{
-        await env.LEAGUE_DB.prepare('INSERT INTO cpz_player_accounts (player_name,username,password_salt,password_hash,opponent_name) VALUES(?,?,?,?,?)')
+        const inserted=await env.LEAGUE_DB.prepare('INSERT INTO cpz_player_accounts (player_name,username,password_salt,password_hash,opponent_name) VALUES(?,?,?,?,?)')
           .bind(playerName,username,b64(salt),digest,opponentName).run();
+        const createdId=inserted.meta?.last_row_id;
+        if(!createdId)throw Error('Identificador de nueva cuenta ausente');
+        await storeContact(env.LEAGUE_DB,createdId,contact);
       }catch(e){
         if(/constraint|unique/i.test(String(e)))return fail('Ese jugador o nombre de usuario ya tiene una cuenta.',409);
         throw e;
       }
+    }else if(action==='setContact'){
+      const id=identifier(body.id);
+      const contact=contactInput(body);
+      if(!id||!contact)return fail('Introduce un número válido (+34 para España) y confirma el permiso para compartirlo.');
+      const existing=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_player_accounts WHERE id=?').bind(id).first();
+      if(!existing)return fail('Cuenta no encontrada.',404);
+      await storeContact(env.LEAGUE_DB,id,contact);
     }else if(action==='resetPassword'){
       const id=identifier(body.id);
       if(!id||!validPassword(body.password))return fail('Selecciona una cuenta y una contraseña provisional de al menos 12 caracteres.');
