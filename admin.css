@@ -293,3 +293,134 @@ dialog{border-radius:21px;max-height:90dvh;overflow-y:auto}
 @media(prefers-reduced-motion:reduce){
   .nav,.button,.metric{transition:none!important}
 }
+
+
+/* CPZ Motion 2026/27 — detalles deportivos, microinteracciones y profundidad */
+/* Todo movimiento es decorativo: el contenido, los controles y los números reales
+   permanecen accesibles cuando se desactivan las animaciones. */
+@keyframes cpz-appear{
+  from{opacity:0;transform:translate3d(0,14px,0)}
+  to{opacity:1;transform:translateZ(0)}
+}
+@keyframes cpz-light-sweep{
+  0%,20%{transform:translateX(-115%) skewX(-18deg);opacity:0}
+  35%{opacity:.32}
+  60%,100%{transform:translateX(220%) skewX(-18deg);opacity:0}
+}
+@keyframes cpz-hover-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-7px)}
+}
+@keyframes cpz-ball-breathe{
+  0%,100%{transform:scale(1) rotate(-8deg);filter:drop-shadow(0 2px 6px #07528b20)}
+  50%{transform:scale(1.09) rotate(8deg);filter:drop-shadow(0 5px 11px #07528b37)}
+}
+@keyframes cpz-status-pulse{
+  0%,100%{box-shadow:0 0 0 0 #0badd133}
+  50%{box-shadow:0 0 0 7px #0badd100}
+}
+@keyframes cpz-ripple-out{
+  from{transform:translate(-50%,-50%) scale(0);opacity:.38}
+  to{transform:translate(-50%,-50%) scale(1);opacity:0}
+}
+@keyframes cpz-border-flow{
+  from{background-position:0 50%}
+  to{background-position:200% 50%}
+}
+@keyframes cpz-toast-arrive{
+  from{opacity:0;transform:translateY(14px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+html{scroll-padding-top:90px}
+::selection{background:#9fdcff;color:#092e52}
+.sidebar .brand img{transition:transform .32s cubic-bezier(.2,.8,.2,1),box-shadow .32s}
+.sidebar .brand:hover img{transform:rotate(-4deg) scale(1.045);box-shadow:0 15px 31px #000a}
+.nav .cpz-icon{transition:transform .22s ease,color .2s ease}
+.nav:hover .cpz-icon{transform:scale(1.15) rotate(-6deg)}
+.nav.active .cpz-icon{filter:drop-shadow(0 1px 3px #ffffff40)}
+.top{transition:box-shadow .25s}
+.pill{position:relative;isolation:isolate}
+.pill:before{
+  content:"";position:relative;width:7px;height:7px;border-radius:50%;
+  background:#15bba4;box-shadow:0 0 0 3px #15bba423;
+  animation:cpz-status-pulse 3.5s ease-in-out infinite;
+}
+.pill .cpz-icon{order:1}
+.hero{transition:box-shadow .3s ease}
+.hero:before{
+  content:"";position:absolute;z-index:0;inset:-10%;
+  background:linear-gradient(107deg,transparent 15%,#c7f2ff00 32%,#a3e5ff26 50%,#c7f2ff00 64%,transparent 80%);
+  pointer-events:none;transform:translateX(-115%) skewX(-18deg);
+  animation:cpz-light-sweep 11s ease-in-out 1.2s infinite;
+}
+.hero > *{position:relative;z-index:1}
+.hero:after{z-index:0}
+.hero-kicker .cpz-icon{animation:cpz-ball-breathe 5s ease-in-out infinite}
+.hero-season{animation:cpz-hover-float 7s ease-in-out infinite}
+.hero-season-icon{transition:transform .35s ease,background .35s}
+.hero-season:hover .hero-season-icon{transform:rotate(-9deg) scale(1.1);background:#ffffff31}
+.hero-season-private{color:#e6f7ff}
+.hero-season-private .cpz-icon{filter:drop-shadow(0 0 6px #94e4ff60)}
+.hero-actions .button{position:relative;overflow:hidden}
+.hero-actions .button > span:last-child{transition:transform .22s}
+.hero-actions .button:hover > span:last-child{transform:translateX(5px)}
+.metrics--home .metric{isolation:isolate}
+.metric,.card,.player-card{
+  --fx-x:50%;--fx-y:50%;
+  position:relative;isolation:isolate;
+}
+.metric:before,.card:before,.player-card:before{
+  content:"";position:absolute;inset:0;border-radius:inherit;z-index:0;
+  background:radial-gradient(230px circle at var(--fx-x) var(--fx-y),#69c5ff1a,transparent 72%);
+  pointer-events:none;opacity:0;transition:opacity .26s;
+}
+.metric > *,.card > *,.player-card > *{position:relative;z-index:1}
+.metric-icon{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s}
+.metric:hover .metric-icon{transform:rotate(-8deg) scale(1.1);box-shadow:0 6px 17px #0e7ab525}
+.metric:hover:before,.card:hover:before,.player-card:hover:before{opacity:1}
+.feature-card{transition:transform .24s ease,box-shadow .24s ease,border-color .24s}
+.feature-card:hover{transform:translateY(-5px);border-color:#afd7ef;box-shadow:0 18px 35px #144a7421}
+.feature-icon{transition:transform .34s cubic-bezier(.25,1,.35,1),box-shadow .3s}
+.feature-card:hover .feature-icon{transform:rotate(-7deg) scale(1.09);box-shadow:0 10px 20px #087cd21c}
+.player-card{transition:border-color .25s,box-shadow .25s,transform .25s}
+.player-card:hover{transform:translateY(-2px);box-shadow:0 10px 25px #10497716}
+.button,.nav{touch-action:manipulation}
+.button{position:relative;overflow:hidden;isolation:isolate}
+.button:not(:disabled):active{transform:translateY(1px) scale(.985)}
+.fx-ripple{
+  position:absolute!important;z-index:2!important;display:block!important;pointer-events:none!important;
+  left:var(--ripple-x);top:var(--ripple-y);width:360px;height:360px;border-radius:50%;
+  transform-origin:center;background:radial-gradient(circle,#ffffffad 0%,#ffffff4a 30%,#ffffff00 70%);
+  animation:cpz-ripple-out .58s ease-out forwards;
+}
+.button.secondary .fx-ripple,.button.ghost .fx-ripple{
+  background:radial-gradient(circle,#0b87c953 0%,#0b87c924 36%,transparent 73%);
+}
+.view:not([hidden]) .hero,.view:not([hidden]) > .section-title{animation:cpz-appear .45s ease-out both}
+.view:not([hidden]) > .metrics .metric,.view:not([hidden]) > .grid2 > .card{
+  animation:cpz-appear .53s ease-out both;
+}
+.view:not([hidden]) > .metrics .metric:nth-child(2),.view:not([hidden]) > .grid2 > .card:nth-child(2){animation-delay:.07s}
+.view:not([hidden]) > .metrics .metric:nth-child(3){animation-delay:.14s}
+.view:not([hidden]) > .metrics .metric:nth-child(4){animation-delay:.21s}
+dialog[open]{animation:cpz-appear .22s cubic-bezier(.2,.8,.2,1) both}
+dialog[open]::backdrop{animation:cpz-fade-backdrop .22s ease-out}
+@keyframes cpz-fade-backdrop{from{opacity:0}to{opacity:1}}
+input[type="checkbox"]{accent-color:#0b82cd}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:3px solid #55b9f8;outline-offset:3px;
+}
+@media(max-width:760px){
+  html{scroll-padding-top:10px}
+  .nav:hover .cpz-icon,.nav:hover{transform:none}
+  .hero-season{animation:none}
+  .metric:hover,.player-card:hover,.feature-card:hover{transform:none}
+  .metric:before,.card:before,.player-card:before{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .hero:before{display:none}
+  .hero-season{animation:none}
+  .view:not([hidden]) .hero,.view:not([hidden]) > .metrics .metric,.view:not([hidden]) > .grid2 > .card{opacity:1!important;transform:none!important}
+  .fx-ripple{display:none!important}
+}
