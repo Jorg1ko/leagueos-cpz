@@ -100,7 +100,10 @@ export async function onRequest({request,env,params}){
     }
     await env.LEAGUE_DB.prepare('DELETE FROM login_limits WHERE ip=?').bind(ip).run();
     const token=await issueSession(env.ADMIN_PASSWORD);
-    return response({ok:true,authenticated:true},200,SESSION+'='+token+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age='+SESSION_AGE);
+    const result=response({ok:true,authenticated:true},200,SESSION+'='+token+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age='+SESSION_AGE);
+    // Keep exactly one active role in this browser after successful login.
+    result.headers.append('Set-Cookie','__Host-cpz_member=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
+    return result;
   }catch(e){
     console.error('CPZ authentication error',e?.name||'runtime');
     return error('No se ha podido completar la operación.',500);
