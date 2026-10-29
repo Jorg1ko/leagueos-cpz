@@ -199,7 +199,23 @@
  <label class="checkbox"><input name="shareWithOpponent" type="checkbox"> Tiene permiso para compartir WhatsApp con su rival.</label>
  <label>Grupo<input name="groupLabel" maxlength="35"></label>
  <div class="actions"><button type="submit" class="button">Guardar perfil</button><button class="button ghost" type="button" data-close="editDialog">Cancelar</button></div>
- <p class="status" id="editStatus"></p></form></div></dialog>
+ <p class="status" id="editStatus"></p></form>
+ <div class="social-admin-separator"></div>
+ <h3>Foto e Instagram</h3>
+ <form class="form" id="socialAdminForm">
+   <input type="hidden" name="id">
+   <div class="social-preview-wrap">
+     <div id="adminAvatarFallback" class="social-photo-fallback">CP</div>
+     <img id="adminAvatarPreview" class="social-photo-preview" alt="Foto del jugador" hidden>
+     <span class="social-preview-help">Foto cuadrada. Se reduce automáticamente para que ocupe poco espacio.</span>
+   </div>
+   <label>Seleccionar foto del jugador<input id="adminSocialFile" type="file" accept="image/jpeg,image/png,image/webp"></label>
+   <label>Instagram (@usuario o enlace)<input name="instagram" type="text" placeholder="@usuario" maxlength="150" autocomplete="off" autocapitalize="none" spellcheck="false"></label>
+   <label class="checkbox"><input name="shareSocial" type="checkbox"> El jugador ha autorizado que su foto e Instagram se muestren a su rival asignado.</label>
+   <div class="actions"><button id="saveSocialAdmin" class="button" type="submit">Guardar foto e Instagram</button><button id="adminRemovePhoto" class="button warning" type="button">Quitar foto</button></div>
+   <p id="socialAdminStatus" class="status" role="status"></p>
+ </form>
+ </div></dialog>
 <dialog id="pairDialog"><div class="dialog-body"><h3 id="pairTitle">Asignar rival</h3>
  <form id="pairForm" class="form"><input name="id" type="hidden">
  <label>Rival asignado<select name="opponentId"><option value="">Sin rival</option></select></label>
