@@ -90,19 +90,36 @@
 </aside>
 <div class="workspace"><header class="top">
  <div><strong>RANKING INDIVIDUAL CPZ 2026/27</strong><small>Gestión privada de jugadores, partidos y resultados</small></div>
- <div class="top-actions"><span class="pill">ADMINISTRADOR</span><button type="button" class="button secondary" id="logout">Salir</button></div>
+ <div class="top-actions"><span class="pill"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-lock"></use></svg> ADMINISTRADOR</span><button type="button" class="button secondary" id="logout">Salir</button></div>
 </header><main class="main">
 <section class="view" id="page-home">
-  <div class="hero"><small>CLUB PICKLEBALL ZARAGOZA · TEMPORADA 2026/27</small><h1>Ranking desde cero</h1><p>Empezamos sin jugadores precargados ni cruces inventados. Crea los perfiles individualmente, asigna rivales y añade resultados reales mediante un Excel revisado.</p></div>
-  <div class="metrics">
-    <div class="metric"><b id="playerCount">0</b><small>Jugadores registrados</small></div>
-    <div class="metric"><b id="activeCount">0</b><small>Cuentas activas</small></div>
-    <div class="metric"><b id="resultCount">0</b><small>Resultados guardados</small></div>
+  <div class="hero hero--overview">
+    <div class="hero-copy">
+      <span class="hero-kicker"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-ball"></use></svg> COMPETICIÓN PRIVADA · TEMPORADA 2026/27</span>
+      <h1>El ranking, <span class="hero-highlight">bajo control.</span></h1>
+      <p>Tu centro de operaciones para organizar la temporada. Gestiona jugadores, asigna enfrentamientos e importa resultados reales, desde un solo lugar.</p>
+      <div class="hero-actions">
+        <button class="button hero-primary" type="button" data-target="players"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg> Gestionar jugadores <span aria-hidden="true">→</span></button>
+        <button class="button hero-outline" type="button" data-target="results">Importar resultados <span aria-hidden="true">↗</span></button>
+      </div>
+    </div>
+    <div class="hero-season" aria-label="Temporada actual">
+      <span class="hero-season-icon"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-trophy"></use></svg></span>
+      <span class="hero-season-label">TEMPORADA</span>
+      <strong>2026<span>/</span>27</strong>
+      <small>Ranking Individual CPZ</small>
+      <span class="hero-season-private"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-lock"></use></svg> Gestión privada</span>
+    </div>
+  </div>
+  <div class="metrics metrics--home">
+    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><span class="metric-trend">PARTICIPACIÓN</span></div><b id="playerCount">0</b><small>Jugadores registrados</small></div>
+    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--teal"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-paddle"></use></svg></span><span class="metric-trend">ACCESOS</span></div><b id="activeCount">0</b><small>Cuentas activas</small></div>
+    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--amber"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-trophy"></use></svg></span><span class="metric-trend">COMPETICIÓN</span></div><b id="resultCount">0</b><small>Resultados confirmados</small></div>
   </div>
   <div class="notice"><strong>Acceso privado.</strong> Solo el administrador crea cuentas. Los jugadores pueden modificar sus datos personales, pero no asignarse rivales ni alterar marcadores. Las reservas y pagos se realizan en Taykus, fuera de esta web.</div>
   <div class="grid2">
-    <article class="card"><h3>Alta manual de jugadores</h3><p>Introduce nombre, correo, WhatsApp, usuario y contraseña provisional; después podrás asignar un rival y su grupo.</p><button class="button" type="button" data-target="players">Dar de alta el primer jugador</button></article>
-    <article class="card"><h3>Importar resultados</h3><p>Descarga la plantilla Excel, introduce fechas, rivales y sets. La importación exige validación y confirmación antes de guardar.</p><button class="button secondary" type="button" data-target="results">Abrir Excel de resultados</button></article>
+    <article class="card feature-card"><span class="feature-number">01 · PARTICIPANTES</span><span class="feature-icon feature-icon--blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><h3>Jugadores y perfiles</h3><p>Altas individuales, contraseñas privadas, grupos y rivales. También puedes crear plazas «Jugador X» sin datos de contacto.</p><button class="button" type="button" data-target="players">Gestionar participantes <span aria-hidden="true">→</span></button></article>
+    <article class="card feature-card"><span class="feature-number">02 · RESULTADOS</span><span class="feature-icon feature-icon--teal"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-ranking"></use></svg></span><h3>Resultados sin complicaciones</h3><p>Descarga la plantilla Excel, revisa sets y fechas y confirma la importación. Solo se mostrarán partidos registrados.</p><button class="button secondary" type="button" data-target="results">Abrir gestión de resultados <span aria-hidden="true">→</span></button></article>
   </div>
   <div class="actions"><a class="button secondary" href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Reservar y pagar pista en Taykus ↗</a></div>
 </section>
