@@ -401,7 +401,8 @@
     const opponentPhone=typeof data.opponentWhatsapp==='string'?data.opponentWhatsapp:'';
     const authorized=/^\+[1-9]\d{7,14}$/.test(opponentPhone);
     const opponent=data.opponent||'tu rival';
-    const message='Hola '+opponent+', soy '+data.name+'. Somos rivales en el RANKING INDIVIDUAL CPZ 2026/27. ¿Cuándo te viene bien jugar? Podemos reservar pista en Taykus.';
+    const sender=data.shareName===true?data.name:'Jugador X';
+    const message='Hola '+opponent+', soy '+sender+'. Somos rivales en el RANKING INDIVIDUAL CPZ 2026/27. ¿Cuándo te viene bien jugar? Podemos reservar pista en Taykus.';
     const url=authorized?'https://wa.me/'+opponentPhone.slice(1)+'?text='+encodeURIComponent(message):'';
     for(const [linkId,hintId] of [['whatsappOpponentHome','whatsappOpponentHomeHint'],['whatsappOpponentMatch','whatsappOpponentMatchHint']]){
       const link=$(linkId),hint=$(hintId);
