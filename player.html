@@ -479,6 +479,182 @@ button:focus-visible,a:focus-visible,input:focus-visible{
   .top:after{box-shadow:none;transition:none}
 }
 
+/* Tour editorial · Inspiración gráfica de circuitos de pickleball,
+   con marca CPZ, enlaces originales del club y sin contenido deportivo ficticio. */
+:root{--tour-deep:#071739;--tour-indigo:#101b52;--tour-electric:#226df6;--tour-accent:#6ddcfa;--tour-lime:#d5fb5b}
+body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8fc}
+.main{max-width:1530px}
+.side{background:linear-gradient(165deg,#081946 0%,#101b56 49%,#07132f 100%);border-right-color:#25366f}
+.side:before{background:linear-gradient(90deg,#4fbefe,#226dff,#c4f9fb)}
+.side .brand img{box-shadow:0 16px 38px #000a}
+.nav button.active{background:linear-gradient(110deg,#286af0,#188ce9);box-shadow:0 10px 27px #050f4199}
+.nav button.active:before{background:var(--tour-lime)}
+.top-club-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border:1px solid #cddff0;border-radius:50px;background:#f1f8ff;color:#114b89;font-size:11px;font-weight:820;padding:10px 13px;white-space:nowrap;transition:background .2s,transform .2s}
+.top-club-link:hover{background:#e2f1ff;transform:translateY(-2px)}
+.top-club-link .cpz-icon{width:17px;height:17px;color:#1c83ce}
+.club-sidepanel{
+  display:grid;gap:10px;margin:20px 3px 11px;padding:20px 16px;
+  background:linear-gradient(150deg,#1f377ca8,#102251e6);
+  border-radius:16px;border:1px solid #6597df45;
+}
+.club-sidepanel-kicker{font-size:9px;font-weight:900;letter-spacing:2px;color:#84cafd}
+.club-sidepanel strong{color:white;font-size:17px;line-height:1.18;letter-spacing:-.3px}
+.club-sidepanel a{display:flex;align-items:center;justify-content:space-between;gap:8px;text-decoration:none;font-size:10px;font-weight:730;color:#d4eafe;border-top:1px solid #ffffff1b;padding-top:10px;transition:color .2s}
+.club-sidepanel a:hover{color:var(--tour-lime)}
+.club-sidepanel a span{font-size:15px}
+.tour-eyebrow{display:flex;align-items:center;gap:12px;margin:2px 0 16px;color:#627996;font-size:10px;letter-spacing:.9px;flex-wrap:wrap}
+.tour-eyebrow strong{color:#172760;font-weight:900;letter-spacing:1.4px}
+.tour-eyebrow a{margin-left:auto;text-decoration:none;color:#0a66ad;font-size:11px;letter-spacing:0;font-weight:820}
+.tour-eyebrow a:hover{text-decoration:underline}
+.tour-eyebrow-pulse{height:10px;width:10px;border-radius:50%;background:var(--tour-lime);border:2px solid #0e56a2;box-shadow:0 0 0 4px #63c7f52b;flex-shrink:0}
+.hero-home{min-height:364px;background:
+  linear-gradient(100deg,#060e2eef 0%,#112f76db 52%,#1046888f 100%),
+  url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/POCO-SOBRE-NOSOTROS-1024x576.jpg") center 46%/cover no-repeat;border-radius:24px}
+.hero-home:after{border-color:#ddfaff5e}
+.hero-kicker{border:1px solid #beeaff60;background:#ffffff16}
+.hero-highlight{color:var(--tour-lime);text-shadow:0 8px 28px #c7f65d28}
+.hero-home h1{font-weight:950;font-style:italic;text-transform:uppercase;letter-spacing:-2.9px;line-height:.98}
+.hero-home p{font-size:14px}
+.hero-home-season{background:linear-gradient(155deg,#ffffff30,#142b6c70);border-color:#d1eafa4d}
+.hero-home-season strong{font-style:italic;letter-spacing:-3px}
+.hero-home-season strong span{color:var(--tour-lime)}
+.hero-home-actions .hero-primary{background:linear-gradient(112deg,#205ef1,#168cf1);border-color:#6db6f3}
+.hero-home-actions .hero-primary:hover{background:linear-gradient(112deg,#164dca,#096ed7)}
+.stat:after{background:linear-gradient(90deg,#246ef6,#c9edff)}
+.competition-strip{
+  display:flex;align-items:center;justify-content:space-between;gap:19px;flex-wrap:wrap;
+  margin:7px 0 22px;padding:19px 22px;border-radius:18px;background:white;
+  border:1px solid #dce7f1;box-shadow:0 9px 28px #103c7010
+}
+.competition-strip-title{display:flex;align-items:center;gap:15px}
+.strip-roundel{display:grid;place-items:center;width:54px;height:54px;border-radius:50%;background:#101a51;color:white;font-size:15px;font-style:italic;font-weight:950;letter-spacing:-1.5px;border:3px solid #e3fb88;box-shadow:0 5px 14px #0d1a471d}
+.competition-strip-title div{display:flex;flex-direction:column;gap:5px}
+.strip-eyebrow{font-size:9px;font-weight:860;letter-spacing:1.3px;color:#7e90a4}
+.competition-strip-title strong{color:#142755;font-size:19px;letter-spacing:-.5px}
+.competition-strip-actions{display:flex;gap:9px;flex-wrap:wrap}
+.competition-strip .action{min-height:42px}
+.tour-section-label{display:flex;align-items:baseline;gap:10px 18px;flex-wrap:wrap;margin:40px 0 14px}
+.tour-section-label>span{flex-basis:100%;font-size:10px;font-weight:900;letter-spacing:1.65px;color:#1e79ce}
+.tour-section-label h2{font-size:clamp(26px,3vw,38px);font-style:italic;letter-spacing:-1.25px;text-transform:uppercase;color:#101b49;line-height:1.08;margin:0}
+.tour-section-label p{font-size:12px;color:#6c8399;line-height:1.6;margin:0;max-width:520px}
+.tour-result-panel,.tour-season-board{border:1px solid #dce7f1;border-radius:18px;background:#fff;box-shadow:0 9px 28px #103c7010;overflow:hidden}
+.tour-result-panel-head,.tour-season-heading{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:17px 22px;border-bottom:1px solid #e2ebf4
+}
+.tour-status{display:inline-flex;align-items:center;gap:9px;font-size:10px;font-weight:900;letter-spacing:1px;color:#183565}
+.tour-status>span{height:8px;width:8px;border-radius:50%;background:#20b98e;box-shadow:0 0 0 4px #20b98e17}
+.tour-recent-list,.tour-my-recent{padding:4px 21px 16px}
+.tour-match{display:flex;align-items:center;gap:16px;padding:16px 3px;border-bottom:1px solid #e7edf3;transition:background .2s}
+.tour-match:last-child{border-bottom:none}
+.tour-match:hover{background:#f6faff}
+.tour-match-number{flex-shrink:0;display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:#edf4ff;color:#126bc3;font-size:16px;font-weight:950;font-style:italic}
+.tour-match-content{flex:1;min-width:0}
+.tour-match-meta{display:block;font-size:10px;letter-spacing:.2px;color:#7b92a7;margin-bottom:6px}
+.tour-match-names{display:block;overflow-wrap:anywhere;color:#1b315d;font-size:14px;font-weight:850;line-height:1.5}
+.tour-match-score{font-weight:900;white-space:nowrap;font-size:12px;color:#164da3;background:#ecf4ff;border-radius:10px;padding:10px 12px;text-align:center}
+.tour-empty{display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center;gap:8px;min-height:138px;color:#7a8da4;font-size:12px}
+.tour-empty:before{content:"—";font-size:33px;font-weight:950;color:#91add0;line-height:1}
+.tour-empty strong{color:#27486b;font-size:15px}
+.tour-empty span{line-height:1.6}
+.club-spotlight{
+  position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:28px;
+  min-height:240px;margin:32px 0 8px;padding:33px clamp(22px,4vw,45px);
+  background:linear-gradient(104deg,#080e29f2,#101f51dd 54%,#175e8ba8),
+    url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/POCO-SOBRE-NOSOTROS-1024x576.jpg") center 55%/cover no-repeat;
+  color:white;border-radius:22px;border:1px solid #477ac04f;box-shadow:0 16px 36px #0b21444b
+}
+.club-spotlight:after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background:linear-gradient(115deg,transparent 35%,#d7faff19 50%,transparent 64%);transform:translateX(-100%);transition:transform .65s ease}
+.club-spotlight:hover:after{transform:translateX(95%)}
+.club-spotlight-copy,.club-spotlight-emblem{position:relative;z-index:1}
+.club-spotlight-copy{max-width:650px}
+.club-spotlight-eyebrow{font-size:10px;font-weight:890;letter-spacing:2.1px;color:var(--tour-lime)}
+.club-spotlight h2{font-size:clamp(28px,3.3vw,43px);font-style:italic;text-transform:uppercase;letter-spacing:-1.2px;line-height:1.02;margin:14px 0}
+.club-spotlight p{font-size:13px;line-height:1.8;max-width:570px;color:#dceafa;margin:0 0 20px}
+.club-spotlight-actions{display:flex;flex-wrap:wrap;gap:10px}
+.club-spotlight-actions .action{min-height:44px}
+.club-spotlight-primary{background:var(--tour-lime);color:#102451;border-color:var(--tour-lime)}
+.club-spotlight-primary:hover{background:#e4ff95;border-color:#e4ff95}
+.club-spotlight-outline{background:#0c24485e;color:#fff;border:1px solid #c6e9ff9e;backdrop-filter:blur(9px)}
+.club-spotlight-outline:hover{background:#ffffff1c}
+.club-spotlight-emblem{display:flex;align-items:center;flex-direction:column;justify-content:center;
+  width:175px;height:175px;flex-shrink:0;border-radius:50%;border:3px solid #c9f77a;
+  background:#0b1b50a8;box-shadow:0 0 0 10px #ffffff19}
+.club-spotlight-emblem .cpz-icon{height:47px;width:47px;color:#bff6ff}
+.club-spotlight-emblem strong{font-style:italic;font-size:39px;line-height:1;color:white;margin:5px 0}
+.club-spotlight-emblem span{font-size:10px;letter-spacing:2px;color:#cee6ff}
+.footer{display:flex;justify-content:space-between;gap:12px 25px;flex-wrap:wrap;align-items:center}
+.footer a{color:#145f9c;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:1180px){.club-sidepanel{margin-top:16px;padding:16px 12px}.club-sidepanel strong{font-size:15px}}
+@media(max-width:850px){.club-spotlight-emblem{width:122px;height:122px}.club-spotlight-emblem strong{font-size:31px}.club-spotlight h2{font-size:30px}}
+@media(max-width:760px){
+  .club-sidepanel{display:none}
+  .tour-eyebrow{gap:9px}.tour-eyebrow a{font-size:10px}
+  .top-club-link{font-size:10px;padding:9px 10px}
+  .top-club-link .cpz-icon{display:none}
+  .hero-home h1{font-size:clamp(31px,6vw,44px)}
+  .competition-strip{align-items:flex-start}
+  .competition-strip-actions{width:100%}
+  .competition-strip-actions .action{flex:1}
+  .tour-section-label{margin-top:32px}
+  .tour-section-label h2{font-size:28px}
+  .club-spotlight-emblem{display:none}
+}
+@media(max-width:490px){
+  .top-club-link{font-size:0;line-height:0;padding:11px 12px}
+  .top-club-link .cpz-icon{display:block;width:19px;height:19px}
+  .top-club-link>span{font-size:15px}
+  .competition-strip{padding:17px}
+  .competition-strip-title strong{font-size:17px}
+  .competition-strip-actions{display:grid}
+  .competition-strip-actions .action{width:100%}
+  .tour-match{gap:10px;flex-wrap:wrap;padding:14px 2px}
+  .tour-match-score{margin-left:48px}
+  .club-spotlight{padding:28px 22px}
+  .club-spotlight h2{font-size:30px}
+  .club-spotlight-actions{flex-direction:column}
+  .club-spotlight-actions .action{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.club-spotlight:after{display:none}.tour-match{transition:none}.top-club-link{transition:none}}
+
+
+/* Marcador personal: estadísticas descriptivas, nunca puntos de clasificación. */
+.tour-season-board{margin:14px 0 30px}
+.tour-season-numbers{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  background:linear-gradient(115deg,#101a50,#1c367f);
+  border-bottom:3px solid #bdea52;color:#fff;
+}
+.tour-season-number{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;padding:26px 13px;border-right:1px solid #ffffff2a;min-width:0}
+.tour-season-number:last-child{border-right:0}
+.tour-season-number span{font-size:10px;font-weight:860;letter-spacing:1.15px;color:#c8e2ff;text-align:center}
+.tour-season-number strong{font-size:clamp(30px,4vw,47px);line-height:1;font-style:italic;letter-spacing:-1.1px}
+.tour-season-number:first-child strong{color:#d6fb66}
+.tour-season-number:nth-child(2) strong{color:#84eccc}
+.tour-season-number:nth-child(3) strong{color:#e6eaf8}
+.tour-season-heading span{font-size:11px;font-weight:900;letter-spacing:1px;color:#1c3568}
+.tour-season-heading .action{padding:9px 12px;font-size:11px}
+.tour-match-outcome{flex-shrink:0;border-radius:40px;padding:9px 11px;font-size:10px;font-weight:900;letter-spacing:.6px}
+.tour-match-outcome.is-win{background:#def9e8;color:#0b8350}
+.tour-match-outcome.is-loss{background:#ffedeb;color:#ae453d}
+.tour-season-board .tour-empty{padding:15px}
+.club-spotlight-actions .action{min-height:44px;padding:12px 17px;font-weight:820}
+.club-spotlight .club-spotlight-primary{background:#d5fb5b;border-color:#d5fb5b;color:#102451}
+.club-spotlight .club-spotlight-primary:hover{background:#e7ff9b;border-color:#e7ff9b;color:#102451}
+.club-spotlight .club-spotlight-outline{background:#09214d7a;border-color:#b6e8ff99;color:#fff}
+.club-spotlight .club-spotlight-outline:hover{background:#ffffff24}
+.tour-recent-list,.tour-my-recent{padding-top:6px}
+@media(max-width:780px){.club-sidepanel{display:none}}
+@media(max-width:520px){
+  .tour-season-number{padding:20px 6px;gap:7px}
+  .tour-season-number span{font-size:8px;letter-spacing:.7px}
+  .tour-season-number strong{font-size:30px}
+  .tour-match-outcome{margin-left:48px}
+  .top-club-link{white-space:normal}
+}
+
 </style>
 </head>
 <body>
