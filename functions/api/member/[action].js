@@ -211,7 +211,12 @@ export async function onRequest({request,env,params}){
       return fail('Usuario o contraseña incorrectos.',401);
     }
     await env.LEAGUE_DB.prepare('DELETE FROM cpz_member_attempts WHERE login_key=?').bind(key).run();
-    return respond({ok:true,authenticated:true,role:'player'},200,await issue(row.id,row.session_version,env.ADMIN_PASSWORD));
+    const result=respond({ok:true,authenticated:true,role:'player'},200,await issue(row.id,row.session_version,env.ADMIN_PASSWORD));
+    // When switching from an administrator session to a player's account,
+    // remove the old admin cookie. Otherwise middleware prioritizes admin and
+    // redirects back to the admin panel after the player signs in.
+    result.headers.append('Set-Cookie','__Host-leagueos_admin=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
+    return result;
   }catch(error){
     console.error('CPZ member access',error?.name||'error');
     return fail('No se ha podido completar la operación de acceso.',500);
