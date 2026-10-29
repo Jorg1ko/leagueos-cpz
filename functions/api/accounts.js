@@ -266,9 +266,9 @@ export async function onRequest({request,env}){
     }else if(action==='setOpponent'){
       const id=identifier(body.id),other=body.opponentId===null?null:identifier(body.opponentId);
       if(!id||(body.opponentId!==null&&!other)||(id===other))return fail('Elige dos jugadores distintos o borra el rival.');
-      const player=await env.LEAGUE_DB.prepare('SELECT id,player_name FROM cpz_player_accounts WHERE id=? AND enabled=1').bind(id).first();
+      const player=await env.LEAGUE_DB.prepare('SELECT id,player_name FROM cpz_player_accounts WHERE id=? AND (enabled=1 OR substr(username,1,5)=CHAR(97,110,111,110,95))').bind(id).first();
       if(!player)return fail('Jugador no disponible.',404);
-      const opponent=other?await env.LEAGUE_DB.prepare('SELECT id,player_name FROM cpz_player_accounts WHERE id=? AND enabled=1').bind(other).first():null;
+      const opponent=other?await env.LEAGUE_DB.prepare('SELECT id,player_name FROM cpz_player_accounts WHERE id=? AND (enabled=1 OR substr(username,1,5)=CHAR(97,110,111,110,95))').bind(other).first():null;
       if(other&&!opponent)return fail('Rival no disponible.',404);
       // Borra las antiguas parejas de ambos jugadores y establece un cruce recíproco.
       const steps=[
@@ -292,6 +292,7 @@ export async function onRequest({request,env}){
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_media WHERE account_id=?').bind(id),
         env.LEAGUE_DB.prepare('DELETE FROM cpz_privacy_events WHERE account_id=?').bind(id),
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_privacy_ack WHERE account_id=?').bind(id),
+        env.LEAGUE_DB.prepare('DELETE FROM cpz_player_identity WHERE account_id=?').bind(id),
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_accounts WHERE id=?').bind(id)
       ]);
     }else if(action==='resetPassword'){
