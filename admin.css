@@ -54,3 +54,16 @@ tr:hover td{background:#fbfdff}.good{color:#168156;font-weight:750}.bad{color:#b
 @media(max-width:1000px){.sidebar{width:205px}.grid2{grid-template-columns:1fr}.list{max-height:none}}
 @media(max-width:760px){.layout{display:block}.sidebar{width:100%;padding:10px 13px;border-right:0;border-bottom:1px solid var(--line)}.brand{flex-direction:row;justify-content:flex-start;text-align:left;border:0;padding:4px;margin:0}.brand img{width:44px;height:42px}.brand strong{font-size:11px}.brand small,.sidefoot{display:none}.sidebar nav{display:flex;overflow-x:auto;padding:6px 0}.nav{flex:0 0 auto;width:auto;font-size:11px;margin:0;padding:10px}.nav svg{width:17px;height:17px}.top{padding:12px 17px}.top strong{font-size:12px}.main{padding:18px}.hero{padding:24px}.metrics{gap:8px}.metric{padding:13px}.metric b{font-size:22px}.metric small{font-size:10px}}
 @media(max-width:450px){.pill{font-size:9px;padding:7px}.top small{font-size:9px}.button{font-size:11px;padding:9px 10px}.video-grid{grid-template-columns:1fr}}
+
+/* Fotos e Instagram privados, visibles únicamente en sesiones autorizadas */
+.social-admin-separator{height:1px;background:#dbe9f4;margin:24px 0}
+.social-preview-wrap{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+.social-photo-preview,.social-photo-fallback,.player-card-photo{width:76px;height:76px;border-radius:20px;object-fit:cover;flex-shrink:0;border:2px solid #d4e7f6;background:#e6f4ff}
+.social-photo-fallback{display:grid;place-items:center;color:#1a71b6;font-size:23px;font-weight:850}
+.social-preview-help{font-size:11px;color:#728da4;line-height:1.65;flex:1;min-width:155px}
+.social-player-head{display:flex;align-items:center;gap:12px}
+.player-card-photo,.player-card-no-photo{width:46px;height:46px;border-radius:13px}
+.player-card-no-photo{display:grid;place-items:center;background:#e9f4ff;color:#1772b8;font-weight:850;flex-shrink:0}
+.player-card-photo{object-fit:cover}
+.social-admin-link{display:inline-block;margin-top:7px;font-size:12px;font-weight:750;text-decoration:none;color:#176bb0}
+.social-admin-link:hover{text-decoration:underline}
