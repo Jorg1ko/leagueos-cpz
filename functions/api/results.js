@@ -71,7 +71,7 @@ export async function onRequest({request,env}){
     }
     if(body?.action!=='import'||!Array.isArray(body.rows)||body.rows.length<1||body.rows.length>200||body.confirm!==true)
       return fail('Primero revisa y confirma un archivo de 1 a 200 resultados.');
-    const all=await env.LEAGUE_DB.prepare('SELECT id,player_name FROM cpz_player_accounts WHERE enabled=1').all();
+    const all=await env.LEAGUE_DB.prepare('SELECT id,player_name FROM cpz_player_accounts WHERE enabled=1 OR substr(username,1,5)=CHAR(97,110,111,110,95)').all();
     const members=new Map((all.results||[]).map(p=>[normal(p.player_name),p]));
     if(!members.size)return fail('Crea primero las cuentas de jugadores antes de importar resultados.');
     const items=[],issues=[],keys=new Set();
