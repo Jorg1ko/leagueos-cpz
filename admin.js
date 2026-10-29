@@ -19,15 +19,93 @@
     }
     return data;
   }
-  function say(id, text) {$(id).textContent=text || '';}
-  function stats() {
-    $('playerCount').textContent=accounts.length;
-    $('activeCount').textContent=accounts.filter(x=>x.enabled===1).length;
-    $('pairedCount').textContent=accounts.filter(x=>x.opponentName).length;
-    $('resultCount').textContent=results.length;
+  const motionReduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const metricStates=new WeakMap();
+  let toastTimer=0;
+  let toastElement=null;
+  function showToast(message){
+    if(!toastElement){
+      toastElement=document.createElement('div');
+      toastElement.className='fx-toast';
+      toastElement.setAttribute('aria-hidden','true'); // The status field already announces updates.
+      document.body.append(toastElement);
+    }
+    clearTimeout(toastTimer);
+    toastElement.textContent='✓  '+message;
+    toastElement.classList.remove('fx-toast-visible');
+    void toastElement.offsetWidth; // Replay entrance when confirming successive operations.
+    toastElement.classList.add('fx-toast-visible');
+    toastTimer=setTimeout(()=>toastElement.classList.remove('fx-toast-visible'),3200);
+  }
+  function say(id,text){
+    $(id).textContent=text||'';
+    if(/^(Cambios guardados|Foto e Instagram guardados|Plaza Jugador X creada|Información legal publicada|Datos copiados)/.test(text||'')){
+      showToast('Cambios guardados correctamente');
+    }
+  }
+  function animateMetric(id,value){
+    const element=$(id),target=Math.max(0,Number(value)||0);
+    const prev=metricStates.get(element);
+    if(prev?.target===target)return;
+    if(prev?.frame)cancelAnimationFrame(prev.frame);
+    const start=Number(element.textContent)||0;
+    if(motionReduced.matches||start===target){
+      element.textContent=String(target);
+      metricStates.set(element,{target,frame:0});
+      return;
+    }
+    const duration=570,begin=performance.now(),state={target,frame:0};
+    metricStates.set(element,state);
+    function tick(now){
+      const t=Math.min(1,Math.max(0,(now-begin)/duration));
+      const ease=1-Math.pow(1-t,3);
+      element.textContent=String(Math.round(start+(target-start)*ease));
+      if(t<1)state.frame=requestAnimationFrame(tick);
+      else state.frame=0;
+    }
+    state.frame=requestAnimationFrame(tick);
+  }
+  function stats(){
+    animateMetric('playerCount',accounts.length);
+    animateMetric('activeCount',accounts.filter(x=>x.enabled===1).length);
+    animateMetric('pairedCount',accounts.filter(x=>x.opponentName).length);
+    animateMetric('resultCount',results.length);
     $('resultLabel').textContent=results.length+' partidos guardados';
   }
+  // Brillo que sigue al cursor en tarjetas, solo en dispositivos de ratón.
+  if(window.matchMedia('(hover: hover) and (pointer: fine)').matches&&!motionReduced.matches){
+    let pending=null,frame=0;
+    document.addEventListener('pointermove',event=>{
+      const element=event.target instanceof Element?event.target.closest('.metric,.card,.player-card'):null;
+      if(!element)return;
+      pending={element,x:event.clientX,y:event.clientY};
+      if(frame)return;
+      frame=requestAnimationFrame(()=>{
+        frame=0;
+        if(!pending)return;
+        const {element,x,y}=pending;
+        const box=element.getBoundingClientRect();
+        element.style.setProperty('--fx-x',(x-box.left)+'px');
+        element.style.setProperty('--fx-y',(y-box.top)+'px');
+        pending=null;
+      });
+    },{passive:true});
+  }
+  document.addEventListener('pointerdown',event=>{
+    if(motionReduced.matches||event.button!==0||!(event.target instanceof Element))return;
+    const button=event.target.closest('.button,.nav');
+    if(!button||button.disabled)return;
+    const box=button.getBoundingClientRect();
+    const ripple=document.createElement('span');
+    ripple.className='fx-ripple';
+    ripple.style.setProperty('--ripple-x',(event.clientX-box.left)+'px');
+    ripple.style.setProperty('--ripple-y',(event.clientY-box.top)+'px');
+    button.append(ripple);
+    ripple.addEventListener('animationend',()=>ripple.remove(),{once:true});
+    setTimeout(()=>ripple.remove(),800);
+  },{passive:true});
   function show(name) {
+    const changed=currentView!==name;
     currentView=name;
     document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
     document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!=='page-'+name);
@@ -35,6 +113,7 @@
     if(name==='results')loadResults();
     if(name==='videos')loadVideos();
     if(name==='legal'){loadLegalSettings();loadConsentAudit()}
+    if(changed&&window.scrollY>180)window.scrollTo({top:0,behavior:motionReduced.matches?'auto':'smooth'});
   }
   document.querySelectorAll('[data-view],[data-target]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view||b.dataset.target)));
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
