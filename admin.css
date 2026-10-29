@@ -424,3 +424,18 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   .view:not([hidden]) .hero,.view:not([hidden]) > .metrics .metric,.view:not([hidden]) > .grid2 > .card{opacity:1!important;transform:none!important}
   .fx-ripple{display:none!important}
 }
+
+
+.fx-toast{
+  position:fixed;right:24px;bottom:23px;z-index:180;
+  max-width:min(370px,calc(100vw - 32px));padding:14px 20px;
+  border:1px solid #43bda66e;border-radius:14px;
+  background:linear-gradient(110deg,#0c765f,#139379);color:white;
+  font-size:12px;font-weight:810;line-height:1.5;letter-spacing:.2px;
+  box-shadow:0 14px 33px #07523d49,0 2px 5px #07523d25;
+  opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:opacity .25s,transform .25s;
+}
+.fx-toast.fx-toast-visible{opacity:1;transform:translateY(0);animation:cpz-toast-arrive .35s cubic-bezier(.2,.8,.2,1)}
+@media(max-width:520px){.fx-toast{bottom:14px;right:14px;left:14px;max-width:none;text-align:center}}
+@media(prefers-reduced-motion:reduce){.fx-toast,.fx-toast.fx-toast-visible{animation:none;transition:none;transform:none}}
