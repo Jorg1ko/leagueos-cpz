@@ -26,6 +26,8 @@ jobs:
           mkdir -p dist
           cp index.html dist/index.html
           cp player.html dist/player.html
+          cp admin.css dist/admin.css
+          cp admin.js dist/admin.js
 
       - name: Subir a Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
