@@ -89,6 +89,16 @@
     });
     if(ok){issue(name,username,password);form.reset();f.username.dataset.edited='';}
   };
+  $('createPlaceholder').onclick=async()=>{
+    if(!confirm('¿Crear una plaza de competición sin nombre, teléfono, correo ni cuenta de acceso? Se mostrará como Jugador X.'))return;
+    $('createPlaceholder').disabled=true;say('placeholderStatus','Creando plaza privada…');
+    try{
+      const d=await api('/api/accounts',{action:'createPlaceholder'});
+      accounts=d.accounts||[];renderPlayers();stats();
+      say('placeholderStatus','Plaza Jugador X creada. Puedes asignarle rivales e importar resultados con su código interno.');
+    }catch(e){say('placeholderStatus',e.message)}
+    finally{$('createPlaceholder').disabled=false}
+  };
   function renderPlayers(){
     stats();
     const term=clean($('playerSearch').value);
@@ -112,17 +122,24 @@
       identity.append(title);
       const tag=document.createElement('span');tag.className='tag'+(a.enabled===1?'':' off');tag.textContent=a.enabled===1?'Activa':'Desactivada';
       head.append(identity,tag);
-      const meta=document.createElement('p');meta.className='small';meta.textContent='@'+a.username+' · '+(a.email||'Sin correo')+' · Grupo '+(a.groupLabel||'pendiente');
+      const meta=document.createElement('p');meta.className='small';
+      meta.textContent=a.isPlaceholder===1
+        ?'Plaza Jugador X · sin información personal · sin cuenta de acceso'
+        :'@'+a.username+' · '+(a.email||'Sin correo')+' · Grupo '+(a.groupLabel||'pendiente')+' · Nombre visible al rival: '+(a.shareName===1?'autorizado':'oculto (Jugador X)');
       const info=document.createElement('p');info.className='small';
       info.textContent='Rival: '+(a.opponentName||'Sin asignar')+' · WhatsApp '+(a.whatsappPhone||'pendiente')+(a.shareWithOpponent===1?' (autorizado)':' (privado)');
       const controls=document.createElement('div');controls.className='actions';
-      controls.append(
-        b('Editar','secondary',()=>openEdit(a)),
-        b('Asignar rival','secondary',()=>openPair(a)),
-        b('Nueva clave','ghost',()=>resetPass(a)),
-        b(a.enabled===1?'Desactivar':'Activar',a.enabled===1?'warning':'ghost',()=>togglePlayer(a)),
-        b('Eliminar','warning',()=>removePlayer(a))
-      );
+      if(a.isPlaceholder===1){
+        controls.append(b('Asignar rival','secondary',()=>openPair(a)),b('Eliminar plaza','warning',()=>removePlayer(a)));
+      }else{
+        controls.append(
+          b('Editar','secondary',()=>openEdit(a)),
+          b('Asignar rival','secondary',()=>openPair(a)),
+          b('Nueva clave','ghost',()=>resetPass(a)),
+          b(a.enabled===1?'Desactivar':'Activar',a.enabled===1?'warning':'ghost',()=>togglePlayer(a)),
+          b('Eliminar','warning',()=>removePlayer(a))
+        );
+      }
       card.append(head,meta,info);
       if(a.instagram){
         const instagram=document.createElement('a');
@@ -238,7 +255,7 @@
     say('pairTitle','Asignar rival a '+a.playerName);
     const select=f.opponentId;select.replaceChildren();
     const none=document.createElement('option');none.value='';none.textContent='Sin rival';select.append(none);
-    for(const other of accounts.filter(x=>x.id!==a.id&&x.enabled===1)){
+    for(const other of accounts.filter(x=>x.id!==a.id&&(x.enabled===1||x.isPlaceholder===1))){
       const o=document.createElement('option');o.value=other.id;o.textContent=other.playerName;select.append(o);
     }
     const match=accounts.find(x=>x.playerName===a.opponentName);
@@ -290,7 +307,8 @@
         whatsapp_opponent:'Compartir WhatsApp con el rival',
         photo_instagram_opponent:'Compartir foto e Instagram con el rival',
         privacy_notice_read:'Lectura del aviso confirmada por el jugador',
-        privacy_notice_delivered:'Entrega del aviso declarada por administración'
+        privacy_notice_delivered:'Entrega del aviso declarada por administración',
+        identity_opponent:'Compartir nombre real con otros participantes'
       };
       const frag=document.createDocumentFragment();
       for(const event of records){
