@@ -34,6 +34,7 @@
     if(name==='players')loadPlayers();
     if(name==='results')loadResults();
     if(name==='videos')loadVideos();
+    if(name==='legal')loadLegalSettings();
   }
   document.querySelectorAll('[data-view],[data-target]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view||b.dataset.target)));
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
@@ -261,6 +262,39 @@
     if(!confirm('¿Eliminar definitivamente a '+a.playerName+' y sus datos personales?'))return;
     await updatePlayer('delete',{id:a.id});
   }
+  // Identidad del responsable: nunca se publica sin confirmación del organizador.
+  async function loadLegalSettings(){
+    say('legalAdminStatus','Consultando configuración legal…');
+    try{
+      const res=await api('/api/legal-info?draft=1');
+      const s=res.settings||{},f=$('legalForm').elements;
+      for(const k of ['responsibleName','contactEmail','postalAddress','legalBasis','retentionNote'])
+        f[k].value=s[k]||'';
+      f.confirmAuthorized.checked=false;
+      $('legalRevision').textContent=res.approved
+        ?'Información aprobada · revisión '+res.revision+'.'
+        :'El aviso legal está publicado como provisional: falta la validación del organizador.';
+      $('legalConfigNotice').hidden=!!res.approved;
+      say('legalAdminStatus','');
+    }catch(e){say('legalAdminStatus',e.message)}
+  }
+  $('legalForm').onsubmit=async e=>{
+    e.preventDefault();
+    const f=e.currentTarget.elements;
+    const payload={};
+    for(const k of ['responsibleName','contactEmail','postalAddress','legalBasis','retentionNote'])
+      payload[k]=f[k].value.trim();
+    payload.confirmAuthorized=f.confirmAuthorized.checked;
+    $('legalSave').disabled=true;say('legalAdminStatus','Publicando información confirmada…');
+    try{
+      const result=await api('/api/legal-info',payload);
+      say('legalAdminStatus','Información legal publicada. Revisión '+result.revision+'.');
+      $('legalConfigNotice').hidden=true;
+      $('legalRevision').textContent='Datos publicados y validados por administración · revisión '+result.revision+'.';
+      f.confirmAuthorized.checked=false;
+    }catch(e){say('legalAdminStatus',e.message)}
+    finally{$('legalSave').disabled=false}
+  };
   // IMPORTACIÓN EXCEL Y CSV, SIEMPRE CON VISTA PREVIA.
   const columns=['Fecha','Jornada','Grupo','Jugador 1','Jugador 2','Set 1 J1','Set 1 J2','Set 2 J1','Set 2 J2','Set 3 J1','Set 3 J2'];
   function csvDownload(){
