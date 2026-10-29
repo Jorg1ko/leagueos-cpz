@@ -104,6 +104,26 @@
     ripple.addEventListener('animationend',()=>ripple.remove(),{once:true});
     setTimeout(()=>ripple.remove(),800);
   },{passive:true});
+  // Barra de progreso calculada sobre la altura real, sin seguimiento externo.
+  function setupReadingProgress(){
+    let scheduled=false;
+    function update(){
+      scheduled=false;
+      const max=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
+      const progress=max>0?Math.max(0,Math.min(1,window.scrollY/max)):0;
+      document.documentElement.style.setProperty('--cpz-read-progress',String(progress));
+    }
+    function schedule(){
+      if(scheduled)return;
+      scheduled=true;
+      requestAnimationFrame(update);
+    }
+    window.addEventListener('scroll',schedule,{passive:true});
+    window.addEventListener('resize',schedule,{passive:true});
+    schedule();
+    return schedule;
+  }
+  const updateReadingProgress=setupReadingProgress();
   function show(name) {
     const changed=currentView!==name;
     currentView=name;
@@ -113,6 +133,7 @@
     if(name==='results')loadResults();
     if(name==='videos')loadVideos();
     if(name==='legal'){loadLegalSettings();loadConsentAudit()}
+    updateReadingProgress();
     if(changed&&window.scrollY>180)window.scrollTo({top:0,behavior:motionReduced.matches?'auto':'smooth'});
   }
   document.querySelectorAll('[data-view],[data-target]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view||b.dataset.target)));
