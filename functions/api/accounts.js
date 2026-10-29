@@ -252,7 +252,8 @@ export async function onRequest({request,env}){
       const group=typeof body.groupLabel==='string'?body.groupLabel.trim():'';
       const contact=contactInput(body);
       if(!id||!validName(name)||email===null||!validGroup(group)||!contact)return fail('Datos del perfil inválidos.');
-      const original=await env.LEAGUE_DB.prepare('SELECT player_name FROM cpz_player_accounts WHERE id=?').bind(id).first();
+      const original=await env.LEAGUE_DB.prepare('SELECT player_name,username FROM cpz_player_accounts WHERE id=?').bind(id).first();
+      if(original?.username.startsWith('anon_'))return fail('Una plaza Jugador X no tiene perfil personal. Crea una cuenta nueva si el jugador decide identificarse.',409);
       if(!original)return fail('Cuenta no encontrada.',404);
       const duplicate=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_player_accounts WHERE lower(player_name)=lower(?) AND id<>?').bind(name,id).first();
       if(duplicate)return fail('Ya existe otro jugador con ese nombre.',409);
@@ -298,6 +299,8 @@ export async function onRequest({request,env}){
     }else if(action==='resetPassword'){
       const id=identifier(body.id);
       if(!id||!validPassword(body.password))return fail('Selecciona una cuenta y una contraseña provisional de al menos 12 caracteres.');
+      const target=await env.LEAGUE_DB.prepare('SELECT username FROM cpz_player_accounts WHERE id=?').bind(id).first();
+      if(target?.username.startsWith('anon_'))return fail('Una plaza Jugador X no permite iniciar sesión.',409);
       const salt=crypto.getRandomValues(new Uint8Array(16));
       const digest=await passwordHash(body.password,salt,env.ADMIN_PASSWORD);
       const changed=await env.LEAGUE_DB.prepare('UPDATE cpz_player_accounts SET password_salt=?,password_hash=?,session_version=session_version+1 WHERE id=?')
@@ -306,6 +309,8 @@ export async function onRequest({request,env}){
     }else if(action==='setEnabled'){
       const id=identifier(body.id);
       if(!id||typeof body.enabled!=='boolean')return fail('Datos inválidos.');
+      const target=await env.LEAGUE_DB.prepare('SELECT username FROM cpz_player_accounts WHERE id=?').bind(id).first();
+      if(target?.username.startsWith('anon_'))return fail('Las plazas Jugador X no pueden activar una cuenta de acceso.',409);
       const changed=await env.LEAGUE_DB.prepare('UPDATE cpz_player_accounts SET enabled=?,session_version=session_version+1 WHERE id=?')
         .bind(body.enabled?1:0,id).run();
       if(changed.meta?.changes!==1)return fail('Cuenta no encontrada.',404);
