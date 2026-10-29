@@ -138,6 +138,11 @@ async function prepare(db){
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_contacts (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, whatsapp_phone TEXT NOT NULL DEFAULT '', share_with_opponent INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_profiles (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, email TEXT NOT NULL DEFAULT '', group_label TEXT NOT NULL DEFAULT '', preferred_name TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_media (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, instagram TEXT NOT NULL DEFAULT '', share_social INTEGER NOT NULL DEFAULT 0, photo_data TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_privacy_events (id INTEGER PRIMARY KEY AUTOINCREMENT, account_id INTEGER NOT NULL, purpose TEXT NOT NULL, granted INTEGER NOT NULL, actor TEXT NOT NULL, recorded_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+}
+async function logPermission(db,id,purpose,granted,actor){
+  await db.prepare('INSERT INTO cpz_privacy_events (account_id,purpose,granted,actor) VALUES(?,?,?,?)')
+    .bind(id,purpose,granted?1:0,actor).run();
 }
 async function records(db){
   const result=await db.prepare(
@@ -162,7 +167,14 @@ export async function onRequest({request,env}){
     if(request.method==='POST'&&!originOK(request))return fail('Origen no autorizado.',403);
     await prepare(env.LEAGUE_DB);
     if(request.method==='GET'){
-      const imageId=new URL(request.url).searchParams.get('photo');
+      const search=new URL(request.url).searchParams;
+      if(search.get('audit')==='1'){
+        const recent=await env.LEAGUE_DB.prepare(
+          "SELECT e.id,e.purpose,e.granted,e.actor,e.recorded_at AS recordedAt,COALESCE(a.player_name,'Cuenta eliminada') AS playerName FROM cpz_privacy_events e LEFT JOIN cpz_player_accounts a ON a.id=e.account_id ORDER BY e.id DESC LIMIT 150"
+        ).all();
+        return respond({ok:true,events:recent.results||[]});
+      }
+      const imageId=search.get('photo');
       if(imageId!==null){
         const id=identifier(imageId);
         if(!id)return fail('Foto no encontrada.',404);
@@ -194,7 +206,9 @@ export async function onRequest({request,env}){
           env.LEAGUE_DB.prepare('INSERT INTO cpz_player_contacts (account_id,whatsapp_phone,share_with_opponent) SELECT id,?,? FROM cpz_player_accounts WHERE username=? COLLATE NOCASE')
             .bind(contact.phone,contact.shared,username),
           env.LEAGUE_DB.prepare('INSERT INTO cpz_player_profiles (account_id,email,group_label) SELECT id,?,? FROM cpz_player_accounts WHERE username=? COLLATE NOCASE')
-            .bind(email,group,username)
+            .bind(email,group,username),
+          env.LEAGUE_DB.prepare("INSERT INTO cpz_privacy_events(account_id,purpose,granted,actor) SELECT id,'whatsapp_opponent',?,'admin_declared' FROM cpz_player_accounts WHERE username=? COLLATE NOCASE")
+            .bind(contact.shared,username)
         ]);
       }catch(e){
         if(/constraint|unique/i.test(String(e)))return fail('Ese nombre o usuario ya existe.',409);
@@ -209,6 +223,7 @@ export async function onRequest({request,env}){
       const existing=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_player_accounts WHERE id=?').bind(id).first();
       if(!existing)return fail('Cuenta no encontrada.',404);
       await updateSocial(env.LEAGUE_DB,id,handle,body.shareSocial,photo);
+      await logPermission(env.LEAGUE_DB,id,'photo_instagram_opponent',body.shareSocial,'admin_declared');
     }else if(action==='setContact'){
       const id=identifier(body.id);
       const contact=contactInput(body);
@@ -216,6 +231,7 @@ export async function onRequest({request,env}){
       const existing=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_player_accounts WHERE id=?').bind(id).first();
       if(!existing)return fail('Cuenta no encontrada.',404);
       await storeContact(env.LEAGUE_DB,id,contact);
+      await logPermission(env.LEAGUE_DB,id,'whatsapp_opponent',contact.shared,'admin_declared');
     }else if(action==='setDetails'){
       const id=identifier(body.id);
       const name=typeof body.playerName==='string'?body.playerName.trim():'';
@@ -233,6 +249,7 @@ export async function onRequest({request,env}){
       ]);
       await saveProfile(env.LEAGUE_DB,id,email,group);
       await storeContact(env.LEAGUE_DB,id,contact);
+      await logPermission(env.LEAGUE_DB,id,'whatsapp_opponent',contact.shared,'admin_declared');
     }else if(action==='setOpponent'){
       const id=identifier(body.id),other=body.opponentId===null?null:identifier(body.opponentId);
       if(!id||(body.opponentId!==null&&!other)||(id===other))return fail('Elige dos jugadores distintos o borra el rival.');
@@ -260,6 +277,7 @@ export async function onRequest({request,env}){
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_contacts WHERE account_id=?').bind(id),
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_profiles WHERE account_id=?').bind(id),
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_media WHERE account_id=?').bind(id),
+        env.LEAGUE_DB.prepare('DELETE FROM cpz_privacy_events WHERE account_id=?').bind(id),
         env.LEAGUE_DB.prepare('DELETE FROM cpz_player_accounts WHERE id=?').bind(id)
       ]);
     }else if(action==='resetPassword'){
