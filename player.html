@@ -387,13 +387,13 @@ html{scroll-padding-top:90px}
 .card,.step,.stat,.channel,.video{
   --fx-x:50%;--fx-y:50%;position:relative;isolation:isolate;
 }
-.card:before,.step:before,.stat:before{
+.card:before,.stat:before,.step:after{
   content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;
   pointer-events:none;opacity:0;transition:opacity .25s;
   background:radial-gradient(260px circle at var(--fx-x) var(--fx-y),#60baff1b,transparent 75%);
 }
 .card > *,.step > *,.stat > *{position:relative;z-index:1}
-.card:hover:before,.step:hover:before,.stat:hover:before{opacity:1}
+.card:hover:before,.stat:hover:before,.step:hover:after{opacity:1}
 .card,.stat,.step{transition:transform .22s,box-shadow .22s,border-color .22s}
 .card:hover,.step:hover{transform:translateY(-3px);box-shadow:0 18px 37px #0d47701c;border-color:#c3e0f4}
 .stat:hover{transform:translateY(-3px);box-shadow:0 14px 31px #1150801c}
@@ -445,7 +445,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{
   html{scroll-padding-top:12px}
   .hero-home-season{animation:none}
   .nav button:hover,.card:hover,.stat:hover,.step:hover{transform:none}
-  .card:before,.step:before,.stat:before{display:none}
+  .card:before,.stat:before,.step:after{display:none}
 }
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
