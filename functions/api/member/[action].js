@@ -58,12 +58,40 @@ async function passwordEqual(pass,row){
     return diff===0;
   }catch{return false}
 }
+async function contactSchema(db){
+  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_contacts (account_id INTEGER PRIMARY KEY REFERENCES cpz_player_accounts(id) ON DELETE CASCADE, whatsapp_phone TEXT NOT NULL DEFAULT '', share_with_opponent INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+}
+function normalizedPhone(value){
+  if(value===null||value===undefined||value==='')return '';
+  if(typeof value!=='string'||value.length>45)return null;
+  let raw=value.trim().replace(/[\s().-]/g,'');
+  if(raw.startsWith('00'))raw='+'+raw.slice(2);
+  if(/^[67]\d{8}$/.test(raw))raw='+34'+raw;
+  else if(/^34[67]\d{8}$/.test(raw))raw='+'+raw;
+  return /^\+[1-9]\d{7,14}$/.test(raw)?raw:null;
+}
 async function schema(db){
   await db.prepare("CREATE TABLE IF NOT EXISTS cpz_player_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, player_name TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE COLLATE NOCASE, password_salt TEXT NOT NULL, password_hash TEXT NOT NULL, enabled INTEGER NOT NULL DEFAULT 1, session_version INTEGER NOT NULL DEFAULT 1, opponent_name TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await db.prepare('CREATE TABLE IF NOT EXISTS cpz_member_attempts (login_key TEXT PRIMARY KEY, failures INTEGER NOT NULL, locked_until INTEGER NOT NULL)').run();
+  await contactSchema(db);
 }
 const usernameOK=value=>typeof value==='string'&&/^[a-z0-9][a-z0-9._-]{2,31}$/.test(value);
-const profile=row=>({name:row.player_name,username:row.username,opponent:row.opponent_name||null,group:null});
+async function profile(row,db){
+  await contactSchema(db);
+  const own=await db.prepare('SELECT whatsapp_phone,share_with_opponent FROM cpz_player_contacts WHERE account_id=?').bind(row.id).first();
+  // La agenda no es pública: solo se entrega el número del rival efectivamente asignado,
+  // si su cuenta sigue activa, el emparejamiento es recíproco y ha autorizado compartirlo.
+  const opponent=row.opponent_name
+    ?await db.prepare("SELECT c.whatsapp_phone AS phone FROM cpz_player_accounts a JOIN cpz_player_contacts c ON c.account_id=a.id WHERE a.player_name=? AND a.opponent_name=? AND a.enabled=1 AND c.share_with_opponent=1 AND c.whatsapp_phone<>'' LIMIT 1")
+      .bind(row.opponent_name,row.player_name).first()
+    :null;
+  return {
+    name:row.player_name,username:row.username,opponent:row.opponent_name||null,
+    group:null,whatsappPhone:own?.whatsapp_phone||'',
+    shareWithOpponent:own?.share_with_opponent===1,
+    opponentWhatsapp:opponent?.phone||null
+  };
+}
 export async function onRequest({request,env,params}){
   const action=params.action;
   try{
@@ -89,12 +117,25 @@ export async function onRequest({request,env,params}){
     if(action==='me'&&request.method==='GET'){
       const row=await member(request,env);
       if(!row)return fail('Inicia sesión como jugador.',401);
-      return respond({ok:true,role:'player',profile:profile(row)});
+      return respond({ok:true,role:'player',profile:await profile(row,env.LEAGUE_DB)});
     }
-    if(!['login','logout','password'].includes(action))return fail('Ruta no encontrada.',404);
+    if(!['login','logout','password','contact'].includes(action))return fail('Ruta no encontrada.',404);
     if(request.method!=='POST')return fail('Método no permitido.',405);
     if(!originOK(request))return fail('Origen no autorizado.',403);
     if(action==='logout')return respond({ok:true,authenticated:false},200,clear);
+    if(action==='contact'){
+      const row=await member(request,env);
+      if(!row)return fail('Necesitas iniciar sesión como jugador.',401);
+      const data=await body(request);
+      const phone=normalizedPhone(data?.whatsappPhone);
+      const shared=data?.shareWithOpponent;
+      if(phone===null||typeof shared!=='boolean'||(shared&&!phone))
+        return fail('Número de WhatsApp inválido o falta confirmar la autorización para compartirlo.');
+      await contactSchema(env.LEAGUE_DB);
+      await env.LEAGUE_DB.prepare('INSERT INTO cpz_player_contacts (account_id,whatsapp_phone,share_with_opponent,updated_at) VALUES(?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(account_id) DO UPDATE SET whatsapp_phone=excluded.whatsapp_phone,share_with_opponent=excluded.share_with_opponent,updated_at=CURRENT_TIMESTAMP')
+        .bind(row.id,phone,shared?1:0).run();
+      return respond({ok:true,profile:await profile(row,env.LEAGUE_DB)});
+    }
     if(action==='password'){
       const row=await member(request,env);
       if(!row)return fail('Necesitas iniciar sesión como jugador.',401);
