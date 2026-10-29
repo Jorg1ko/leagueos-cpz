@@ -2,7 +2,8 @@
 // Cookie independiente de administrador, con firma HMAC, versión y caducidad.
 const SESSION='__Host-cpz_member';
 const TTL=8*60*60;
-const ITERATIONS=310000;
+// Production Cloudflare Workers cap PBKDF2 at 100k iterations.
+const ITERATIONS=100000;
 const te=new TextEncoder();
 const respond=(data,status=200,cookie)=>{const headers=new Headers({'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store, private','X-Content-Type-Options':'nosniff'});if(cookie)headers.set('Set-Cookie',cookie);return new Response(JSON.stringify(data),{status,headers})};
 const fail=(message,status=400)=>respond({ok:false,error:message},status);
@@ -45,14 +46,16 @@ async function body(request){
   const raw=await request.text();if(raw.length>2000)throw Error('Solicitud demasiado grande.');
   return JSON.parse(raw);
 }
-async function digest(pass,salt){
-  const key=await crypto.subtle.importKey('raw',te.encode(pass),'PBKDF2',false,['deriveBits']);
+async function digest(pass,salt,secret){
+  const pepperKey=await crypto.subtle.importKey('raw',te.encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  const peppered=await crypto.subtle.sign('HMAC',pepperKey,te.encode('CPZ_MEMBER_PWD_V1:'+pass));
+  const key=await crypto.subtle.importKey('raw',peppered,'PBKDF2',false,['deriveBits']);
   return new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:unb64(salt),iterations:ITERATIONS},key,256));
 }
-async function passwordEqual(pass,row){
+async function passwordEqual(pass,row,secret){
   if(typeof pass!=='string'||pass.length<12||pass.length>128)return false;
   try{
-    const bytes=await digest(pass,row.password_salt),target=unb64(row.password_hash);
+    const bytes=await digest(pass,row.password_salt,secret),target=unb64(row.password_hash);
     if(bytes.length!==target.length)return false;
     let diff=0;for(let i=0;i<bytes.length;i++)diff|=bytes[i]^target[i];
     return diff===0;
@@ -181,9 +184,9 @@ export async function onRequest({request,env,params}){
       if(!row)return fail('Necesitas iniciar sesión como jugador.',401);
       const data=await body(request);
       if(typeof data?.newPassword!=='string'||data.newPassword.length<12||data.newPassword.length>128)return fail('La nueva contraseña debe tener entre 12 y 128 caracteres.');
-      if(!await passwordEqual(data.currentPassword,row))return fail('La contraseña actual no coincide.',401);
+      if(!await passwordEqual(data.currentPassword,row,env.ADMIN_PASSWORD))return fail('La contraseña actual no coincide.',401);
       const salt=b64(crypto.getRandomValues(new Uint8Array(16)));
-      const hash=b64(await digest(data.newPassword,salt));
+      const hash=b64(await digest(data.newPassword,salt,env.ADMIN_PASSWORD));
       const updated=await env.LEAGUE_DB.prepare('UPDATE cpz_player_accounts SET password_salt=?,password_hash=?,session_version=session_version+1 WHERE id=? AND session_version=? AND enabled=1').bind(salt,hash,row.id,row.session_version).run();
       if(updated.meta?.changes!==1)return fail('La cuenta ha cambiado. Vuelve a iniciar sesión.',409);
       return respond({ok:true,authenticated:true},200,await issue(row.id,row.session_version+1,env.ADMIN_PASSWORD));
@@ -200,7 +203,7 @@ export async function onRequest({request,env,params}){
     const now=Date.now();
     if(attempted?.locked_until>now)return fail('Demasiados intentos. Vuelve a intentarlo dentro de 15 minutos.',429);
     const row=await env.LEAGUE_DB.prepare('SELECT * FROM cpz_player_accounts WHERE username=? COLLATE NOCASE LIMIT 1').bind(username).first();
-    const verified=row&&row.enabled===1&&await passwordEqual(password,row);
+    const verified=row&&row.enabled===1&&await passwordEqual(password,row,env.ADMIN_PASSWORD);
     if(!verified){
       const failures=(attempted?.locked_until>0&&attempted.locked_until<=now?0:attempted?.failures||0)+1;
       const lock=failures>=5?now+15*60*1000:0;
