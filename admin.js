@@ -223,7 +223,7 @@
     if(sets.length!==2&&sets.length!==3)return null;
     const a=sets.filter(s=>s[0]>s[1]).length,b=sets.length-a;
     if(a!==2&&b!==2)return null;
-    if(sets.length===3&&(sets[0][0]>sets[0][1])===(sets[1][0]>sets[1][1]))return null;
+    if(sets.length===3&&((sets[0][0]>sets[0][1])===(sets[1][0]>sets[1][1])))return null;
     return sets;
   }
   function interpret(rawRows){
@@ -263,12 +263,10 @@
     const file=$('excelInput').files?.[0];if(!file)return;
     if(file.size>4*1024*1024){say('importStatus','El archivo supera los 4 MB.');return}
     try{
-      const content=/\.csv$/i.test(file.name)?parseCSV(await file.text()):(()=>{
+      let rawRows;
+      if(/\.csv$/i.test(file.name))rawRows=parseCSV(await file.text());
+      else{
         if(typeof XLSX==='undefined')throw Error('El lector de Excel no está disponible. Puedes exportar el archivo como CSV.');
-        const wb=XLSX.read(new Uint8Array(),{type:'array'});return wb;
-      })();
-      let rawRows=content;
-      if(!/\.csv$/i.test(file.name)){
         const workbook=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:true});
         const name=workbook.SheetNames.find(n=>clean(n)==='resultados')||workbook.SheetNames[0];
         if(!name)throw Error('El Excel no tiene hojas.');
