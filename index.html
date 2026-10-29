@@ -134,6 +134,9 @@
      <div id="issuedBox" class="issued" hidden><strong id="issuedName"></strong><p>Guarda y entrega estas credenciales por privado. La contraseña no podrá recuperarse en texto plano después.</p><code id="issuedUser"></code><code id="issuedPass"></code><p><strong>Para iniciar sesión:</strong> selecciona «Soy jugador», escribe el nombre de usuario y después la contraseña provisional. No utilices la entrada de administrador.</p><div class="actions"><a class="button secondary" href="/?role=player" target="_blank" rel="noopener noreferrer">Probar acceso de jugador ↗</a><button id="copyIssued" class="button secondary" type="button">Copiar credenciales</button><button id="hideIssued" class="button ghost" type="button">Ocultar</button></div></div>
    </article>
    <article class="card"><div class="between"><h3>Perfiles registrados</h3><button class="button secondary" type="button" id="refreshPlayers">Actualizar</button></div>
+     <p>Si una persona no quiere facilitar datos, puedes crear una plaza «Jugador X» sin nombre real, correo, teléfono ni acceso personal. Para usuarios con cuenta, el nombre permanece oculto a otros jugadores hasta que autoricen su visualización.</p>
+     <button class="button secondary" type="button" id="createPlaceholder">Añadir plaza Jugador X sin datos</button>
+     <p id="placeholderStatus" class="status" role="status"></p>
      <input class="search" id="playerSearch" type="search" autocomplete="off" placeholder="Buscar nombre, correo o usuario…">
      <div class="list" id="playerCards"><div class="empty">Cargando jugadores…</div></div>
    </article>
