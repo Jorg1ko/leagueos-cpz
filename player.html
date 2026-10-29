@@ -68,19 +68,96 @@
 @media(max-width:1000px){.side{width:210px}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:780px){.shell{display:block}.side{width:100%;padding:12px 16px;display:flex;gap:7px;border-right:0;border-bottom:1px solid var(--line)}.brand{flex-direction:row;justify-content:flex-start;text-align:left;border:0;padding:3px 0;gap:9px}.brand img{width:45px;height:45px}.brand h2{font-size:12px}.brand small{display:none}.nav{display:flex;margin:0;overflow-x:auto;gap:7px;padding:6px 0}.nav button{flex:0 0 auto;width:auto;padding:11px;font-size:11px}.side-foot{display:none}.top{padding:11px 18px}.main{padding:20px}.hero{padding:28px}.hero-emblem{display:none}.grid,.steps,.video-grid,.channel-list{grid-template-columns:1fr}}
 @media(max-width:480px){.top strong{font-size:11px}.member-pill{font-size:10px;padding:6px}.top-actions{gap:6px}.top-actions .action{padding:9px;font-size:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat strong{font-size:16px}.name-match{padding:12px 8px;gap:5px}.name-match b{font-size:12px}.hero h1{font-size:27px}}
+
+/* Palas y pelotas perforadas — iconografía SVG pickleball CPZ */
+.cpz-svg-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.cpz-icon{display:inline-block;vertical-align:middle;flex-shrink:0;width:22px;height:22px;color:inherit;overflow:visible}
+.nav button{display:flex;align-items:center;gap:10px}
+.nav button .cpz-icon{width:20px;height:20px;color:#3987c6;flex-shrink:0}
+.nav button:hover .cpz-icon,.nav button.active .cpz-icon{color:#1265a8}
+.hero-emblem{display:grid;place-items:center;min-width:99px;min-height:99px;padding:15px}
+.hero-emblem .cpz-icon{width:68px;height:68px;color:#d9efff;filter:drop-shadow(0 3px 12px #002b5350)}
+@media(max-width:780px){.nav button{gap:7px}.nav button .cpz-icon{width:18px;height:18px}}
 </style>
 </head>
 <body>
+<svg class="cpz-svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <symbol id="cpz-paddle" viewBox="0 0 64 64">
+    <g transform="rotate(-27 24 29)" stroke="currentColor" stroke-linejoin="round">
+      <rect x="10" y="4" width="30" height="39" rx="10" fill="currentColor" fill-opacity=".12" stroke-width="3.2"/>
+      <path d="M25 43v16" stroke-width="7" stroke-linecap="round"/>
+      <path d="M20 51h10" stroke="white" stroke-opacity=".7" stroke-width="2" stroke-linecap="round"/>
+      <path d="M15 15q10-6 20 0" fill="none" stroke-opacity=".35" stroke-width="2"/>
+    </g>
+    <circle cx="48" cy="17" r="10.5" stroke="currentColor" stroke-width="2.8" fill="currentColor" fill-opacity=".20"/>
+    <g fill="currentColor"><circle cx="44" cy="13" r="1.7"/><circle cx="51.8" cy="13.5" r="1.7"/><circle cx="47.7" cy="19.2" r="1.7"/><circle cx="42" cy="21.2" r="1.3"/><circle cx="53.7" cy="21.8" r="1.3"/></g>
+  </symbol>
+  <symbol id="cpz-ball" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="23" stroke="currentColor" stroke-width="3.5" fill="currentColor" fill-opacity=".12"/>
+    <g fill="currentColor"><circle cx="24" cy="20" r="3"/><circle cx="40" cy="21" r="3"/><circle cx="17" cy="34" r="2.9"/><circle cx="32" cy="32" r="3.2"/><circle cx="47" cy="34" r="2.9"/><circle cx="24" cy="45" r="3"/><circle cx="40" cy="45" r="3"/></g>
+  </symbol>
+  <symbol id="cpz-duel" viewBox="0 0 64 64">
+    <g stroke="currentColor" stroke-linejoin="round" fill="currentColor" fill-opacity=".13">
+      <g transform="rotate(-35 22 25)"><rect x="12" y="5" width="20" height="32" rx="8" stroke-width="2.8"/><path d="M22 37v15" fill="none" stroke-width="5" stroke-linecap="round"/></g>
+      <g transform="rotate(35 43 25)"><rect x="33" y="5" width="20" height="32" rx="8" stroke-width="2.8"/><path d="M43 37v15" fill="none" stroke-width="5" stroke-linecap="round"/></g>
+    </g>
+    <circle cx="32" cy="43" r="9" stroke="currentColor" stroke-width="2.6" fill="currentColor" fill-opacity=".26"/>
+    <g fill="currentColor"><circle cx="29" cy="40" r="1.3"/><circle cx="35" cy="40" r="1.3"/><circle cx="32" cy="46" r="1.5"/></g>
+  </symbol>
+  <symbol id="cpz-court" viewBox="0 0 64 64">
+    <rect x="5" y="10" width="54" height="41" rx="4" fill="currentColor" fill-opacity=".08" stroke="currentColor" stroke-width="3"/>
+    <path d="M5 30.5h54M32 10v41M16 10v20.5M48 10v20.5" stroke="currentColor" stroke-width="2.5"/>
+    <circle cx="42" cy="42" r="6.5" stroke="currentColor" stroke-width="2.3" fill="currentColor" fill-opacity=".25"/>
+    <g fill="currentColor"><circle cx="40" cy="40" r="1.2"/><circle cx="44.5" cy="40.5" r="1.2"/><circle cx="42" cy="44.3" r="1.1"/></g>
+  </symbol>
+  <symbol id="cpz-ranking" viewBox="0 0 64 64">
+    <path d="M9 54h46" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <rect x="10" y="37" width="11" height="17" rx="2" stroke="currentColor" stroke-width="2.5" fill="currentColor" fill-opacity=".14"/>
+    <rect x="27" y="24" width="11" height="30" rx="2" stroke="currentColor" stroke-width="2.5" fill="currentColor" fill-opacity=".14"/>
+    <rect x="44" y="10" width="11" height="44" rx="2" stroke="currentColor" stroke-width="2.5" fill="currentColor" fill-opacity=".14"/>
+    <circle cx="49.5" cy="17.5" r="4" stroke="currentColor" stroke-width="1.7" fill="currentColor" fill-opacity=".15"/><circle cx="48.5" cy="16.5" r=".8" fill="currentColor"/><circle cx="51" cy="18.3" r=".8" fill="currentColor"/>
+  </symbol>
+  <symbol id="cpz-trophy" viewBox="0 0 64 64">
+    <path d="M19 10h26v14c0 11-5.6 17-13 17s-13-6-13-17V10Z" stroke="currentColor" stroke-width="3" fill="currentColor" fill-opacity=".13"/>
+    <path d="M19 15H9v7c0 7 5 11 11 11M45 15h10v7c0 7-5 11-11 11M32 41v10M20 55h24M25 51h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="32" cy="23" r="7.2" stroke="currentColor" stroke-width="2.2" fill="currentColor" fill-opacity=".18"/><g fill="currentColor"><circle cx="29.5" cy="21" r="1.1"/><circle cx="34.5" cy="21" r="1.1"/><circle cx="32" cy="26" r="1.1"/></g>
+  </symbol>
+  <symbol id="cpz-rules" viewBox="0 0 64 64">
+    <rect x="12" y="9" width="40" height="47" rx="5" stroke="currentColor" stroke-width="3" fill="currentColor" fill-opacity=".07"/>
+    <path d="M25 8V5h14v3M20 36h20M20 43h16" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+    <circle cx="31" cy="24" r="8.5" stroke="currentColor" stroke-width="2.4" fill="currentColor" fill-opacity=".13"/>
+    <g fill="currentColor"><circle cx="28.3" cy="21.8" r="1.3"/><circle cx="34" cy="21.8" r="1.3"/><circle cx="31.2" cy="26.6" r="1.3"/></g>
+  </symbol>
+  <symbol id="cpz-play" viewBox="0 0 64 64">
+    <rect x="5" y="12" width="54" height="40" rx="7" stroke="currentColor" stroke-width="3" fill="currentColor" fill-opacity=".09"/>
+    <path d="M26 23v18l16-9-16-9Z" fill="currentColor" fill-opacity=".75" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+    <circle cx="50" cy="13" r="8.5" stroke="currentColor" stroke-width="2.2" fill="currentColor" fill-opacity=".18"/>
+    <g fill="currentColor"><circle cx="47" cy="11" r="1.2"/><circle cx="52.5" cy="11" r="1.2"/><circle cx="50" cy="16" r="1.1"/></g>
+  </symbol>
+  <symbol id="cpz-user" viewBox="0 0 64 64">
+    <circle cx="32" cy="20" r="11" stroke="currentColor" stroke-width="3" fill="currentColor" fill-opacity=".12"/>
+    <path d="M11 55v-6c0-12 9-19 21-19s21 7 21 19v6H11Z" stroke="currentColor" stroke-width="3" fill="currentColor" fill-opacity=".10" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="cpz-lock" viewBox="0 0 64 64">
+    <rect x="12" y="28" width="40" height="29" rx="6" stroke="currentColor" stroke-width="3" fill="currentColor" fill-opacity=".11"/>
+    <path d="M20 28v-8C20 4 44 4 44 20v8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="32" cy="39" r="3" fill="currentColor"/><path d="M32 42v6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="cpz-settings" viewBox="0 0 64 64">
+    <path d="M28 6h8l2 7 6 3 7-3 5 7-5 6v12l5 6-5 7-7-3-6 3-2 7h-8l-2-7-6-3-7 3-5-7 5-6V26l-5-6 5-7 7 3 6-3 2-7Z" stroke="currentColor" stroke-width="2.6" fill="currentColor" fill-opacity=".10" stroke-linejoin="round"/>
+    <circle cx="32" cy="32" r="10" stroke="currentColor" stroke-width="3" fill="none"/>
+  </symbol>
+</svg>
 <div id="loading" class="empty" style="margin:30px auto;max-width:650px">Verificando tu cuenta de jugador…</div>
 <div id="playerApp" class="shell" hidden>
   <aside class="side">
     <div class="brand"><img alt="Escudo Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp"><div><h2>RANKING INDIVIDUAL CPZ 2026/27</h2><small>Área privada de jugadores</small></div></div>
     <nav id="playerNav" class="nav" aria-label="Zona de jugadores">
-      <button type="button" data-view="home" class="active">Inicio</button>
-      <button type="button" data-view="match">Mi partido</button>
-      <button type="button" data-view="rules">Reglamento</button>
-      <button type="button" data-view="community">Comunidad y vídeos</button>
-      <button type="button" data-view="account">Mi cuenta</button>
+      <button type="button" data-view="home" class="active"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-ranking"></use></svg><span>Inicio</span></button>
+      <button type="button" data-view="match"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-duel"></use></svg><span>Mi partido</span></button>
+      <button type="button" data-view="rules"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-rules"></use></svg><span>Reglamento</span></button>
+      <button type="button" data-view="community"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-play"></use></svg><span>Comunidad y vídeos</span></button>
+      <button type="button" data-view="account"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-user"></use></svg><span>Mi cuenta</span></button>
     </nav>
     <div class="side-foot">Acceso exclusivo para participantes registrados.<br>Club Pickleball Zaragoza · 2026/27</div>
   </aside>
@@ -91,7 +168,7 @@
     </header>
     <main class="main">
       <section class="view active" id="view-home">
-        <div class="hero"><div><small>RANKING INDIVIDUAL CPZ 2026/27</small><h1>Hola, <span id="helloName">jugador</span></h1><p>Esta es tu zona privada para seguir el ranking, consultar tu rival y acceder a las instrucciones oficiales de los partidos.</p></div><div class="hero-emblem" aria-hidden="true">🏓</div></div>
+        <div class="hero"><div><small>RANKING INDIVIDUAL CPZ 2026/27</small><h1>Hola, <span id="helloName">jugador</span></h1><p>Esta es tu zona privada para seguir el ranking, consultar tu rival y acceder a las instrucciones oficiales de los partidos.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-paddle"></use></svg></div></div>
         <div class="stats"><div class="stat"><strong>Individual</strong><span>Modalidad</span></div><div class="stat"><strong id="homeGroup">Pendiente</strong><span>Grupo asignado</span></div><div class="stat"><strong>2026/27</strong><span>Temporada</span></div></div>
         <div class="grid">
           <article class="card"><h3>Tu partido de clasificación</h3><p>Tu enfrentamiento anunciado para octubre. Es previo a la formación de los grupos iniciales y no suma puntos al ranking anual.</p><div class="name-match"><b id="myNameA">—</b><span>VS</span><b id="myOpponentA">—</b></div><button class="action" type="button" data-go="match">Ver mi partido →</button></article>
@@ -100,13 +177,13 @@
         <p class="notice important">Los grupos A/B y las clasificaciones que aparecen en la simulación del organizador <strong>todavía no están asignados a los jugadores reales</strong>. Verás tu grupo cuando el club lo confirme.</p>
       </section>
       <section class="view" id="view-match">
-        <div class="hero"><div><small>PARTIDOS DE CLASIFICACIÓN · OCTUBRE 2026</small><h1>Mi partido</h1><p>Encuentra a tu rival, acordad cuándo disputar el encuentro y registra el resultado mediante el formulario oficial.</p></div><div class="hero-emblem" aria-hidden="true">🏓</div></div>
+        <div class="hero"><div><small>PARTIDOS DE CLASIFICACIÓN · OCTUBRE 2026</small><h1>Mi partido</h1><p>Encuentra a tu rival, acordad cuándo disputar el encuentro y registra el resultado mediante el formulario oficial.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-duel"></use></svg></div></div>
         <div class="stats"><div class="stat"><strong>31 oct</strong><span>Plazo comunicado</span></div><div class="stat"><strong>0</strong><span>Puntos para ranking anual</span></div><div class="stat"><strong id="matchGroup">Pendiente</strong><span>Grupo asignado</span></div></div>
         <div class="card"><h3>Enfrentamiento asignado</h3><div class="name-match"><b id="myNameB">—</b><span>VS</span><b id="myOpponentB">—</b></div><p>Contacta con tu rival y organizad el partido. Si no tienes su contacto, solicita ayuda al responsable de la competición por privado.</p><div class="links"><a class="action" href="https://pickleballzaragoza.taykus.com/" target="_blank" rel="noopener noreferrer">Reservar pista ↗</a><a class="action secondary" href="https://forms.gle/KBkzGoZBhzg5qdiY6" target="_blank" rel="noopener noreferrer">Registrar resultado oficial ↗</a></div></div>
         <p class="notice important">La fecha límite comunicada para estos partidos de clasificación fue el <strong>31 de octubre de 2026</strong>. Para cambios de plazo o futuros enfrentamientos, consulta con el organizador.</p>
       </section>
       <section class="view" id="view-rules">
-        <div class="hero"><div><small>RANKING INDIVIDUAL CPZ · REGLAMENTO</small><h1>Normas de competición</h1><p>Lo esencial para organizar tus partidos y participar en las jornadas del ranking.</p></div><div class="hero-emblem" aria-hidden="true">📖</div></div>
+        <div class="hero"><div><small>RANKING INDIVIDUAL CPZ · REGLAMENTO</small><h1>Normas de competición</h1><p>Lo esencial para organizar tus partidos y participar en las jornadas del ranking.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-rules"></use></svg></div></div>
         <div class="subhead"><h2>Cómo funciona el ranking</h2></div>
         <div class="steps">
           <article class="step"><h3>3 partidos mensuales</h3><p>Disputarás tres encuentros al mes con los rivales de tu grupo, una vez que el club haya realizado las asignaciones.</p></article>
@@ -118,14 +195,14 @@
         <div class="card"><h3>Cómo reservar pista</h3><p>Todos los jugadores deben tener cuenta en Taykus. Uno de los participantes realiza la reserva y añade al rival; cada jugador paga su parte. El descuento comunicado de noviembre de 2026 es <b>RANKINGINDNOV26</b> (6 € por jugador durante una hora), aplicable únicamente desde la web y dentro del periodo anunciado.</p><div class="links"><a class="action" href="https://pickleballzaragoza.taykus.com/" target="_blank" rel="noopener noreferrer">Abrir Taykus ↗</a><a class="action secondary" href="https://forms.gle/KBkzGoZBhzg5qdiY6" target="_blank" rel="noopener noreferrer">Formulario de resultados ↗</a></div></div>
       </section>
       <section class="view" id="view-community">
-        <div class="hero"><div><small>PARTIDOS Y COMUNIDAD</small><h1>Comunidad y vídeos</h1><p>Descubre partidos y canales que el administrador haya autorizado y publicado en la plataforma.</p></div><div class="hero-emblem" aria-hidden="true">▶</div></div>
+        <div class="hero"><div><small>PARTIDOS Y COMUNIDAD</small><h1>Comunidad y vídeos</h1><p>Descubre partidos y canales que el administrador haya autorizado y publicado en la plataforma.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-play"></use></svg></div></div>
         <div class="subhead"><h2>Vídeos compartidos</h2><p>El vídeo de YouTube solo se reproduce si lo seleccionas.</p></div>
         <div class="video-grid" id="memberVideos"><div class="empty">Cargando vídeos…</div></div>
         <div class="subhead"><h2>Canales de jugadores</h2></div>
         <div class="channel-list" id="memberChannels"><div class="empty">Cargando canales…</div></div>
       </section>
       <section class="view" id="view-account">
-        <div class="hero"><div><small>MI CUENTA DE JUGADOR</small><h1>Mi perfil</h1><p>Consulta tus datos de acceso y cambia tu contraseña cuando lo necesites.</p></div><div class="hero-emblem" aria-hidden="true">◉</div></div>
+        <div class="hero"><div><small>MI CUENTA DE JUGADOR</small><h1>Mi perfil</h1><p>Consulta tus datos de acceso y cambia tu contraseña cuando lo necesites.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-user"></use></svg></div></div>
         <div class="subhead"><h2>Datos del jugador</h2></div>
         <div class="card"><div class="profile"><div class="avatar" id="avatar">CP</div><div><h3 id="profileName">—</h3><p>Usuario: <b id="profileUsername">—</b></p><p>Grupo: <b>Pendiente de asignación</b></p></div></div></div>
         <div class="subhead"><h2>Cambiar mi contraseña</h2><p>Si has recibido una clave provisional, puedes sustituirla por una personal.</p></div>
