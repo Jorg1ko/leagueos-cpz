@@ -96,8 +96,20 @@
     for(const a of list){
       const card=document.createElement('article');card.className='player-card';
       const head=document.createElement('div');head.className='between';
+      const identity=document.createElement('div');identity.className='social-player-head';
+      if(a.hasPhoto===1){
+        const photo=document.createElement('img');photo.className='player-card-photo';
+        photo.src='/api/accounts?photo='+encodeURIComponent(a.id);
+        photo.alt='Foto privada de '+a.playerName;
+        photo.loading='lazy';photo.referrerPolicy='same-origin';identity.append(photo);
+      }else{
+        const fallback=document.createElement('div');fallback.className='player-card-no-photo';
+        fallback.textContent=a.playerName.split(' ').slice(0,2).map(n=>n[0]||'').join('').toUpperCase();identity.append(fallback);
+      }
       const title=document.createElement('strong');title.textContent=a.playerName;
-      const tag=document.createElement('span');tag.className='tag'+(a.enabled===1?'':' off');tag.textContent=a.enabled===1?'Activa':'Desactivada';head.append(title,tag);
+      identity.append(title);
+      const tag=document.createElement('span');tag.className='tag'+(a.enabled===1?'':' off');tag.textContent=a.enabled===1?'Activa':'Desactivada';
+      head.append(identity,tag);
       const meta=document.createElement('p');meta.className='small';meta.textContent='@'+a.username+' · '+(a.email||'Sin correo')+' · Grupo '+(a.groupLabel||'pendiente');
       const info=document.createElement('p');info.className='small';
       info.textContent='Rival: '+(a.opponentName||'Sin asignar')+' · WhatsApp '+(a.whatsappPhone||'pendiente')+(a.shareWithOpponent===1?' (autorizado)':' (privado)');
@@ -109,7 +121,16 @@
         b(a.enabled===1?'Desactivar':'Activar',a.enabled===1?'warning':'ghost',()=>togglePlayer(a)),
         b('Eliminar','warning',()=>removePlayer(a))
       );
-      card.append(head,meta,info,controls);frag.append(card);
+      card.append(head,meta,info);
+      if(a.instagram){
+        const instagram=document.createElement('a');
+        instagram.className='social-admin-link';
+        instagram.href='https://www.instagram.com/'+a.instagram+'/';
+        instagram.target='_blank';instagram.rel='noopener noreferrer';
+        instagram.textContent='Instagram: @'+a.instagram+(a.shareSocial===1?' · autorizado':' · privado');
+        card.append(instagram);
+      }
+      card.append(controls);frag.append(card);
     }
     $('playerCards').replaceChildren(frag);
   }
@@ -118,7 +139,14 @@
     f.playerName.value=a.playerName;f.email.value=a.email||'';
     f.whatsappPhone.value=a.whatsappPhone||'';f.shareWithOpponent.checked=a.shareWithOpponent===1;
     f.groupLabel.value=a.groupLabel||'';
-    say('editStatus','');$('editDialog').showModal();
+    say('editStatus','');
+    const social=$('socialAdminForm').elements;
+    social.id.value=a.id;social.instagram.value=a.instagram||'';
+    social.shareSocial.checked=a.shareSocial===1;
+    $('adminSocialFile').value='';
+    showAdminPhoto(a.hasPhoto===1?'/api/accounts?photo='+a.id+'&v='+Date.now():null,a.playerName);
+    say('socialAdminStatus','');
+    $('editDialog').showModal();
   }
   $('editForm').onsubmit=async e=>{
     e.preventDefault();const f=e.currentTarget.elements;
@@ -128,6 +156,80 @@
       groupLabel:f.groupLabel.value
     },'editStatus');
     if(ok)$('editDialog').close();
+  };
+  function showAdminPhoto(src,name){
+    const image=$('adminAvatarPreview'),fallback=$('adminAvatarFallback');
+    if(src){
+      image.src=src;image.hidden=false;fallback.hidden=true;
+      image.onerror=()=>{image.hidden=true;fallback.hidden=false};
+    }else{
+      image.removeAttribute('src');image.hidden=true;fallback.hidden=false;
+      fallback.textContent=String(name||'CP').split(' ').slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+    }
+  }
+  async function compressProfilePhoto(file){
+    if(!file)return undefined;
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>8*1024*1024)
+      throw Error('Selecciona un JPG, PNG o WebP de menos de 8 MB.');
+    const url=URL.createObjectURL(file);
+    try{
+      const picture=new Image();
+      await new Promise((resolve,reject)=>{
+        picture.onload=resolve;picture.onerror=()=>reject(Error('No se ha podido abrir la imagen.'));
+        picture.src=url;
+      });
+      if(!picture.naturalWidth||!picture.naturalHeight)throw Error('La imagen está vacía.');
+      for(const size of [360,300,240]){
+        const canvas=document.createElement('canvas');canvas.width=canvas.height=size;
+        const ctx=canvas.getContext('2d');if(!ctx)throw Error('Tu navegador no puede preparar la foto.');
+        ctx.fillStyle='#edf7ff';ctx.fillRect(0,0,size,size);
+        const edge=Math.min(picture.naturalWidth,picture.naturalHeight);
+        const left=(picture.naturalWidth-edge)/2,top=(picture.naturalHeight-edge)/2;
+        ctx.drawImage(picture,left,top,edge,edge,0,0,size,size);
+        for(const quality of [.78,.64,.50,.36]){
+          const out=canvas.toDataURL('image/jpeg',quality);
+          if(out.startsWith('data:image/jpeg;base64,')&&out.length<=113000)return out;
+        }
+      }
+      throw Error('La foto no se pudo reducir lo suficiente. Prueba con otra imagen.');
+    }finally{URL.revokeObjectURL(url)}
+  }
+  $('adminSocialFile').onchange=async()=>{
+    const file=$('adminSocialFile').files?.[0];
+    if(!file)return;
+    try{
+      const encoded=await compressProfilePhoto(file);
+      showAdminPhoto(encoded,$('editForm').elements.playerName.value);
+      say('socialAdminStatus','Foto preparada para guardar.');
+    }catch(e){$('adminSocialFile').value='';say('socialAdminStatus',e.message)}
+  };
+  $('socialAdminForm').onsubmit=async event=>{
+    event.preventDefault();
+    const f=event.currentTarget.elements;
+    const id=Number(f.id.value),instagram=f.instagram.value.trim(),shareSocial=f.shareSocial.checked;
+    $('saveSocialAdmin').disabled=true;
+    say('socialAdminStatus','Guardando Instagram y foto…');
+    try{
+      const payload={id,instagram,shareSocial};
+      const file=$('adminSocialFile').files?.[0];
+      if(file)payload.photoData=await compressProfilePhoto(file);
+      const data=await api('/api/accounts',{action:'setMedia',...payload});
+      accounts=data.accounts||[];renderPlayers();stats();
+      $('adminSocialFile').value='';
+      const updated=accounts.find(a=>a.id===id);
+      if(updated)showAdminPhoto(updated.hasPhoto===1?'/api/accounts?photo='+id+'&v='+Date.now():null,updated.playerName);
+      say('socialAdminStatus','Foto e Instagram guardados.');
+    }catch(e){say('socialAdminStatus',e.message)}
+    finally{$('saveSocialAdmin').disabled=false}
+  };
+  $('adminRemovePhoto').onclick=async()=>{
+    const f=$('socialAdminForm').elements;
+    if(!confirm('¿Quitar la fotografía de este perfil?'))return;
+    const id=Number(f.id.value);
+    const success=await updatePlayer('setMedia',{
+      id,instagram:f.instagram.value.trim(),shareSocial:f.shareSocial.checked,photoData:''
+    },'socialAdminStatus');
+    if(success){$('adminSocialFile').value='';showAdminPhoto(null,$('editForm').elements.playerName.value)}
   };
   function openPair(a){
     const f=$('pairForm').elements;f.id.value=a.id;
