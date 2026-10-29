@@ -1152,10 +1152,42 @@ button:focus-visible,a:focus-visible,input:focus-visible{
     }catch(e){$('detailsStatus').textContent=e.message}
     finally{$('saveDetailsButton').disabled=false}
   });
+  function renderTourSeason(records){
+    const wins=records.filter(match=>match.winner==='Yo').length;
+    const losses=records.filter(match=>match.winner==='Rival').length;
+    animateRealNumber('tourMatches',records.length);
+    animateRealNumber('tourWins',wins);
+    animateRealNumber('tourLosses',losses);
+    const panel=$('tourMyRecent');
+    panel.replaceChildren();
+    if(!records.length){
+      const emptyBox=document.createElement('div');emptyBox.className='tour-empty';
+      const title=document.createElement('strong');title.textContent='Tu temporada empieza aquí';
+      const hint=document.createElement('span');hint.textContent='Cuando se importen tus partidos oficiales, aparecerán automáticamente.';
+      emptyBox.append(title,hint);panel.append(emptyBox);return;
+    }
+    const fragment=document.createDocumentFragment();
+    records.slice(0,3).forEach((match,i)=>{
+      const row=document.createElement('article');row.className='tour-match';
+      const number=document.createElement('span');number.className='tour-match-number';number.textContent=String(i+1).padStart(2,'0');
+      const content=document.createElement('div');content.className='tour-match-content';
+      const label=document.createElement('span');label.className='tour-match-meta';
+      label.textContent=[match.date,match.round,match.groupLabel].filter(Boolean).join(' · ');
+      const players=document.createElement('strong');players.className='tour-match-names';
+      players.textContent=match.player1+'  vs  '+match.player2;
+      content.append(label,players);
+      const outcome=document.createElement('span');
+      outcome.className='tour-match-outcome '+(match.winner==='Yo'?'is-win':'is-loss');
+      outcome.textContent=match.winner==='Yo'?'VICTORIA':'DERROTA';
+      row.append(number,content,outcome);fragment.append(row);
+    });
+    panel.append(fragment);
+  }
   async function loadMemberResults(){
     try{
       const data=await getJSON('/api/member/results');
       const records=data.results||[];
+      renderTourSeason(records);
       animateRealNumber('myResultsCount',records.length);
       const container=$('memberResults');container.replaceChildren();
       if(!records.length){container.append(empty('Todavía no hay resultados tuyos importados desde Excel.'));return}
@@ -1198,6 +1230,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{
     setProfile(data.profile);
     $('loading').hidden=true;$('playerApp').hidden=false;
     updateReadingProgress();
+    loadMemberResults(); // Actualiza el resumen personal con datos reales, sin revelar rivales sin consentimiento.
     if(data.profile.legalApproved&&data.profile.privacyNeedsAcknowledgement)
       $('privacyWelcomeDialog').showModal();
   }).catch(()=>{
