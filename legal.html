@@ -75,7 +75,7 @@ La información operativa y técnica que sigue describe cómo funciona la web, p
 </section>
 <a class="back" href="/">Volver al acceso</a>
 </main>
-<footer>Documento informativo del RANKING INDIVIDUAL CPZ 2026/27. Revisión técnica inicial: 29 de octubre de 2026. El organizador debe aprobar la versión legal definitiva.</footer>
+<footer>Documento informativo del RANKING INDIVIDUAL CPZ 2026/27. Revisión técnica inicial: 29 de octubre de 2026. La versión definitiva requiere validación del responsable y comprobación de proveedores.</footer>
 <script>
 (async()=>{
   try{
@@ -93,7 +93,12 @@ La información operativa y técnica que sigue describe cómo funciona la web, p
     document.getElementById('legalAddress').textContent=s.postalAddress;
     document.getElementById('legalBasis').textContent=s.legalBasis;
     document.getElementById('legalRetention').textContent=s.retentionNote;
-    document.getElementById('legalPending').hidden=true;
+    const notice=document.getElementById('legalPending');
+    notice.hidden=false;
+    notice.replaceChildren();
+    const strong=document.createElement('strong');
+    strong.textContent='Información de responsable declarada y publicada por administración';
+    notice.append(strong,document.createTextNode(' Todavía debe verificarse con el organizador que existen los acuerdos de tratamiento, las garantías de proveedores y un procedimiento para atender los derechos de los participantes. El aviso no sustituye una revisión jurídica completa.'));
     document.getElementById('legalStatus').textContent='Datos confirmados por administración · versión '+data.revision+'.';
   }catch{
     document.getElementById('legalStatus').textContent='No se pudo verificar la identificación del responsable; la información sigue siendo provisional.';
