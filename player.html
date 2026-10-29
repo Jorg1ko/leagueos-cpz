@@ -561,15 +561,22 @@ button:focus-visible,a:focus-visible,input:focus-visible{
       <button type="button" data-view="community"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-play"></use></svg><span>Comunidad y vídeos</span></button>
       <button type="button" data-view="account"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-user"></use></svg><span>Mi cuenta</span></button>
     </nav>
-    <div class="side-foot">Acceso exclusivo para participantes registrados.<br>Club Pickleball Zaragoza · 2026/27</div>
+    <div class="club-sidepanel">
+  <span class="club-sidepanel-kicker">NUESTRO CLUB</span>
+  <strong>Club Pickleball<br>Zaragoza</strong>
+  <a href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer">Visitar la web del club <span aria-hidden="true">↗</span></a>
+  <a href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Reservar pista <span aria-hidden="true">↗</span></a>
+</div>
+<div class="side-foot">Zona privada de los participantes.<br>Club Pickleball Zaragoza · 2026/27</div>
   </aside>
   <div class="workspace">
     <header class="top">
       <div><strong id="headerName">Cuenta de jugador</strong><span>Acceso de jugador · Solo lectura de la competición</span></div>
-      <div class="top-actions"><span class="member-pill"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-lock"></use></svg> JUGADOR</span><button id="logout" class="action secondary" type="button">Salir</button></div>
+      <div class="top-actions"><a class="top-club-link" href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer" aria-label="Abrir web del Club Pickleball Zaragoza"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-court"></use></svg> Web del club <span aria-hidden="true">↗</span></a><span class="member-pill"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-lock"></use></svg> JUGADOR</span><button id="logout" class="action secondary" type="button">Salir</button></div>
     </header>
     <main class="main">
       <section class="view active" id="view-home">
+        <div class="tour-eyebrow"><span class="tour-eyebrow-pulse" aria-hidden="true"></span><strong>CPZ / COMPETICIÓN PRIVADA</strong><span>RANKING INDIVIDUAL · 2026/27</span><a href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer">Club Pickleball Zaragoza ↗</a></div>
         <div class="hero hero-home">
           <div class="hero-home-copy">
             <span class="hero-kicker"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-ball"></use></svg> ÁREA PRIVADA · TEMPORADA 2026/27</span>
@@ -603,6 +610,24 @@ button:focus-visible,a:focus-visible,input:focus-visible{
             <div class="card-header"><span class="card-symbol card-symbol-green"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-court"></use></svg></span><span class="card-eyebrow">PRACTICA TU DEPORTE</span></div>
             <h3>Reserva tu pista</h3>
             <p>Acordad cuándo jugar y reservad pista en Taykus. La administración incorporará los resultados oficiales una vez revisados.</p><div class="links"><a class="action secondary" href="https://pickleballzaragoza.taykus.com/" target="_blank" rel="noopener noreferrer">Reservar en Taykus ↗</a><button class="action secondary" type="button" data-go="rules">Consultar normas →</button></div></article>
+        </div>
+        <div class="tour-section-label"><span>01 / MI TEMPORADA</span><h2>Mi recorrido en el ranking</h2><p>Estadísticas descriptivas obtenidas de los partidos importados. No equivalen a puntos ni posiciones oficiales.</p></div>
+        <div class="tour-season-board">
+          <div class="tour-season-numbers">
+            <div class="tour-season-number"><span>PARTIDOS REGISTRADOS</span><strong id="tourMatches">0</strong></div>
+            <div class="tour-season-number"><span>VICTORIAS</span><strong id="tourWins">0</strong></div>
+            <div class="tour-season-number"><span>DERROTAS</span><strong id="tourLosses">0</strong></div>
+          </div>
+          <div class="tour-season-content">
+            <div class="tour-season-heading"><span>ÚLTIMOS ENCUENTROS</span><button class="action secondary" type="button" data-go="results">Ver todos →</button></div>
+            <div id="tourMyRecent" class="tour-my-recent"><div class="tour-empty"><strong>Tu temporada empieza aquí</strong><span>Cuando el organizador importe tus partidos, aparecerán en este resumen.</span></div></div>
+          </div>
+        </div>
+        <div class="club-spotlight">
+          <div class="club-spotlight-copy"><span class="club-spotlight-eyebrow">EL CLUB · NUESTRA CASA</span><h2>Club Pickleball Zaragoza</h2><p>Nuestra comunidad, nuestras pistas y mucho más pickleball. Descubre las instalaciones, clases y novedades del club en su propia página.</p>
+            <div class="club-spotlight-actions"><a class="action club-spotlight-primary" href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer">Visitar web del club <span aria-hidden="true">↗</span></a><a class="action club-spotlight-outline" href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Reservar pista <span aria-hidden="true">↗</span></a></div>
+          </div>
+          <div class="club-spotlight-emblem" aria-hidden="true"><svg class="cpz-icon"><use href="#cpz-court"></use></svg><strong>CPZ</strong><span>2026/27</span></div>
         </div>
         <p class="notice important">La administración asignará los rivales y grupos cuando estén confirmados. No se muestran clasificaciones ficticias ni partidos de demostración.</p>
       </section>
@@ -707,7 +732,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{
         </form></div>
         <p class="notice"><strong>¿Has perdido el acceso?</strong> Pide al organizador que te genere una nueva contraseña provisional. No compartas tu contraseña con otros jugadores.</p>
       </section>
-      <footer class="footer">RANKING INDIVIDUAL CPZ 2026/27 · Área privada para participantes autorizados. <a href="/legal" target="_blank" rel="noopener noreferrer">Privacidad y condiciones de uso</a>. La composición de grupos y resultados del ranking se incorporará cuando el club los confirme.</footer>
+      <footer class="footer"><span>RANKING INDIVIDUAL CPZ 2026/27 · Acceso privado de participantes.</span><span>Club Pickleball Zaragoza · <a href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer">Web oficial del club ↗</a> · <a href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Reservas ↗</a> · <a href="/legal" target="_blank" rel="noopener noreferrer">Privacidad</a></span></footer>
     </main>
   </div>
 </div>
