@@ -122,6 +122,7 @@
        <label>WhatsApp (opcional)<input name="whatsappPhone" type="tel" maxlength="45" inputmode="tel" placeholder="+34 600 000 000"></label>
        <label class="checkbox"><input name="shareWithOpponent" type="checkbox"> Declaro disponer de autorización concreta del jugador para compartir su número solo con su rival; se registrará mi declaración.</label>
        <p class="status">Antes de dar de alta un participante, facilítale el <a href="/legal.html" target="_blank" rel="noopener noreferrer">aviso de privacidad</a>. La información no sustituye al consentimiento independiente para mostrar WhatsApp o imágenes.</p>
+       <label class="checkbox"><input name="privacyInformed" type="checkbox"> He entregado al jugador la información de privacidad disponible. Esta declaración queda registrada y no equivale al consentimiento para compartir datos.</label>
        <label>Grupo (opcional)<input name="groupLabel" maxlength="35" placeholder="Ej. A1; dejar vacío si aún no está confirmado"></label>
        <label>Contraseña provisional
          <span class="inline-input"><input type="text" name="password" minlength="12" maxlength="128" required autocomplete="off" spellcheck="false"><button type="button" class="button secondary" id="generatePass">Generar</button></span>
@@ -214,6 +215,10 @@
     <p>El responsable debe revisar también qué contrato de tratamiento se ha formalizado con el proveedor técnico y qué garantías ofrece Cloudflare para el almacenamiento de los datos.</p>
     <div class="actions"><a href="/legal.html" target="_blank" rel="noopener noreferrer" class="button secondary">Abrir aviso de privacidad ↗</a></div>
     <p id="legalRevision" class="status">Estado: pendiente de confirmar.</p>
+    <h3>Registro de permisos y comunicaciones</h3>
+    <p>Se registran los cambios de los permisos voluntarios indicando si los hizo el jugador o si el administrador declaró disponer de su autorización. El registro no sustituye la prueba externa de los permisos obtenidos por el administrador.</p>
+    <button type="button" class="button secondary" id="reloadConsentAudit">Actualizar registro</button>
+    <div class="list" id="consentAudit"><div class="empty">Sin datos consultados.</div></div>
    </article>
   </div>
 </section>
