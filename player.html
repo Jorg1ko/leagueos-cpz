@@ -101,6 +101,15 @@
 .hero-emblem{display:grid;place-items:center;min-width:99px;min-height:99px;padding:15px}
 .hero-emblem .cpz-icon{width:68px;height:68px;color:#d9efff;filter:drop-shadow(0 3px 12px #002b5350)}
 @media(max-width:780px){.nav button{gap:7px}.nav button .cpz-icon{width:18px;height:18px}}
+
+.privacy-welcome{width:min(540px,94vw);max-height:92vh;overflow:auto;border:1px solid #c9e4f4;border-radius:18px;padding:0;background:#fff;color:#264c70;box-shadow:0 25px 95px #09233f66}
+.privacy-welcome::backdrop{background:#10243bd1}
+.privacy-welcome-inner{padding:clamp(18px,4vw,30px)}
+.privacy-welcome-inner h2{font-size:23px;color:#165d9b;margin:0 0 12px}
+.privacy-welcome-inner p{font-size:13px;line-height:1.75;color:#536e86}
+.privacy-welcome-inner strong{color:#185c96}
+.privacy-welcome-inner a{color:#116db4}
+.privacy-welcome .form{margin-top:13px}
 </style>
 </head>
 <body>
@@ -309,6 +318,20 @@
     </main>
   </div>
 </div>
+<dialog id="privacyWelcomeDialog" class="privacy-welcome">
+  <div class="privacy-welcome-inner">
+    <h2>Antes de utilizar el ranking</h2>
+    <p>Consulta cómo se gestionan tus datos. <strong>Si no autorizas mostrar tu identidad, los demás jugadores te verán como «Jugador X».</strong> El administrador podrá seguir identificándote para organizar la competición.</p>
+    <p><a href="/legal" target="_blank" rel="noopener noreferrer">Leer información de privacidad y condiciones ↗</a></p>
+    <form id="privacyWelcomeForm" class="form">
+      <label class="contact-consent"><input id="welcomeRead" type="checkbox" required> Confirmo que he leído la información de privacidad aprobada por el organizador. Esta confirmación no autoriza a compartir mis datos.</label>
+      <label class="contact-consent"><input id="welcomeShareName" type="checkbox"> Quiero que mi nombre aparezca ante otros jugadores de la liga (opcional y revocable).</label>
+      <button type="submit" class="action" id="welcomeConfirm">Registrar lectura y elección</button>
+      <button type="button" class="action secondary" id="welcomePrivate">Continuar sin compartir datos: Jugador X</button>
+      <p id="welcomeStatus" class="status" role="status"></p>
+    </form>
+  </div>
+</dialog>
 <script>
 (function(){
   'use strict';
@@ -551,6 +574,36 @@
     }catch(e){$('profileMediaStatus').textContent=e.message}
     finally{$('removeProfilePhoto').disabled=false}
   };
+  $('privacyWelcomeForm').onsubmit=async e=>{
+    e.preventDefault();
+    if(!$('welcomeRead').checked){$('welcomeStatus').textContent='Confirma la lectura después de revisar el aviso.';return}
+    $('welcomeConfirm').disabled=true;
+    $('welcomeStatus').textContent='Guardando tu elección…';
+    try{
+      const res=await fetch('/api/member/acknowledge',{
+        method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({confirmRead:true})
+      });
+      const first=await res.json();
+      if(!res.ok||!first.ok)throw Error(first.error||'No se pudo registrar la lectura.');
+      setProfile(first.profile);
+      if($('welcomeShareName').checked){
+        const second=await fetch('/api/member/identity',{
+          method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({shareName:true})
+        });
+        const next=await second.json();
+        if(!second.ok||!next.ok)throw Error(next.error||'No se pudo guardar el permiso para mostrar el nombre.');
+        setProfile(next.profile);
+      }
+      $('privacyWelcomeDialog').close();
+    }catch(error){$('welcomeStatus').textContent=error.message}
+    finally{$('welcomeConfirm').disabled=false}
+  };
+  $('welcomePrivate').onclick=()=>{
+    $('privacyWelcomeDialog').close();
+    $('identityStatus').textContent='Tu identidad permanece oculta para los demás jugadores. Puedes revisar los permisos en Mi cuenta cuando quieras.';
+  };
   $('identityForm').addEventListener('submit',async function(e){
     e.preventDefault();
     if(!profile?.canShareName){$('identityStatus').textContent='El organizador debe validar primero el aviso legal y tú confirmar su lectura.';return}
@@ -634,6 +687,8 @@
   getJSON('/api/member/me').then(data=>{
     setProfile(data.profile);
     $('loading').hidden=true;$('playerApp').hidden=false;
+    if(data.profile.legalApproved&&data.profile.privacyNeedsAcknowledgement)
+      $('privacyWelcomeDialog').showModal();
   }).catch(()=>{
     location.replace('/');
   });
