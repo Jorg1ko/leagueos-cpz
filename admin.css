@@ -67,3 +67,229 @@ tr:hover td{background:#fbfdff}.good{color:#168156;font-weight:750}.bad{color:#b
 .player-card-photo{object-fit:cover}
 .social-admin-link{display:inline-block;margin-top:7px;font-size:12px;font-weight:750;text-decoration:none;color:#176bb0}
 .social-admin-link:hover{text-decoration:underline}
+
+
+/* CPZ 2026/27 · Rediseño visual de la plataforma real (no altera datos) */
+:root{
+  color-scheme:light;
+  --blue:#087ed5;--dark:#0e548b;--line:#dae7f2;--muted:#6d8399;--light:#ebf6ff;
+  --navy:#082a50;--ink:#183650;--canvas:#f3f7fc;--cyan:#31c1ff;
+}
+html{scroll-behavior:smooth}
+body{
+  color:var(--ink);
+  background:radial-gradient(ellipse 65% 30% at 97% -3%,#dfefff 0%,transparent 80%),var(--canvas);
+  -webkit-font-smoothing:antialiased;
+}
+.layout{min-height:100dvh;align-items:stretch}
+.sidebar{
+  position:sticky;top:0;height:100dvh;overflow-y:auto;
+  width:264px;padding:24px 14px 20px;
+  background:linear-gradient(178deg,#092e55 0%,#081e39 76%,#06182f 100%);
+  border-right:1px solid #174c78;
+  box-shadow:12px 0 45px #113b6220;
+  z-index:8;
+}
+.sidebar:before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#0b96ef,#58d7ff,transparent);
+}
+.brand{padding:15px 10px 26px;gap:14px;margin-bottom:19px;border-bottom:1px solid #ffffff1d}
+.brand img{
+  width:84px;height:82px;padding:9px;border-radius:21px;
+  background:#f5fbff;box-shadow:0 12px 30px #00152f66;
+}
+.brand strong{color:#fff;font-size:14px;font-weight:850;letter-spacing:-.25px;line-height:1.45}
+.brand small{color:#8eb9dc;font-size:10px;letter-spacing:.55px;text-transform:uppercase;font-weight:720}
+.sidebar nav{display:grid;gap:5px}
+.nav{
+  position:relative;color:#a9c5df;padding:14px 14px;border-radius:12px;
+  font-size:12px;font-weight:720;line-height:1.35;margin-bottom:0;
+  transition:background .17s,color .17s,transform .17s;
+}
+.nav .cpz-icon{color:#6da3cf;width:20px;height:20px}
+.nav:hover{color:#fff;background:#ffffff12;transform:translateX(2px)}
+.nav:hover .cpz-icon{color:#5bc9ff}
+.nav.active{
+  color:#fff;background:linear-gradient(98deg,#0c78c7,#0e93df);
+  box-shadow:0 7px 18px #001c3d5c,inset 0 1px #ffffff25;
+}
+.nav.active .cpz-icon{color:#fff}
+.nav.active:before{content:"";position:absolute;left:0;top:18%;height:64%;width:3px;border-radius:4px;background:#8ee7ff}
+.sidefoot{color:#749bbf;border-top:1px solid #ffffff17;padding:20px 12px 5px;font-size:10px}
+.workspace{background:transparent;min-height:100dvh}
+.top{
+  position:sticky;top:0;z-index:6;
+  padding:17px clamp(23px,3vw,43px);
+  background:#ffffffee;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid #dbe7f1;
+  box-shadow:0 4px 24px #1b45640b;
+}
+.top strong{color:#103d6c;font-size:14px;letter-spacing:-.2px}
+.top small{font-size:11px;color:#8196a8}
+.top-actions{gap:12px}
+.pill{
+  display:inline-flex;gap:7px;align-items:center;
+  font-size:10px;background:linear-gradient(95deg,#e6f5ff,#dcefff);
+  border:1px solid #cee8f9;color:#0b6ead;
+  box-shadow:inset 0 1px #fff;
+}
+.pill .cpz-icon{width:14px;height:14px}
+.main{max-width:1480px;padding:29px clamp(21px,3vw,44px) 65px}
+.hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  min-height:208px;border-radius:24px;
+  background:
+    linear-gradient(100deg,#06284de9 2%,#0a467ece 50%,#07518f80 100%),
+    url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/POCO-SOBRE-NOSOTROS-1024x576.jpg") center 45%/cover no-repeat;
+  box-shadow:0 18px 42px #0b3a6750,inset 0 1px #ffffff30;
+  border:1px solid #3984bb45;
+  padding:38px clamp(25px,3.5vw,47px);
+}
+.hero:after{
+  content:"";position:absolute;right:-12%;bottom:-48%;width:48%;aspect-ratio:1;border-radius:50%;
+  border:1px solid #c0e8ff36;box-shadow:0 0 0 35px #ffffff07,0 0 0 70px #ffffff06;
+  pointer-events:none;z-index:-1;
+}
+.hero small{color:#95dcff;font-size:11px;letter-spacing:1.45px}
+.hero h1{font-size:clamp(28px,3.5vw,44px);letter-spacing:-1.5px;font-weight:850;line-height:1.07;margin:13px 0}
+.hero p{color:#e0f0ff;font-size:13px;max-width:680px;line-height:1.83}
+.hero--overview{min-height:340px;display:flex;align-items:center;justify-content:space-between;gap:34px}
+.hero-copy{position:relative;z-index:2;max-width:710px}
+.hero--overview h1{font-size:clamp(38px,4.3vw,66px);line-height:1.015;letter-spacing:-2.6px;margin:21px 0 16px;max-width:660px}
+.hero-highlight{display:block;color:#68d2ff;text-shadow:0 3px 25px #0d7cc56b}
+.hero--overview p{font-size:14px;max-width:550px}
+.hero-kicker{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border-radius:100px;border:1px solid #8cceff61;background:#ffffff1a;color:#d2efff;font-size:10px;letter-spacing:1.2px;font-weight:850}
+.hero-kicker .cpz-icon{width:17px;height:17px;color:#77d8ff}
+.hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:11px;margin-top:28px}
+.button.hero-primary{background:linear-gradient(115deg,#1599f5,#0374d5);border-color:#62c9ff87;color:white;padding:14px 20px;box-shadow:0 12px 28px #00294f80}
+.button.hero-primary:hover{background:linear-gradient(115deg,#0f88d9,#055cae)}
+.button.hero-outline{background:#06294b73;border:1px solid #9ccdebaf;color:#fff;padding:14px 20px;backdrop-filter:blur(10px)}
+.button.hero-outline:hover{background:#ffffff24}
+.hero-actions .cpz-icon{width:18px;height:18px}
+.hero-season{
+  position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;flex-shrink:0;
+  width:225px;min-height:249px;padding:20px 17px;border:1px solid #e3f5ff57;border-radius:21px;
+  background:linear-gradient(158deg,#ffffff31,#ffffff13);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:inset 0 1px #ffffff41,0 18px 40px #001b3b44;color:#fff;
+}
+.hero-season-icon{display:grid;place-items:center;width:55px;height:55px;border-radius:17px;background:#ffffff21;color:#b3ecff;margin-bottom:16px}
+.hero-season-icon .cpz-icon{width:31px;height:31px}
+.hero-season-label{font-size:10px;letter-spacing:2.4px;font-weight:900;color:#c8e8ff}
+.hero-season strong{font-size:47px;line-height:1.2;letter-spacing:-2px;margin:8px 0 0}
+.hero-season strong span{color:#66d7ff}
+.hero-season small{color:#e4f3ff;font-size:11px;letter-spacing:0;margin-bottom:10px}
+.hero-season-private{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:#e1f4ff;border-top:1px solid #ffffff36;padding-top:12px;margin-top:auto}
+.hero-season-private .cpz-icon{width:15px;height:15px}
+.metrics{gap:16px;margin:19px 0 24px}
+.metric{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:21px 23px 20px;border:1px solid #dce9f3;border-radius:18px;
+  background:#fff;box-shadow:0 8px 25px #164a7110;
+  transition:transform .18s,box-shadow .18s;
+}
+.metric:hover{transform:translateY(-3px);box-shadow:0 16px 30px #164a711b}
+.metric:after{content:"";position:absolute;bottom:0;left:20px;right:20px;height:3px;border-radius:4px 4px 0 0;background:linear-gradient(90deg,#1896e9,#64d3ff);opacity:.65}
+.metric-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.metric-icon{display:grid;place-items:center;border-radius:13px;width:45px;height:45px}
+.metric-icon .cpz-icon{width:24px;height:24px}
+.metric-icon--blue{background:#e6f4ff;color:#067bce}.metric-icon--teal{background:#e0f8f2;color:#0d9c81}.metric-icon--amber{background:#fff2db;color:#c87810}
+.metric-trend{font-size:9px;letter-spacing:1.2px;font-weight:850;color:#99a8b5}
+.metric b{font-size:34px;font-weight:880;line-height:1.25;color:#103e6a;letter-spacing:-1.6px}
+.metric small{font-size:12px;color:#70899e}
+.grid2{gap:18px}
+.card{
+  padding:24px;border-radius:19px;border:1px solid #dce8f3;
+  background:#fff;box-shadow:0 9px 28px #0f44720d;
+}
+.card h3{font-size:18px;letter-spacing:-.3px;color:#184e7e}
+.card p{font-size:12px;line-height:1.8}
+.feature-card{position:relative;padding:26px 27px 28px;min-height:258px;display:flex;flex-direction:column;align-items:flex-start}
+.feature-number{font-size:10px;letter-spacing:1.5px;color:#8c9fac;font-weight:900;margin-bottom:15px}
+.feature-icon{width:55px;height:55px;border-radius:17px;display:grid;place-items:center;margin-bottom:16px}
+.feature-icon .cpz-icon{width:30px;height:30px}
+.feature-icon--blue{color:#0b77cb;background:#e7f3fe}.feature-icon--teal{color:#08876e;background:#ddf7ee}
+.feature-card h3{font-size:21px;margin:0 0 8px}
+.feature-card p{margin:0 0 21px;font-size:12px;max-width:460px}
+.feature-card .button{margin-top:auto;padding:12px 16px}
+.section-title h2{font-size:23px;letter-spacing:-.7px}
+.button{border-radius:11px;font-weight:770;transition:transform .16s,background .16s,box-shadow .16s}
+.button:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 6px 15px #0c65a420}
+.button:active{transform:translateY(0)}
+.button.secondary{background:#eaf5ff;color:#085a9b;border-color:#cde6f8}
+.button.ghost{color:#345b7a}
+.notice{border-radius:14px;background:#f0f8ff;border-color:#d3e9fa}
+.form input:not([type="checkbox"]),.form select,.form textarea,.search{border-radius:11px;min-height:45px;border-color:#d1e0ed}
+.form input:focus,.form textarea:focus,.form select:focus,.search:focus{border-color:#53aaf1;box-shadow:0 0 0 3px #e0f1ff;outline:none}
+.player-card{border-radius:15px;border-color:#e1eaf4;padding:18px;box-shadow:0 4px 15px #0f437809}
+.player-card:hover{border-color:#b9d9f2;background:#fcfeff}
+.player-card-no-photo{border-radius:15px}
+.issued{background:linear-gradient(125deg,#e9f5ff,#f7fbff);border-radius:16px}
+.tag{font-weight:850}
+.table-wrap{border-radius:15px}
+th{background:#e9f4ff;color:#1a598e}
+td{line-height:1.55}
+dialog{border-radius:21px;max-height:90dvh;overflow-y:auto}
+.dialog-body{padding:27px}
+.footer{border-top:1px solid #dae5ee;padding-top:23px;color:#7b94a9}
+@media(max-width:1180px){
+  .hero--overview h1{font-size:clamp(35px,4.3vw,52px)}
+  .hero-season{width:190px;min-height:227px}
+  .hero-season strong{font-size:42px}
+  .sidebar{width:230px}
+}
+@media(max-width:850px){
+  .hero--overview{min-height:310px;padding:32px;gap:16px}
+  .hero-season{width:150px;min-height:204px;padding:15px}
+  .hero-season-icon{width:42px;height:42px;margin-bottom:10px}
+  .hero-season strong{font-size:34px}
+  .hero--overview h1{letter-spacing:-1.7px}
+}
+@media(max-width:760px){
+  .layout{display:block}
+  .sidebar{position:relative;top:auto;height:auto;width:100%;overflow:visible;padding:12px 14px 0;box-shadow:0 8px 24px #0a264947}
+  .sidebar:before{display:none}
+  .brand{flex-direction:row;text-align:left;justify-content:flex-start;padding:4px 3px 11px;margin-bottom:6px;border:0;gap:11px}
+  .brand img{width:49px;height:49px;padding:6px;border-radius:13px}
+  .brand strong{font-size:12px}
+  .sidebar nav{display:flex;gap:7px;overflow-x:auto;padding:5px 0 13px;scrollbar-width:thin;scrollbar-color:#4985b6 transparent}
+  .nav{min-height:40px;flex-shrink:0;width:auto;padding:9px 13px;white-space:nowrap;font-size:11px}
+  .nav:hover{transform:none}
+  .nav.active:before{display:none}
+  .nav .cpz-icon{width:17px;height:17px}
+  .sidefoot{display:none}
+  .top{position:relative;top:auto;padding:12px 19px}
+  .top strong{font-size:12px}
+  .main{padding:18px 16px 42px}
+  .hero{border-radius:19px;padding:26px}
+  .hero--overview{min-height:auto}
+  .hero-season{display:none}
+  .hero--overview h1{font-size:clamp(33px,7vw,49px)}
+  .hero--overview p{font-size:13px}
+  .hero-actions{gap:9px;margin-top:23px}
+  .metrics{gap:10px}
+  .metric{padding:15px}
+  .metric-top{margin-bottom:11px}
+  .metric-icon{width:37px;height:37px;border-radius:11px}
+  .metric-icon .cpz-icon{width:21px;height:21px}
+  .metric-trend{font-size:8px}
+  .metric b{font-size:27px}
+}
+@media(max-width:520px){
+  .hero--overview{padding:25px 22px}
+  .hero--overview h1{font-size:36px;letter-spacing:-1.6px}
+  .hero-actions{align-items:stretch;flex-direction:column}
+  .hero-actions .button{width:100%;justify-content:center}
+  .metrics--home{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .metrics--home .metric:last-child{grid-column:span 2}
+  .metric small{font-size:11px}
+  .metric-trend{font-size:8px}
+  .card{padding:19px}
+  .feature-card{min-height:0}
+  .feature-card h3{font-size:19px}
+  .pill{padding:7px 9px;font-size:9px}
+  .pill .cpz-icon{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .nav,.button,.metric{transition:none!important}
+}
