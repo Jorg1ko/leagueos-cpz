@@ -70,6 +70,10 @@
 .profile-media-row{display:flex;align-items:center;gap:17px;flex-wrap:wrap}
 .profile-media-row p{flex:1;min-width:180px;margin:0;font-size:12px;color:#67859b;line-height:1.75}
 .profile-instagram{display:inline-block;font-size:12px;font-weight:750;margin-top:7px;text-decoration:none}
+.privacy-identity{margin-top:18px;border-top:1px solid #dfe9f3;padding-top:16px}
+.privacy-identity h3{font-size:15px;color:#1b6096;margin:0 0 8px}
+.privacy-identity p{font-size:12px;color:#5a7994;line-height:1.7}
+
 .opponent-social{display:flex;align-items:center;gap:10px;margin:7px 0 16px;padding:11px 13px;background:#edf7ff;border:1px solid #d9e9f6;border-radius:12px}
 .opponent-social img{width:48px;height:48px;border-radius:13px;object-fit:cover;border:1px solid #cee3f4}
 .opponent-social a{font-weight:750;font-size:12px;text-decoration:none;overflow-wrap:anywhere}
@@ -245,6 +249,15 @@
             <button type="submit" class="action" id="privacyReadButton">Registrar lectura del aviso</button>
           </form>
           <p class="status" id="privacyReadStatus" role="status"></p>
+          <div class="privacy-identity" id="identitySettings">
+            <h3>Cómo aparece mi nombre a los demás</h3>
+            <p id="identityStatusDescription">Por defecto apareces como «Jugador X» en los enfrentamientos y resultados visibles para otros jugadores. Tú y el administrador seguís viendo tus datos reales.</p>
+            <form id="identityForm" class="form">
+              <label class="contact-consent"><input id="shareNameWithPlayers" type="checkbox"> Autorizo voluntariamente a que los demás jugadores de esta liga vean mi nombre en los enfrentamientos y resultados. Puedo retirar este permiso cuando quiera.</label>
+              <button type="submit" class="action" id="saveIdentity">Guardar permiso de nombre</button>
+              <p class="status" id="identityStatus" role="status"></p>
+            </form>
+          </div>
         </div>
         <div class="subhead"><h2>Datos del jugador</h2></div>
         <div class="card"><div class="profile"><div class="avatar" id="avatar"><span id="avatarInitials">CP</span><img id="avatarImage" alt="Mi foto de perfil" hidden></div><div><h3 id="profileName">—</h3><p>Usuario: <b id="profileUsername">—</b></p><p>Grupo: <b id="profileGroup">Pendiente</b></p><a id="myInstagramLink" class="profile-instagram" target="_blank" rel="noopener noreferrer" hidden></a></div></div></div>
@@ -311,6 +324,15 @@
     profile=data;
     $('privacyReadForm').hidden=!(data.legalApproved&&data.privacyNeedsAcknowledgement);
     $('privacyReadCheckbox').checked=false;
+    $('shareNameWithPlayers').checked=data.shareName===true;
+    $('shareNameWithPlayers').disabled=!data.canShareName;
+    $('saveIdentity').disabled=!data.canShareName;
+    $('identityStatusDescription').textContent=data.shareName
+      ?'Tu nombre real se muestra a los jugadores de esta liga. Puedes desmarcar el permiso para volver a aparecer como «Jugador X».'
+      :data.canShareName
+        ?'Ahora apareces como «Jugador X» ante otros jugadores. Si deseas mostrar tu nombre real, marca la casilla y guarda este permiso voluntario.'
+        :'Por defecto apareces como «Jugador X». Solo podrás autorizar que se muestre tu nombre cuando el organizador haya aprobado el aviso legal y hayas confirmado su lectura.';
+
     $('privacyPlayerDescription').textContent=!data.legalApproved
       ?'El aviso de privacidad está disponible como borrador informativo, pero el organizador todavía debe validar su identidad, el contacto para derechos y los plazos de conservación. Los permisos para compartir datos permanecen separados y son voluntarios.'
       :data.privacyNeedsAcknowledgement
@@ -528,6 +550,23 @@
     }catch(e){$('profileMediaStatus').textContent=e.message}
     finally{$('removeProfilePhoto').disabled=false}
   };
+  $('identityForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    if(!profile?.canShareName){$('identityStatus').textContent='El organizador debe validar primero el aviso legal y tú confirmar su lectura.';return}
+    $('saveIdentity').disabled=true;
+    $('identityStatus').textContent='Actualizando la visibilidad…';
+    try{
+      const res=await fetch('/api/member/identity',{
+        method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({shareName:$('shareNameWithPlayers').checked})
+      });
+      const data=await res.json();
+      if(!res.ok||!data.ok)throw Error(data.error||'No se pudo guardar el permiso.');
+      setProfile(data.profile);
+      $('identityStatus').textContent=data.profile.shareName?'Tu nombre se mostrará únicamente dentro de la liga.':'Tu nombre vuelve a estar oculto: Jugador X.';
+    }catch(e){$('identityStatus').textContent=e.message}
+    finally{$('saveIdentity').disabled=!profile?.canShareName}
+  });
   $('privacyReadForm').addEventListener('submit',async function(e){
     e.preventDefault();
     const status=$('privacyReadStatus');
