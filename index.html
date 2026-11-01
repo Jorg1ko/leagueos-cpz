@@ -31,6 +31,22 @@
 .cpz-standings tr.cpz-self td:nth-child(2){font-weight:900;color:#075eac}
 .cpz-group-heading{background:#6dd2f8;color:#08283d;padding:12px 15px;border-radius:12px;font-size:15px;font-weight:850;margin:0 0 12px}
 .cpz-standings-note{font-size:12px;color:#55758f;margin-top:12px}
+
+/* Selector de clasificación, tabla a todo el ancho disponible */
+.cpz-group-filters{display:flex;align-items:end;flex-wrap:wrap;gap:14px;margin:20px 0}
+.cpz-group-filters label{display:grid;gap:6px;font-size:13px;font-weight:800;color:#24445e}
+.cpz-group-filters select{min-width:165px;border:1px solid #b9d5e9;border-radius:11px;padding:12px 15px;background:#fff;color:#173e60;font:inherit}
+.cpz-group-filters p{flex:1;color:#5c758a;font-size:12px;margin:0}
+.cpz-single-ranking{width:100%;max-width:none;display:block}
+.cpz-single-ranking .group-card{width:100%;max-width:none}
+.cpz-single-ranking .cpz-standings-wrap{overflow:visible}
+.cpz-standings{min-width:0!important;width:100%!important;table-layout:auto;font-size:clamp(10px,.9vw,13px)!important}
+.cpz-standings th{padding:10px 5px!important;white-space:normal!important;line-height:1.2}
+.cpz-standings td{padding:10px 5px!important;white-space:normal!important}
+.cpz-standings th:nth-child(2),.cpz-standings td:nth-child(2){min-width:0!important;width:24%;overflow-wrap:anywhere}
+.cpz-standings .cpz-movement{white-space:normal;font-size:9px;padding:4px 5px}
+@media(max-width:950px){.cpz-standings th{font-size:10px}.cpz-standings td{font-size:11px}.cpz-standings th:nth-child(2),.cpz-standings td:nth-child(2){width:23%}}
+@media(max-width:580px){.cpz-group-filters{display:grid;grid-template-columns:1fr 1fr}.cpz-group-filters select{min-width:0;width:100%}.cpz-group-filters p{grid-column:1/-1}.cpz-standings{font-size:10px!important}.cpz-standings th{font-size:9px;padding:8px 2px!important}.cpz-standings td{padding:9px 2px!important;font-size:10px}.cpz-standings .cpz-movement{font-size:8px}.cpz-standings .cpz-pos{font-size:12px}}
 </style></head><body>
 <svg class="cpz-svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
   <symbol id="cpz-paddle" viewBox="0 0 64 64">
@@ -211,7 +227,7 @@
   <div class="notice"><strong>Gestión privada.</strong> Este panel muestra los jugadores y rivales que ya estén registrados en D1. No crea cuentas ni modifica resultados. Los enfrentamientos se calculan dentro de cada grupo; verifica las altas antes de asignarlos.</div>
   <div class="metrics"><div class="metric"><b>10</b><small>Grupos A1–A5 · B1–B5</small></div><div class="metric"><b id="groupPlayerCount">0</b><small>Jugadores dados de alta en esos grupos</small></div><div class="metric"><b id="groupMatchCount">0</b><small>Enfrentamientos calculados</small></div></div>
   <div class="actions"><button type="button" class="button secondary" id="refreshGroups">Actualizar grupos</button></div>
-  <h2 style="margin-top:28px">Centro de operaciones · Noviembre</h2><div id="operationsDashboard" class="metrics" aria-live="polite"></div><p id="operationsWarning" class="notice"></p><div id="groupCards" class="group-grid" aria-live="polite"></div><h2 style="margin-top:30px">Histórico de la temporada</h2><p>Resumen de actividad por mes basado únicamente en resultados registrados. No se inventan posiciones anteriores.</p><div id="seasonHistory" aria-live="polite"></div>
+  <h2 style="margin-top:28px">Centro de operaciones · Noviembre</h2><div id="operationsDashboard" class="metrics" aria-live="polite"></div><p id="operationsWarning" class="notice"></p><div class="cpz-group-filters" aria-label="Seleccionar clasificación"><label for="rankCategory">Categoría<select id="rankCategory"><option value="A">Categoría A</option><option value="B">Categoría B</option></select></label><label for="rankGroup">Grupo<select id="rankGroup"><option value="1">Grupo 1</option><option value="2">Grupo 2</option><option value="3">Grupo 3</option><option value="4">Grupo 4</option><option value="5">Grupo 5</option></select></label><p id="rankSelectionHint" aria-live="polite"></p></div><div id="groupCards" class="cpz-single-ranking" aria-live="polite"></div><h2 style="margin-top:30px">Histórico de la temporada</h2><p>Resumen de actividad por mes basado únicamente en resultados registrados. No se inventan posiciones anteriores.</p><div id="seasonHistory" aria-live="polite"></div>
   <div class="notice"><strong>Reglas:</strong> todos contra todos una vez (6 partidos por grupo). El primero asciende y el último desciende al grupo contiguo cuando exista. Fecha límite: 30 de noviembre de 2026. El movimiento entre categorías requiere confirmar el reglamento.</div>
 </section>
 <section class="view" id="page-results" hidden>
