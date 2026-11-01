@@ -30,6 +30,18 @@ jobs:
           cp admin.css dist/admin.css
           cp admin.js dist/admin.js
 
+      # Pages Functions debe estar en la raíz del repositorio, junto a dist/.
+      # Wrangler la compila y la despliega automáticamente desde este directorio.
+      - name: Validar archivos y funciones
+        run: |
+          test -f dist/index.html
+          test -f dist/admin.js
+          test -f functions/_middleware.js
+          test -f functions/api/accounts.js
+          test -f functions/api/results.js
+          node --check dist/admin.js
+          find functions -type f -name '*.js' -print0 | xargs -0 -n 1 node --check
+
       - name: Subir a Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
         with:
