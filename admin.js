@@ -238,7 +238,7 @@
       const head=document.createElement('thead');head.innerHTML='<tr><th>Pos.</th><th>Jugador</th><th>Pts.</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets +/−</th><th>Dif. sets</th><th>Puntos +/−</th><th>Dif. puntos</th></tr>';table.append(head);
       const body=document.createElement('tbody');const played=standings.some(p=>p.pj>0);
       standings.forEach((p,i)=>{
-        const tr=document.createElement('tr');const suffix=!played?'':(i===0?' ↑':i===3?' ↓':'');
+        const tr=document.createElement('tr');const suffix=!played?'':(i===0&&label!=='A1'?' ↑':i===3&&label!=='B5'?' ↓':'');
         const vals=[String(i+1)+suffix,p.name,String(p.pts),String(p.pj),String(p.pg),String(p.pp),p.sf+'/'+p.sc,String(p.sf-p.sc),p.pf+'/'+p.pc,String(p.pf-p.pc)];
         for(const value of vals){const td=document.createElement('td');td.textContent=value;td.style.padding='7px 4px';td.style.borderBottom='1px solid rgba(18,105,166,.1)';tr.append(td)}
         if(played&&(i===0||i===3))tr.style.background=i===0?'rgba(38,161,117,.12)':'rgba(222,116,68,.1)';
