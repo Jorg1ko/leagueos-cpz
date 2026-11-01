@@ -864,18 +864,16 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
         </div>
         <div class="subhead"><h2>Datos del jugador</h2></div>
         <div class="card"><div class="profile"><div class="avatar" id="avatar"><span id="avatarInitials">CP</span><img id="avatarImage" alt="Mi foto de perfil" hidden></div><div><h3 id="profileName">—</h3><p>Usuario: <b id="profileUsername">—</b></p><p>Grupo: <b id="profileGroup">Pendiente</b></p><a id="myInstagramLink" class="profile-instagram" target="_blank" rel="noopener noreferrer" hidden></a></div></div></div>
-        <div class="subhead"><h2>Foto e Instagram</h2><p>Personaliza tu perfil. La foto y tu Instagram serán privados hasta que autorices expresamente mostrarlos a tu rival.</p></div>
+        <div class="subhead"><h2>Foto e Instagram</h2><p>La foto de perfil la gestiona exclusivamente la administración. Puedes modificar tu Instagram y decidir si autorizas mostrar la foto y el Instagram a tu rival.</p></div>
         <div class="card">
           <form id="profileMediaForm" class="form">
-            <div class="profile-media-row"><div id="profilePhotoFallback" class="profile-photo-fallback">CP</div><img id="profilePhotoPreview" class="profile-photo-preview" alt="Vista previa de tu foto" hidden><p>Foto cuadrada. Se comprime automáticamente para que no ocupe espacio innecesario.</p></div>
-            <label>Subir foto de perfil
-              <input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp">
-            </label>
+            <div class="profile-media-row"><div id="profilePhotoFallback" class="profile-photo-fallback">CP</div><img id="profilePhotoPreview" class="profile-photo-preview" alt="Vista previa de tu foto" hidden><p>Foto gestionada por la administración.</p></div>
+            <p class="contact-help">Para incorporar o cambiar tu foto, contacta con la administración del ranking.</p>
             <label>Usuario de Instagram
               <input id="profileInstagram" type="text" maxlength="150" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="@usuario o https://instagram.com/usuario">
             </label>
             <label class="contact-consent"><input id="profileSocialConsent" type="checkbox"> Autorizo a que mi foto e Instagram se muestren exclusivamente al rival que me asignen.</label>
-            <div class="links"><button class="action" id="saveProfileMedia" type="submit">Guardar foto e Instagram</button><button class="action secondary" id="removeProfilePhoto" type="button">Quitar foto</button></div>
+            <div class="links"><button class="action" id="saveProfileMedia" type="submit">Guardar Instagram y permisos</button></div>
             <p class="contact-help">Permiso voluntario e independiente del WhatsApp: puedes cambiarlo o retirarlo desde aquí. El administrador solo debe activarlo si tiene tu autorización. <a href="/legal" target="_blank" rel="noopener noreferrer">Información de privacidad</a>.</p>
             <p id="profileMediaStatus" class="status" role="status"></p>
           </form>
@@ -1206,19 +1204,6 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
       throw Error('No se pudo reducir la fotografía. Prueba otra.');
     }finally{URL.revokeObjectURL(url)}
   }
-  $('profilePhotoInput').onchange=async()=>{
-    const file=$('profilePhotoInput').files?.[0];
-    if(!file)return;
-    $('profileMediaStatus').textContent='Preparando fotografía…';
-    try{
-      selectedPhotoData=await compressProfilePhoto(file);
-      renderSelfPhoto(selectedPhotoData);
-      $('profileMediaStatus').textContent='Foto lista. Pulsa «Guardar foto e Instagram».';
-    }catch(e){
-      selectedPhotoData=undefined;$('profilePhotoInput').value='';
-      $('profileMediaStatus').textContent=e.message;
-    }
-  };
   async function saveSocial(payload){
     const res=await fetch('/api/member/media',{
       method:'POST',credentials:'same-origin',
@@ -1228,8 +1213,8 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     const data=await res.json();
     if(!res.ok||!data.ok)throw Error(data.error||'No se pudo guardar la foto o Instagram.');
     setProfile(data.profile);
-    selectedPhotoData=undefined;
-    $('profilePhotoInput').value='';
+
+
   }
   $('profileMediaForm').onsubmit=async event=>{
     event.preventDefault();
@@ -1237,20 +1222,11 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     $('profileMediaStatus').textContent='Guardando cambios…';
     try{
       const payload={instagram:$('profileInstagram').value.trim(),shareSocial:$('profileSocialConsent').checked};
-      if(selectedPhotoData!==undefined)payload.photoData=selectedPhotoData;
+      
       await saveSocial(payload);
-      $('profileMediaStatus').textContent='Foto e Instagram guardados correctamente.';
+      $('profileMediaStatus').textContent='Instagram y permisos guardados correctamente.';
     }catch(e){$('profileMediaStatus').textContent=e.message}
     finally{$('saveProfileMedia').disabled=false}
-  };
-  $('removeProfilePhoto').onclick=async()=>{
-    if(!confirm('¿Quitar tu foto de perfil?'))return;
-    $('removeProfilePhoto').disabled=true;
-    try{
-      await saveSocial({instagram:$('profileInstagram').value.trim(),shareSocial:$('profileSocialConsent').checked,photoData:''});
-      $('profileMediaStatus').textContent='Foto eliminada del perfil.';
-    }catch(e){$('profileMediaStatus').textContent=e.message}
-    finally{$('removeProfilePhoto').disabled=false}
   };
   $('privacyWelcomeForm').onsubmit=async e=>{
     e.preventDefault();

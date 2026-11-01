@@ -294,7 +294,9 @@ export async function onRequest({request,env,params}){
       const row=await member(request,env);
       if(!row)return fail('Necesitas iniciar sesión como jugador.',401);
       const data=await body(request);
-      const handle=instagramHandle(data?.instagram),photo=validateImage(data?.photoData);
+      // Los jugadores pueden cambiar Instagram y su consentimiento, nunca la foto.
+      if(Object.prototype.hasOwnProperty.call(data||{},'photoData'))return fail('Solo la administración puede añadir, modificar o quitar la foto de perfil.',403);
+      const handle=instagramHandle(data?.instagram),photo=undefined;
       if(handle===null||photo===null||typeof data?.shareSocial!=='boolean')
         return fail('Instagram o fotografía inválidos. Usa una foto JPEG comprimida menor de 85 KB.');
       await contactSchema(env.LEAGUE_DB);
