@@ -666,6 +666,14 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
 .top-actions .top-club-link,.top-actions .member-pill,.top-actions #logout{display:inline-flex;align-items:center;justify-content:center;min-height:38px;margin:0;white-space:nowrap}
 .top-actions .member-pill{color:#1768ab}
 @media(max-width:560px){.top{align-items:flex-start}.top>div.top-actions{max-width:100%;gap:6px}.top-actions .top-club-link,.top-actions .member-pill,.top-actions #logout{min-height:34px;padding:7px 9px}}
+
+.mobile-quicknav{display:none}
+@media(max-width:780px){
+ .mobile-quicknav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:fixed;z-index:45;bottom:0;left:0;right:0;background:#081e38f5;backdrop-filter:blur(16px);padding:9px 10px calc(9px + env(safe-area-inset-bottom));gap:6px;border-top:1px solid #80c9ff50;box-shadow:0 -8px 28px #001a3430}
+ .mobile-quicknav button{min-width:0;padding:12px 3px;border-radius:11px;border:1px solid transparent;color:#dcefff;background:transparent;font-size:12px;font-weight:750;cursor:pointer}
+ .mobile-quicknav button.active{color:#0b2b45;background:#b6f36d;border-color:#d5ff99}
+ .main{padding-bottom:120px}
+}
 </style>
 </head>
 <body>
@@ -761,6 +769,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
       <div><strong id="headerName">Cuenta de jugador</strong><span>Acceso de jugador · Solo lectura de la competición</span></div>
       <div class="top-actions"><a class="top-club-link" href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer" aria-label="Abrir web del Club Pickleball Zaragoza"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-court"></use></svg> Web del club <span aria-hidden="true">↗</span></a><span class="member-pill"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-lock"></use></svg> JUGADOR</span><button id="logout" class="action secondary" type="button">Salir</button></div>
     </header>
+<nav class="mobile-quicknav" aria-label="Navegación rápida de jugador"><button type="button" data-view="home">Inicio</button><button type="button" data-view="match">Partidos</button><button type="button" data-view="results">Resultados</button><button type="button" data-view="account">Perfil</button></nav>
     <main class="main">
       <section class="view active" id="view-home">
         <div class="tour-eyebrow"><span class="tour-eyebrow-pulse" aria-hidden="true"></span><strong>CPZ / COMPETICIÓN PRIVADA</strong><span>RANKING INDIVIDUAL · 2026/27</span><a href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer">Club Pickleball Zaragoza ↗</a></div>
@@ -836,7 +845,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
       <section class="view" id="view-results">
         <div class="hero"><div><small>RESULTADOS CONFIRMADOS EN EXCEL</small><h1>Mis resultados</h1><p>Verás aquí los partidos en los que participas cuando el organizador los importe y valide desde Excel.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" viewBox="0 0 64 64" aria-hidden="true"><use href="#cpz-trophy"></use></svg></div></div>
         <div class="subhead"><h2>Historial de partidos</h2><p>No hay resultados de demostración ni información de otros partidos ajenos.</p></div>
-        <div id="memberResults" class="card"><p>Sin resultados importados.</p></div>
+        <div id="monthlyProgress" class="list" aria-live="polite"></div><div id="memberResults" class="card"><p>Sin resultados importados.</p></div>
       </section>
       <section class="view" id="view-rules">
         <div class="hero"><div><small>RANKING INDIVIDUAL CPZ · REGLAMENTO</small><h1>Normas de competición</h1><p>Lo esencial para organizar tus partidos y participar en las jornadas del ranking.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-rules"></use></svg></div></div>
@@ -1126,7 +1135,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     const active=document.querySelector('.view.active');
     const changed=active?.id!=='view-'+name;
     document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+name));
-    document.querySelectorAll('.nav button').forEach(x=>{
+    document.querySelectorAll('.nav button,.mobile-quicknav button').forEach(x=>{
       const selected=x.dataset.view===name;
       x.classList.toggle('active',selected);
       if(selected)x.setAttribute('aria-current','page');
@@ -1355,11 +1364,23 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     });
     panel.append(fragment);
   }
+  function renderMonthlyProgress(records){
+    const root=$('monthlyProgress');if(!root)return;root.replaceChildren();
+    const periods=new Map();
+    for(const r of records){const key=String(r.date||'').slice(0,7);if(!/^20\d\d-(0[1-9]|1[0-2])$/.test(key))continue;
+      const record=periods.get(key)||{played:0,wins:0,losses:0};record.played++;if(r.winner==='Yo')record.wins++;else record.losses++;periods.set(key,record)}
+    if(!periods.size){root.textContent='Tu histórico aparecerá cuando se registren resultados oficiales.';return}
+    for(const [period,v] of [...periods].sort((a,b)=>b[0].localeCompare(a[0]))){
+      const item=document.createElement('article');item.className='result-row';const title=document.createElement('strong');title.textContent=period;
+      const summary=document.createElement('span');summary.textContent=v.played+' partidos · '+v.wins+' victorias · '+v.losses+' derrotas';
+      item.append(title,summary);root.append(item)}
+  }
   async function loadMemberResults(){
     try{
       const data=await getJSON('/api/member/results');
       const records=data.results||[];
       renderTourSeason(records);
+      renderMonthlyProgress(records);
       animateRealNumber('myResultsCount',records.length);
       const container=$('memberResults');container.replaceChildren();
       if(!records.length){container.append(empty('Todavía no hay resultados tuyos importados desde Excel.'));return}
