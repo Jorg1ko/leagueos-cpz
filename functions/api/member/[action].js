@@ -187,6 +187,17 @@ export async function onRequest({request,env,params}){
       const row=await member(request,env);
       return respond({ok:true,authenticated:!!row,role:row?'player':null});
     }
+    if(action==='group'&&request.method==='GET'){
+      const row=await member(request,env);
+      if(!row)return fail('Inicia sesión como jugador.',401);
+      await contactSchema(env.LEAGUE_DB);
+      const own=await env.LEAGUE_DB.prepare('SELECT group_label FROM cpz_player_profiles WHERE account_id=?').bind(row.id).first();
+      const group=String(own?.group_label||'').trim();
+      if(!group)return respond({ok:true,group:null,players:[]});
+      const legal=await env.LEAGUE_DB.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
+      const query=await env.LEAGUE_DB.prepare("SELECT a.id,a.player_name,COALESCE(i.share_name,0) AS share_name,COALESCE(k.revision,0) AS ack FROM cpz_player_profiles p JOIN cpz_player_accounts a ON a.id=p.account_id LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id WHERE p.group_label=? AND a.enabled=1 ORDER BY a.id LIMIT 10").bind(group).all();
+      return respond({ok:true,group,players:(query.results||[]).map(p=>({self:p.id===row.id,name:p.id===row.id?row.player_name:(legal&&p.share_name===1&&p.ack>=legal.revision?p.player_name:'Jugador X')}))});
+    }
     if(action==='community'&&request.method==='GET'){
       const row=await member(request,env);
       if(!row)return fail('Inicia sesión como jugador.',401);
