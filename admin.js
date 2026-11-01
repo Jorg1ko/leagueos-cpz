@@ -65,6 +65,28 @@
     }
     state.frame=requestAnimationFrame(tick);
   }
+  function updateOperations(){
+    const host=$('operationsDashboard');if(!host)return;
+    const linked=Object.entries(NOVEMBER_ROSTER).flatMap(([group,names])=>names.map(name=>({group,name}))).filter(p=>accounts.some(a=>clean(a.playerName)===clean(p.name)&&clean(a.groupLabel).replace('grupo ','').replaceAll(' ','')===clean(p.group)));
+    const november=results.filter(r=>String(r.date||'').startsWith('2026-11'));
+    const metrics=[['Cuentas vinculadas',linked.length+' / 40'],['Altas pendientes',40-linked.length],['Resultados noviembre',november.length+' / 60'],['Partidos por disputar',Math.max(0,60-november.length)]];
+    host.replaceChildren();
+    for(const [label,value] of metrics){const item=document.createElement('div');item.className='metric';const number=document.createElement('b');number.textContent=String(value);const caption=document.createElement('small');caption.textContent=label;item.append(number,caption);host.append(item)}
+    const warning=$('operationsWarning');if(warning){const missing=40-linked.length;warning.textContent=missing?missing+' jugadores del listado oficial todavía no están vinculados a un grupo y una cuenta. No se crearán cuentas automáticamente.':'Los 40 participantes oficiales están vinculados a cuentas y grupos.'}
+  }
+  function renderSeasonHistory(){
+    const host=$('seasonHistory');if(!host)return;
+    host.replaceChildren();
+    const months=new Map();
+    for(const r of results){const period=String(r.date||'').slice(0,7);if(!/^20\d\d-(0[1-9]|1[0-2])$/.test(period))continue;
+      const record=months.get(period)||{total:0,groups:new Set()};record.total++;if(r.groupLabel)record.groups.add(r.groupLabel);months.set(period,record)}
+    const keys=[...months.keys()].sort().reverse();
+    if(!keys.length){host.textContent='Todavía no hay resultados registrados para construir el histórico mensual.';return}
+    for(const key of keys){const row=document.createElement('article');row.className='player-card';row.style.marginBottom='10px';
+      const title=document.createElement('strong');title.textContent=key;
+      const meta=document.createElement('p');meta.textContent=months.get(key).total+' resultados registrados · '+months.get(key).groups.size+' grupos con resultados';
+      row.append(title,meta);host.append(row)}
+  }
   function stats(){
     animateMetric('playerCount',accounts.length);
     animateMetric('activeCount',accounts.filter(x=>x.enabled===1).length);
@@ -132,6 +154,7 @@
     if(name==='players'||name==='groups')loadPlayers();
     if(name==='results')loadResults();
     if(name==='groups')loadResults();
+    if(name==='home'){loadPlayers();loadResults();}
     if(name==='videos')loadVideos();
     if(name==='legal'){loadLegalSettings();loadConsentAudit()}
     updateReadingProgress();
@@ -170,12 +193,12 @@
     say(id,'Guardando…');
     try{
       const d=await api('/api/accounts',{action,...payload});
-      accounts=d.accounts||[];renderPlayers();renderGroups();stats();say(id,'Cambios guardados.');return true;
+      accounts=d.accounts||[];renderPlayers();renderGroups();updateOperations();stats();say(id,'Cambios guardados.');return true;
     }catch(e){say(id,e.message);return false}
   }
   async function loadPlayers(){
     try{
-      const data=await api('/api/accounts');accounts=data.accounts||[];renderPlayers();renderGroups();stats();say('playerStatus','');
+      const data=await api('/api/accounts');accounts=data.accounts||[];renderPlayers();renderGroups();updateOperations();stats();say('playerStatus','');
     }catch(e){say('playerStatus',e.message);$('playerCards').innerHTML='<div class="empty">No se han podido cargar los jugadores.</div>'}
   }
   $('refreshPlayers').onclick=loadPlayers;
@@ -629,7 +652,7 @@
     $('importCommit').disabled=true;say('importStatus','Guardando resultados…');
     try{
       const d=await api('/api/results',{action:'import',rows:staged,confirm:true,fileName:stagedName,replaceExisting:$('replaceExisting').checked});
-      results=d.results||[];renderResults();renderGroups();stats();
+      results=d.results||[];renderResults();renderGroups();updateOperations();renderSeasonHistory();stats();
       say('importStatus',d.imported+' resultados guardados.');clearPreview();$('excelInput').value='';
     }catch(err){
       say('importStatus',err.message+(err.details?.length?' '+err.details.slice(0,5).join(' · '):''));
