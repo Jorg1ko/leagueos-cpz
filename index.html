@@ -7,7 +7,14 @@
 <link rel="stylesheet" href="/admin.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" defer referrerpolicy="no-referrer"></script>
 <script src="/admin.js" defer></script>
-</head><body>
+<style>
+.group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:18px;margin-top:20px}
+.group-grid .group-card{border:1px solid rgba(34,133,194,.28);border-radius:20px;padding:22px;background:linear-gradient(145deg,rgba(14,69,118,.13),rgba(9,54,94,.04));box-shadow:0 12px 34px rgba(5,38,73,.07)}
+.group-card h3{margin:0 0 14px;color:#0c5899;font-weight:850}.group-card .group-list{margin:0;padding-left:24px;line-height:1.9}
+.group-card .group-fixtures{margin-top:12px;border-top:1px solid rgba(22,105,166,.16);padding-top:12px}
+.group-card .group-fixtures summary{cursor:pointer;font-weight:700;color:#0c5899}.group-card .group-fixtures li{margin:7px 0}
+.group-card .empty-slot{opacity:.62;font-style:italic}
+</style></head><body>
 <svg class="cpz-svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
   <symbol id="cpz-paddle" viewBox="0 0 64 64">
     <g transform="rotate(-27 24 29)" stroke="currentColor" stroke-linejoin="round">
@@ -81,6 +88,7 @@
  <nav aria-label="Menú de administración">
   <button class="nav active" data-view="home" type="button"><svg class="cpz-icon"><use href="#cpz-ranking"></use></svg>Resumen</button>
   <button class="nav" data-view="players" type="button"><svg class="cpz-icon"><use href="#cpz-user"></use></svg>Jugadores y cuentas</button>
+  <button class="nav" data-view="groups" type="button"><svg class="cpz-icon"><use href="#cpz-trophy"></use></svg>Grupos de noviembre</button>
   <button class="nav" data-view="results" type="button"><svg class="cpz-icon"><use href="#cpz-trophy"></use></svg>Resultados y Excel</button>
   <button class="nav" data-view="videos" type="button"><svg class="cpz-icon"><use href="#cpz-play"></use></svg>Comunidad y vídeos</button>
   <button class="nav" data-view="booking" type="button"><svg class="cpz-icon"><use href="#cpz-court"></use></svg>Reservas y normas</button>
@@ -179,6 +187,14 @@
      <div class="list" id="playerCards"><div class="empty">Cargando jugadores…</div></div>
    </article>
   </div>
+</section>
+<section class="view" id="page-groups" hidden>
+  <div class="hero"><small>RANKING INDIVIDUAL · NOVIEMBRE 2026</small><h1>Grupos de noviembre</h1><p>Diez grupos · Cuatro jugadores por grupo · Tres partidos por jugador. Los números iniciales no indican clasificación.</p></div>
+  <div class="notice"><strong>Gestión privada.</strong> Este panel muestra los jugadores y rivales que ya estén registrados en D1. No crea cuentas ni modifica resultados. Los enfrentamientos se calculan dentro de cada grupo; verifica las altas antes de asignarlos.</div>
+  <div class="metrics"><div class="metric"><b>10</b><small>Grupos A1–A5 · B1–B5</small></div><div class="metric"><b id="groupPlayerCount">0</b><small>Jugadores dados de alta en esos grupos</small></div><div class="metric"><b id="groupMatchCount">0</b><small>Enfrentamientos calculados</small></div></div>
+  <div class="actions"><button type="button" class="button secondary" id="refreshGroups">Actualizar grupos</button></div>
+  <div id="groupCards" class="group-grid" aria-live="polite"></div>
+  <div class="notice"><strong>Reglas:</strong> todos contra todos una vez (6 partidos por grupo). El primero asciende y el último desciende al grupo contiguo cuando exista. Fecha límite: 30 de noviembre de 2026. El movimiento entre categorías requiere confirmar el reglamento.</div>
 </section>
 <section class="view" id="page-results" hidden>
  <div class="hero"><small>RESULTADOS DEL RANKING CPZ</small><h1>Importar resultados desde Excel</h1><p>Sube un .xlsx, .xls o CSV. El sistema detectará cada partido, validará jugadores, sets y fechas, y mostrará una vista previa. No se guarda nada hasta confirmar.</p></div>
