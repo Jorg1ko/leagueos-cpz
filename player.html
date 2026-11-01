@@ -659,6 +659,13 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
   .top-club-link{white-space:normal}
 }
 
+
+/* Cabecera: los tres controles permanecen alineados horizontalmente. */
+.top{min-height:88px;flex-wrap:wrap}
+.top>div.top-actions{display:flex;flex-direction:row;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px;margin-left:auto}
+.top-actions .top-club-link,.top-actions .member-pill,.top-actions #logout{display:inline-flex;align-items:center;justify-content:center;min-height:38px;margin:0;white-space:nowrap}
+.top-actions .member-pill{color:#1768ab}
+@media(max-width:560px){.top{align-items:flex-start}.top>div.top-actions{max-width:100%;gap:6px}.top-actions .top-club-link,.top-actions .member-pill,.top-actions #logout{min-height:34px;padding:7px 9px}}
 </style>
 </head>
 <body>
@@ -776,7 +783,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
         </div>
         <section class="card" aria-labelledby="novemberGroupHeading" style="margin-top:20px;padding:24px">
           <div class="subhead"><h2 id="novemberGroupHeading">Mi grupo · Noviembre 2026</h2><p>Cuatro plazas y tres enfrentamientos por participante. Fecha límite: 30 de noviembre.</p></div>
-          <p id="novemberGroupStatus" class="contact-help">Cargando participantes autorizados…</p>
+          <p id="novemberGroupStatus" class="contact-help">Cargando participantes autorizados…</p><p class="contact-help">Los nombres de otros participantes requieren su autorización. Hasta entonces aparecerán como «Jugador X».</p>
           <ol id="novemberGroupPlayers" style="line-height:2; padding-left:26px"></ol>
         </section>
         <div class="stats stats-home">
@@ -1392,12 +1399,22 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     finally{$('passwordButton').disabled=false}
   });
   async function loadNovemberGroup(){
+    const status=$('novemberGroupStatus'),list=$('novemberGroupPlayers');
+    if(!status||!list)return;
+    list.replaceChildren();
     try{
       const data=await getJSON('/api/member/group');
-      $('novemberGroupStatus').textContent=data.group?'Grupo '+data.group+' · '+data.players.length+' cuentas vinculadas de 4 plazas':'La organización todavía no ha asignado un grupo a tu cuenta.';
-      const list=$('novemberGroupPlayers');list.replaceChildren();
-      for(const p of data.players){const li=document.createElement('li');li.textContent=p.name+(p.self?' (tú)':'');list.append(li)}
-    }catch(e){$('novemberGroupStatus').textContent='No se ha podido cargar el grupo: '+e.message}
+      const label=data.group||profile?.group||'';
+      status.textContent=label?'Grupo '+label+' · 4 plazas · 3 partidos por jugador':'Tu cuenta no tiene grupo asignado. Contacta con administración.';
+      const participants=Array.isArray(data.players)?data.players:[];
+      for(let i=0;i<4;i++){
+        const item=participants[i];const li=document.createElement('li');
+        li.textContent=item?(item.name+(item.self?' (tú)':'')):'Jugador X · pendiente de vinculación';list.append(li);
+      }
+    }catch(e){
+      status.textContent='Grupo '+(profile?.group||'pendiente')+' · no se ha podido cargar la relación de participantes.';
+      for(let i=0;i<4;i++){const li=document.createElement('li');li.textContent='Jugador X · pendiente de confirmar';list.append(li)}
+    }
   }
   getJSON('/api/member/me').then(data=>{
     setProfile(data.profile);
