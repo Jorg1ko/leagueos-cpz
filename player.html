@@ -1410,7 +1410,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
       const head=document.createElement('thead');head.innerHTML='<tr><th>Pos.</th><th>Jugador</th><th>Pts.</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets +/−</th><th>Dif. sets</th><th>Puntos +/−</th><th>Dif. puntos</th></tr>';table.append(head);
       const body=document.createElement('tbody');
       players.forEach((p,i)=>{
-        const tr=document.createElement('tr');const marker=data.provisional?(i===0?' ↑':i===players.length-1?' ↓':''):'';
+        const tr=document.createElement('tr');const marker=data.provisional?(i===0&&group!=='A1'?' ↑':i===players.length-1&&group!=='B5'?' ↓':''):'';
         const cells=[String(i+1)+marker,p.name+(p.self?' (tú)':''),p.pts,p.pj,p.pg,p.pp,p.sf+'/'+p.sc,p.sf-p.sc,p.pf+'/'+p.pc,p.pf-p.pc];
         cells.forEach(v=>{const td=document.createElement('td');td.textContent=String(v);td.style.cssText='padding:10px 7px;border-bottom:1px solid #e1eaf3';tr.append(td)});
         if(p.self)tr.style.background='#e7f5ff';else if(data.provisional&&(i===0||i===players.length-1))tr.style.background=i===0?'#e8f6ed':'#fff0e7';
