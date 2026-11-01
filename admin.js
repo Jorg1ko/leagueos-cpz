@@ -201,37 +201,34 @@
   };
 
   // Grupos privados: usar solo las cuentas autorizadas presentes en D1.
-  const NOVEMBER_GROUPS=['A1','A2','A3','A4','A5','B1','B2','B3','B4','B5'];
+  const NOVEMBER_ROSTER={"A1":["Chema Balmori","Pedro Hernández","Javier Gimeno","Carlos Guillén"],"A2":["Jaime Mengual","Mario Pintanel","Eduardo Alvira","Ignacio Algas"],"A3":["Álvaro Esteban","Marcos Domeque","Javier Royo","Óscar Pinilla"],"A4":["Felipe Echevarría","Juan Jiménez","Alejandro Mendívil","Ramón Ruiz de Conejo"],"A5":["Jorge Ramón García","Mariano Guillén","Jorge Corbas","Pablo Oliván"],"B1":["Emilio Martín","Diego Cuervo","Carlos Lama","Enzo Navarro"],"B2":["Roberto Moreno","David Calavia","David Martos","Álex Aznar"],"B3":["David Serrate","Manuel Ángel Berges","Dani Sevil","Raúl García"],"B4":["Carlos Vilar","Gabriel Tena","Marco Antonio Lamata","Alejandro Embid"],"B5":["Gabriel Aguilar","Orlando Aguilar","Irene Martínez","Antonio Estopañán"]};
+  const NOVEMBER_GROUPS=Object.keys(NOVEMBER_ROSTER);
   function renderGroups(){
     const root=$('groupCards');if(!root)return;
-    root.replaceChildren();
-    let total=0,fixtures=0;
+    root.replaceChildren();let linked=0;
     for(const label of NOVEMBER_GROUPS){
-      const members=accounts.filter(a=>clean(a.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label));
-      total+=members.length;
+      const names=NOVEMBER_ROSTER[label];
+      const existing=accounts.filter(a=>clean(a.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label));
       const card=document.createElement('article');card.className='group-card';
       const heading=document.createElement('h3');heading.textContent='GRUPO '+label;card.append(heading);
       const list=document.createElement('ol');list.className='group-list';
-      for(let i=0;i<4;i++){
-        const li=document.createElement('li');
-        if(members[i])li.textContent=members[i].playerName||members[i].username||'Jugador X';
-        else{li.textContent='Plaza pendiente';li.className='empty-slot';}
-        list.append(li);
+      for(const name of names){
+        const match=existing.find(a=>clean(a.playerName||'')===clean(name));if(match)linked++;
+        const li=document.createElement('li');li.textContent=name;
+        const status=document.createElement('small');status.style.cssText='display:block;font-size:11px;line-height:1.5;opacity:.72';
+        status.textContent=match?'Cuenta vinculada':'Pendiente de alta/vinculación';li.append(status);list.append(li);
       }
       card.append(list);
-      if(members.length>4){const warning=document.createElement('p');warning.textContent='Atención: grupo con más de cuatro cuentas.';card.append(warning);}
       const details=document.createElement('details');details.className='group-fixtures';
-      const summary=document.createElement('summary');summary.textContent='Enfrentamientos del grupo';details.append(summary);
-      const matches=document.createElement('ul');
-      for(let i=0;i<members.length;i++)for(let j=i+1;j<members.length;j++){
-        if(i>=4||j>=4)continue;
-        const li=document.createElement('li');li.textContent=(members[i].playerName||'Jugador X')+' vs '+(members[j].playerName||'Jugador X');matches.append(li);fixtures++;
-      }
-      if(!matches.children.length){const li=document.createElement('li');li.textContent='Pendiente de registrar jugadores';matches.append(li);}
-      details.append(matches);card.append(details);root.append(card);
+      const summary=document.createElement('summary');summary.textContent='Ver los 6 enfrentamientos';details.append(summary);
+      const matches=document.createElement('ol');
+      for(let i=0;i<4;i++)for(let j=i+1;j<4;j++){const li=document.createElement('li');li.textContent=names[i]+' vs '+names[j];matches.append(li);}
+      details.append(matches);card.append(details);
+      if(existing.some(a=>!names.some(n=>clean(n)===clean(a.playerName||'')))){const warning=document.createElement('p');warning.textContent='Revisar: cuentas de este grupo no coinciden con la lista oficial.';card.append(warning);}
+      root.append(card);
     }
-    $('groupPlayerCount').textContent=String(total);
-    $('groupMatchCount').textContent=String(fixtures);
+    $('groupPlayerCount').textContent=String(linked)+' / 40';
+    $('groupMatchCount').textContent='60';
   }
   $('refreshGroups').onclick=loadPlayers;
   function renderPlayers(){
