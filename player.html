@@ -1454,7 +1454,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     }catch(err){status.textContent=err.message}
     finally{$('passwordButton').disabled=false}
   });
-  async functio  async function loadNovemberGroup(){
+  async function loadNovemberGroup(){
     const status=$('novemberGroupStatus'),root=$('novemberGroupPlayers');
     if(!status||!root)return;root.replaceChildren();
     try{
@@ -1478,7 +1478,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
       const legend=document.createElement('p');legend.className='contact-help';legend.textContent=data.provisional?'Verde = zona de ascenso; rojo = zona de descenso. Clasificación provisional hasta cerrar el mes.':'Sin resultados: listado inicial, no clasificación oficial. Verde y rojo indican las plazas de ascenso y descenso.';root.append(legend);
     }catch(e){status.textContent='No se ha podido cargar la clasificación: '+e.message}
   }
-/member/me').then(data=>{
+  getJSON('/api/member/me').then(data=>{
     setProfile(data.profile);
     $('loading').hidden=true;$('playerApp').hidden=false;
     updateReadingProgress();
