@@ -188,15 +188,33 @@ export async function onRequest({request,env,params}){
       return respond({ok:true,authenticated:!!row,role:row?'player':null});
     }
     if(action==='group'&&request.method==='GET'){
-      const row=await member(request,env);
-      if(!row)return fail('Inicia sesión como jugador.',401);
+      const row=await member(request,env);if(!row)return fail('Inicia sesión como jugador.',401);
       await contactSchema(env.LEAGUE_DB);
+      const roster={"A1":["Chema Balmori","Pedro Hernández","Javier Gimeno","Carlos Guillén"],"A2":["Jaime Mengual","Mario Pintanel","Eduardo Alvira","Ignacio Algas"],"A3":["Álvaro Esteban","Marcos Domeque","Javier Royo","Óscar Pinilla"],"A4":["Felipe Echevarría","Juan Jiménez","Alejandro Mendívil","Ramón Ruiz de Conejo"],"A5":["Jorge Ramón García","Mariano Guillén","Jorge Corbas","Pablo Oliván"],"B1":["Emilio Martín","Diego Cuervo","Carlos Lama","Enzo Navarro"],"B2":["Roberto Moreno","David Calavia","David Martos","Álex Aznar"],"B3":["David Serrate","Manuel Ángel Berges","Dani Sevil","Raúl García"],"B4":["Carlos Vilar","Gabriel Tena","Marco Antonio Lamata","Alejandro Embid"],"B5":["Gabriel Aguilar","Orlando Aguilar","Irene Martínez","Antonio Estopañán"]};
+      const normalize=s=>String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().trim().replace(/\\s+/g,' ');
       const own=await env.LEAGUE_DB.prepare('SELECT group_label FROM cpz_player_profiles WHERE account_id=?').bind(row.id).first();
-      const group=String(own?.group_label||'').trim();
-      if(!group)return respond({ok:true,group:null,players:[]});
+      let group=String(own?.group_label||'').trim().toUpperCase().replace(/^GRUPO\\s+/, '');
+      if(!roster[group]){
+        const name=normalize(row.player_name);
+        group=Object.keys(roster).find(key=>roster[key].some(n=>name===normalize(n)||name.startsWith(normalize(n)+' ')))||'';
+      }
+      if(!roster[group])return respond({ok:true,group:null,players:[],assigned:false});
       const legal=await env.LEAGUE_DB.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
-      const query=await env.LEAGUE_DB.prepare("SELECT a.id,a.player_name,COALESCE(i.share_name,0) AS share_name,COALESCE(k.revision,0) AS ack FROM cpz_player_profiles p JOIN cpz_player_accounts a ON a.id=p.account_id LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id WHERE p.group_label=? AND a.enabled=1 ORDER BY a.id LIMIT 10").bind(group).all();
-      return respond({ok:true,group,players:(query.results||[]).map(p=>({self:p.id===row.id,name:p.id===row.id?row.player_name:(legal&&p.share_name===1&&p.ack>=legal.revision?p.player_name:'Jugador X')}))});
+      const linked=await env.LEAGUE_DB.prepare("SELECT a.id,a.player_name,COALESCE(i.share_name,0) AS share_name,COALESCE(k.revision,0) AS ack FROM cpz_player_accounts a LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id WHERE a.enabled=1 LIMIT 250").all();
+      const people=roster[group].map((name,index)=>{
+        const account=(linked.results||[]).find(p=>normalize(p.player_name)===normalize(name)||normalize(p.player_name).startsWith(normalize(name)+' '));
+        const self=account?.id===row.id || normalize(row.player_name)===normalize(name)||normalize(row.player_name).startsWith(normalize(name)+' ');
+        return {index,self,name:self?row.player_name:(account&&legal&&account.share_name===1&&account.ack>=legal.revision?account.player_name:'Jugador X'),id:account?.id||null};
+      });
+      let games=[];
+      try{const results=await env.LEAGUE_DB.prepare("SELECT player_one_id AS p1,player_two_id AS p2,sets_json AS sets FROM cpz_match_results WHERE upper(trim(group_label))=? AND played_at>='2026-11-01' AND played_at<'2026-12-01' LIMIT 30").bind(group).all();games=results.results||[]}catch(_){}
+      const stats=people.map(p=>({pts:0,pj:0,pg:0,pp:0,sf:0,sc:0,pf:0,pc:0}));
+      for(const game of games){let x=people.findIndex(p=>p.id===game.p1),y=people.findIndex(p=>p.id===game.p2);if(x<0||y<0||x===y)continue;let sets;try{sets=JSON.parse(game.sets)}catch(_){continue}if(!Array.isArray(sets)||!sets.length)continue;
+        let sx=0,sy=0,px=0,py=0,valid=true;for(const set of sets){if(!Array.isArray(set)||set.length!==2||!set.every(n=>Number.isInteger(n)&&n>=0)||set[0]===set[1]){valid=false;break}sx+=set[0]>set[1]?1:0;sy+=set[1]>set[0]?1:0;px+=set[0];py+=set[1]}
+        if(!valid||sx===sy)continue;let a=stats[x],b=stats[y];a.pj++;b.pj++;a.sf+=sx;a.sc+=sy;b.sf+=sy;b.sc+=sx;a.pf+=px;a.pc+=py;b.pf+=py;b.pc+=px;if(sx>sy){a.pg++;b.pp++;a.pts+=3}else{b.pg++;a.pp++;b.pts+=3}
+      }
+      const players=people.map((p,k)=>({name:p.name,self:p.self,...stats[k],original:k})).sort((a,b)=>b.pts-a.pts||(b.sf-b.sc)-(a.sf-a.sc)||(b.pf-b.pc)-(a.pf-a.pc)||a.original-b.original);
+      return respond({ok:true,group,assigned:!!own?.group_label,players,provisional:players.some(p=>p.pj>0)});
     }
     if(action==='community'&&request.method==='GET'){
       const row=await member(request,env);

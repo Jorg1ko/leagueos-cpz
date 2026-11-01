@@ -131,6 +131,7 @@
     document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!=='page-'+name);
     if(name==='players'||name==='groups')loadPlayers();
     if(name==='results')loadResults();
+    if(name==='groups')loadResults();
     if(name==='videos')loadVideos();
     if(name==='legal'){loadLegalSettings();loadConsentAudit()}
     updateReadingProgress();
@@ -203,28 +204,47 @@
   // Grupos privados: usar solo las cuentas autorizadas presentes en D1.
   const NOVEMBER_ROSTER={"A1":["Chema Balmori","Pedro Hernández","Javier Gimeno","Carlos Guillén"],"A2":["Jaime Mengual","Mario Pintanel","Eduardo Alvira","Ignacio Algas"],"A3":["Álvaro Esteban","Marcos Domeque","Javier Royo","Óscar Pinilla"],"A4":["Felipe Echevarría","Juan Jiménez","Alejandro Mendívil","Ramón Ruiz de Conejo"],"A5":["Jorge Ramón García","Mariano Guillén","Jorge Corbas","Pablo Oliván"],"B1":["Emilio Martín","Diego Cuervo","Carlos Lama","Enzo Navarro"],"B2":["Roberto Moreno","David Calavia","David Martos","Álex Aznar"],"B3":["David Serrate","Manuel Ángel Berges","Dani Sevil","Raúl García"],"B4":["Carlos Vilar","Gabriel Tena","Marco Antonio Lamata","Alejandro Embid"],"B5":["Gabriel Aguilar","Orlando Aguilar","Irene Martínez","Antonio Estopañán"]};
   const NOVEMBER_GROUPS=Object.keys(NOVEMBER_ROSTER);
+  function standingFor(names,records){
+    const byName=new Map(names.map((name,i)=>[clean(name),{name,order:i,pj:0,pg:0,pp:0,sf:0,sc:0,pf:0,pc:0,pts:0}]));
+    for(const m of records){
+      const one=byName.get(clean(m.player1)),two=byName.get(clean(m.player2));if(!one||!two||one===two)continue;
+      const sets=Array.isArray(m.sets)?m.sets:[];if(!sets.length)continue;
+      let s1=0,s2=0,p1=0,p2=0,valid=true;
+      for(const set of sets){
+        if(!Array.isArray(set)||set.length!==2||![set[0],set[1]].every(n=>Number.isInteger(n)&&n>=0)){valid=false;break}
+        if(set[0]===set[1]){valid=false;break}
+        s1+=set[0]>set[1]?1:0;s2+=set[1]>set[0]?1:0;p1+=set[0];p2+=set[1];
+      }
+      if(!valid||s1===s2)continue;
+      one.pj++;two.pj++;one.sf+=s1;one.sc+=s2;two.sf+=s2;two.sc+=s1;one.pf+=p1;one.pc+=p2;two.pf+=p2;two.pc+=p1;
+      const winner=s1>s2?one:two,loser=s1>s2?two:one;winner.pg++;loser.pp++;winner.pts+=3;
+    }
+    return [...byName.values()].sort((x,y)=>y.pts-x.pts||(y.sf-y.sc)-(x.sf-x.sc)||(y.pf-y.pc)-(x.pf-x.pc)||x.order-y.order);
+  }
   function renderGroups(){
     const root=$('groupCards');if(!root)return;
     root.replaceChildren();let linked=0;
     for(const label of NOVEMBER_GROUPS){
       const names=NOVEMBER_ROSTER[label];
-      const existing=accounts.filter(a=>clean(a.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label));
+      const members=accounts.filter(a=>clean(a.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label));
+      linked+=names.filter(n=>members.some(a=>clean(a.playerName)===clean(n))).length;
+      const games=results.filter(r=>clean(r.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label) && String(r.date||'').startsWith('2026-11'));
+      const standings=standingFor(names,games);
       const card=document.createElement('article');card.className='group-card';
-      const heading=document.createElement('h3');heading.textContent='GRUPO '+label;card.append(heading);
-      const list=document.createElement('ol');list.className='group-list';
-      for(const name of names){
-        const match=existing.find(a=>clean(a.playerName||'')===clean(name));if(match)linked++;
-        const li=document.createElement('li');li.textContent=name;
-        const status=document.createElement('small');status.style.cssText='display:block;font-size:11px;line-height:1.5;opacity:.72';
-        status.textContent=match?'Cuenta vinculada':'Pendiente de alta/vinculación';li.append(status);list.append(li);
-      }
-      card.append(list);
-      const details=document.createElement('details');details.className='group-fixtures';
-      const summary=document.createElement('summary');summary.textContent='Ver los 6 enfrentamientos';details.append(summary);
-      const matches=document.createElement('ol');
-      for(let i=0;i<4;i++)for(let j=i+1;j<4;j++){const li=document.createElement('li');li.textContent=names[i]+' vs '+names[j];matches.append(li);}
-      details.append(matches);card.append(details);
-      if(existing.some(a=>!names.some(n=>clean(n)===clean(a.playerName||'')))){const warning=document.createElement('p');warning.textContent='Revisar: cuentas de este grupo no coinciden con la lista oficial.';card.append(warning);}
+      const title=document.createElement('h3');title.textContent='GRUPO '+label;card.append(title);
+      const note=document.createElement('p');note.textContent='Clasificación provisional · '+games.length+' resultados registrados';card.append(note);
+      const scroll=document.createElement('div');scroll.style.overflowX='auto';
+      const table=document.createElement('table');table.style.cssText='width:100%;font-size:12px;border-collapse:collapse;min-width:570px';
+      const head=document.createElement('thead');head.innerHTML='<tr><th>Pos.</th><th>Jugador</th><th>Pts.</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets +/−</th><th>Dif. sets</th><th>Puntos +/−</th><th>Dif. puntos</th></tr>';table.append(head);
+      const body=document.createElement('tbody');const played=standings.some(p=>p.pj>0);
+      standings.forEach((p,i)=>{
+        const tr=document.createElement('tr');const suffix=!played?'':(i===0&&label!=='A1'?' ↑':i===3&&label!=='B5'?' ↓':'');
+        const vals=[String(i+1)+suffix,p.name,String(p.pts),String(p.pj),String(p.pg),String(p.pp),p.sf+'/'+p.sc,String(p.sf-p.sc),p.pf+'/'+p.pc,String(p.pf-p.pc)];
+        for(const value of vals){const td=document.createElement('td');td.textContent=value;td.style.padding='7px 4px';td.style.borderBottom='1px solid rgba(18,105,166,.1)';tr.append(td)}
+        if(played&&(i===0||i===3))tr.style.background=i===0?'rgba(38,161,117,.12)':'rgba(222,116,68,.1)';
+        body.append(tr);
+      });table.append(body);scroll.append(table);card.append(scroll);
+      const legend=document.createElement('p');legend.style.fontSize='11px';legend.textContent=played?'↑ Ascenso provisional · ↓ Descenso provisional · Desempates pendientes de confirmar':'Sin resultados: orden inicial de identificación, no clasificación. Las marcas de ascenso y descenso aparecerán con resultados.';card.append(legend);
       root.append(card);
     }
     $('groupPlayerCount').textContent=String(linked)+' / 40';
@@ -609,7 +629,7 @@
     $('importCommit').disabled=true;say('importStatus','Guardando resultados…');
     try{
       const d=await api('/api/results',{action:'import',rows:staged,confirm:true,fileName:stagedName,replaceExisting:$('replaceExisting').checked});
-      results=d.results||[];renderResults();stats();
+      results=d.results||[];renderResults();renderGroups();stats();
       say('importStatus',d.imported+' resultados guardados.');clearPreview();$('excelInput').value='';
     }catch(err){
       say('importStatus',err.message+(err.details?.length?' '+err.details.slice(0,5).join(' · '):''));
