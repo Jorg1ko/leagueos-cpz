@@ -203,6 +203,10 @@ body{color:var(--ink);background:radial-gradient(ellipse 65% 30% at 90% -10%,#dd
   backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);
   box-shadow:inset 0 1px #ffffff55,0 16px 38px #001e4060;
 }
+.hero-home-season{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(150deg,#ffffff38,#ffffff16)}
+.hero-home-season.has-player-photo::before{content:"";position:absolute;inset:0;z-index:-2;background-image:linear-gradient(155deg,rgba(8,30,69,.25),rgba(5,25,66,.63)),var(--season-photo);background-size:cover;background-position:center;filter:blur(1px);transform:scale(1.07)}
+.hero-home-season.has-player-photo::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,31,73,.1),rgba(7,31,70,.5))}
+.hero-home-season.has-player-photo{background:rgba(5,38,89,.32)}
 .hero-home-icon{width:61px;height:61px;display:grid;place-items:center;background:#ffffff25;color:#bbecff;border-radius:18px;margin-bottom:20px}
 .hero-home-icon .cpz-icon{width:36px;height:36px}
 .hero-home-season>span:nth-child(2){font-size:10px;font-weight:840;letter-spacing:2px;color:#d6f0ff}
@@ -763,13 +767,18 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
               <button class="action hero-cta-outline" type="button" data-go="results">Mis resultados <span aria-hidden="true">↗</span></button>
             </div>
           </div>
-          <div class="hero-home-season" aria-hidden="true">
+          <div class="hero-home-season" id="heroSeasonPhoto" aria-label="Tarjeta de temporada CPZ">
             <span class="hero-home-icon"><svg class="cpz-icon"><use href="#cpz-paddle"></use></svg></span>
             <span>RANKING INDIVIDUAL</span>
             <strong>CPZ</strong>
             <small>2026 / 27</small>
           </div>
         </div>
+        <section class="card" aria-labelledby="novemberGroupHeading" style="margin-top:20px;padding:24px">
+          <div class="subhead"><h2 id="novemberGroupHeading">Mi grupo · Noviembre 2026</h2><p>Cuatro plazas y tres enfrentamientos por participante. Fecha límite: 30 de noviembre.</p></div>
+          <p id="novemberGroupStatus" class="contact-help">Cargando participantes autorizados…</p>
+          <ol id="novemberGroupPlayers" style="line-height:2; padding-left:26px"></ol>
+        </section>
         <div class="stats stats-home">
           <div class="stat"><span class="stat-icon stat-icon-blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-paddle"></use></svg></span><strong>Individual</strong><span>Modalidad de juego</span></div>
           <div class="stat"><span class="stat-icon stat-icon-green"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><strong id="homeGroup">Pendiente</strong><span>Mi grupo asignado</span></div>
@@ -1019,6 +1028,10 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     const selfImg=$('avatarImage');
     selfImg.hidden=!data.hasPhoto;
     $('avatarInitials').hidden=!!data.hasPhoto;
+    const seasonPhoto=$('heroSeasonPhoto');
+    seasonPhoto.classList.toggle('has-player-photo',!!data.hasPhoto);
+    if(data.hasPhoto)seasonPhoto.style.setProperty('--season-photo','url("/api/member/photo")');
+    else seasonPhoto.style.removeProperty('--season-photo');
     if(data.hasPhoto){
       selfImg.src='/api/member/photo?v='+Date.now();
       selfImg.onerror=()=>{selfImg.hidden=true;$('avatarInitials').hidden=false};
@@ -1378,10 +1391,19 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     }catch(err){status.textContent=err.message}
     finally{$('passwordButton').disabled=false}
   });
+  async function loadNovemberGroup(){
+    try{
+      const data=await getJSON('/api/member/group');
+      $('novemberGroupStatus').textContent=data.group?'Grupo '+data.group+' · '+data.players.length+' cuentas vinculadas de 4 plazas':'La organización todavía no ha asignado un grupo a tu cuenta.';
+      const list=$('novemberGroupPlayers');list.replaceChildren();
+      for(const p of data.players){const li=document.createElement('li');li.textContent=p.name+(p.self?' (tú)':'');list.append(li)}
+    }catch(e){$('novemberGroupStatus').textContent='No se ha podido cargar el grupo: '+e.message}
+  }
   getJSON('/api/member/me').then(data=>{
     setProfile(data.profile);
     $('loading').hidden=true;$('playerApp').hidden=false;
     updateReadingProgress();
+    loadNovemberGroup();
     loadMemberResults(); // Actualiza el resumen personal con datos reales, sin revelar rivales sin consentimiento.
     if(data.profile.legalApproved&&data.profile.privacyNeedsAcknowledgement)
       $('privacyWelcomeDialog').showModal();
