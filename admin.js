@@ -247,6 +247,8 @@
   function renderGroups(){
     const root=$('groupCards');if(!root)return;
     root.replaceChildren();let linked=0;
+    const selectedCategory=$('rankCategory')?.value||'A',selectedNumber=$('rankGroup')?.value||'1';
+    const selectedLabel=selectedCategory+selectedNumber;
     for(const label of NOVEMBER_GROUPS){
       const names=NOVEMBER_ROSTER[label];
       const members=accounts.filter(a=>clean(a.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label));
@@ -270,11 +272,14 @@
         body.append(tr);
       });table.append(body);scroll.append(table);card.append(scroll);
       const legend=document.createElement('p');legend.className='cpz-standings-note';legend.textContent=played?'Verde: zona de ascenso · Rojo: zona de descenso. Posiciones provisionales hasta el cierre y resolución de empates.':'Sin resultados: el orden sigue siendo el del listado inicial. Las franjas verde y roja señalan las plazas de ascenso y descenso, NO una clasificación decidida.';card.append(legend);
-      root.append(card);
+      if(label===selectedLabel)root.append(card);
     }
+    if($('rankSelectionHint'))$('rankSelectionHint').textContent='Mostrando '+selectedLabel+' · 4 participantes · 6 enfrentamientos';
     $('groupPlayerCount').textContent=String(linked)+' / 40';
     $('groupMatchCount').textContent='60';
   }
+  $('rankCategory').addEventListener('change',renderGroups);
+  $('rankGroup').addEventListener('change',renderGroups);
   $('refreshGroups').onclick=loadPlayers;
   function renderPlayers(){
     stats();
