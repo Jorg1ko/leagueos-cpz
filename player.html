@@ -784,7 +784,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
         <section class="card" aria-labelledby="novemberGroupHeading" style="margin-top:20px;padding:24px">
           <div class="subhead"><h2 id="novemberGroupHeading">Mi grupo · Noviembre 2026</h2><p>Cuatro plazas y tres enfrentamientos por participante. Fecha límite: 30 de noviembre.</p></div>
           <p id="novemberGroupStatus" class="contact-help">Cargando participantes autorizados…</p><p class="contact-help">Los nombres de otros participantes requieren su autorización. Hasta entonces aparecerán como «Jugador X».</p>
-          <ol id="novemberGroupPlayers" style="line-height:2; padding-left:26px"></ol>
+          <div id="novemberGroupPlayers" style="overflow-x:auto"></div>
         </section>
         <div class="stats stats-home">
           <div class="stat"><span class="stat-icon stat-icon-blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-paddle"></use></svg></span><strong>Individual</strong><span>Modalidad de juego</span></div>
@@ -1398,25 +1398,28 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     }catch(err){status.textContent=err.message}
     finally{$('passwordButton').disabled=false}
   });
-  async function loadNovemberGroup(){
-    const status=$('novemberGroupStatus'),list=$('novemberGroupPlayers');
-    if(!status||!list)return;
-    list.replaceChildren();
+  async functio  async function loadNovemberGroup(){
+    const status=$('novemberGroupStatus'),root=$('novemberGroupPlayers');
+    if(!status||!root)return;root.replaceChildren();
     try{
-      const data=await getJSON('/api/member/group');
-      const label=data.group||profile?.group||'';
-      status.textContent=label?'Grupo '+label+' · 4 plazas · 3 partidos por jugador':'Tu cuenta no tiene grupo asignado. Contacta con administración.';
-      const participants=Array.isArray(data.players)?data.players:[];
-      for(let i=0;i<4;i++){
-        const item=participants[i];const li=document.createElement('li');
-        li.textContent=item?(item.name+(item.self?' (tú)':'')):'Jugador X · pendiente de vinculación';list.append(li);
-      }
-    }catch(e){
-      status.textContent='Grupo '+(profile?.group||'pendiente')+' · no se ha podido cargar la relación de participantes.';
-      for(let i=0;i<4;i++){const li=document.createElement('li');li.textContent='Jugador X · pendiente de confirmar';list.append(li)}
-    }
+      const data=await getJSON('/api/member/group'),group=data.group||profile?.group||'';
+      if(!group){status.textContent='No se ha podido identificar tu grupo. Contacta con administración.';return}
+      status.textContent='Grupo '+group+' · Clasificación '+(data.provisional?'provisional':'sin resultados')+' · 30 de noviembre';
+      const players=Array.isArray(data.players)?data.players:[];
+      const table=document.createElement('table');table.style.cssText='width:100%;min-width:540px;border-collapse:collapse;font-size:12px';
+      const head=document.createElement('thead');head.innerHTML='<tr><th>Pos.</th><th>Jugador</th><th>Pts.</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets +/−</th><th>Dif. sets</th><th>Puntos +/−</th><th>Dif. puntos</th></tr>';table.append(head);
+      const body=document.createElement('tbody');
+      players.forEach((p,i)=>{
+        const tr=document.createElement('tr');const marker=data.provisional?(i===0?' ↑':i===players.length-1?' ↓':''):'';
+        const cells=[String(i+1)+marker,p.name+(p.self?' (tú)':''),p.pts,p.pj,p.pg,p.pp,p.sf+'/'+p.sc,p.sf-p.sc,p.pf+'/'+p.pc,p.pf-p.pc];
+        cells.forEach(v=>{const td=document.createElement('td');td.textContent=String(v);td.style.cssText='padding:10px 7px;border-bottom:1px solid #e1eaf3';tr.append(td)});
+        if(p.self)tr.style.background='#e7f5ff';else if(data.provisional&&(i===0||i===players.length-1))tr.style.background=i===0?'#e8f6ed':'#fff0e7';
+        body.append(tr);
+      });table.append(body);root.append(table);
+      const legend=document.createElement('p');legend.className='contact-help';legend.textContent=data.provisional?'↑ ascenso provisional · ↓ descenso provisional. Pendiente de confirmar reglas de desempate.':'Sin resultados aún. El orden mostrado identifica las plazas; no es la clasificación definitiva.';root.append(legend);
+    }catch(e){status.textContent='No se ha podido cargar la clasificación: '+e.message}
   }
-  getJSON('/api/member/me').then(data=>{
+/member/me').then(data=>{
     setProfile(data.profile);
     $('loading').hidden=true;$('playerApp').hidden=false;
     updateReadingProgress();
