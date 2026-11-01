@@ -129,7 +129,7 @@
     currentView=name;
     document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
     document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!=='page-'+name);
-    if(name==='players')loadPlayers();
+    if(name==='players'||name==='groups')loadPlayers();
     if(name==='results')loadResults();
     if(name==='videos')loadVideos();
     if(name==='legal'){loadLegalSettings();loadConsentAudit()}
@@ -169,12 +169,12 @@
     say(id,'Guardando…');
     try{
       const d=await api('/api/accounts',{action,...payload});
-      accounts=d.accounts||[];renderPlayers();stats();say(id,'Cambios guardados.');return true;
+      accounts=d.accounts||[];renderPlayers();renderGroups();stats();say(id,'Cambios guardados.');return true;
     }catch(e){say(id,e.message);return false}
   }
   async function loadPlayers(){
     try{
-      const data=await api('/api/accounts');accounts=data.accounts||[];renderPlayers();stats();say('playerStatus','');
+      const data=await api('/api/accounts');accounts=data.accounts||[];renderPlayers();renderGroups();stats();say('playerStatus','');
     }catch(e){say('playerStatus',e.message);$('playerCards').innerHTML='<div class="empty">No se han podido cargar los jugadores.</div>'}
   }
   $('refreshPlayers').onclick=loadPlayers;
@@ -199,6 +199,41 @@
     }catch(e){say('placeholderStatus',e.message)}
     finally{$('createPlaceholder').disabled=false}
   };
+
+  // Grupos privados: usar solo las cuentas autorizadas presentes en D1.
+  const NOVEMBER_GROUPS=['A1','A2','A3','A4','A5','B1','B2','B3','B4','B5'];
+  function renderGroups(){
+    const root=$('groupCards');if(!root)return;
+    root.replaceChildren();
+    let total=0,fixtures=0;
+    for(const label of NOVEMBER_GROUPS){
+      const members=accounts.filter(a=>clean(a.groupLabel||'').replace(/\\s+/g,'')===clean(label));
+      total+=members.length;
+      const card=document.createElement('article');card.className='group-card';
+      const heading=document.createElement('h3');heading.textContent='GRUPO '+label;card.append(heading);
+      const list=document.createElement('ol');list.className='group-list';
+      for(let i=0;i<4;i++){
+        const li=document.createElement('li');
+        if(members[i])li.textContent=members[i].playerName||members[i].username||'Jugador X';
+        else{li.textContent='Plaza pendiente';li.className='empty-slot';}
+        list.append(li);
+      }
+      card.append(list);
+      if(members.length>4){const warning=document.createElement('p');warning.textContent='Atención: grupo con más de cuatro cuentas.';card.append(warning);}
+      const details=document.createElement('details');details.className='group-fixtures';
+      const summary=document.createElement('summary');summary.textContent='Enfrentamientos del grupo';details.append(summary);
+      const matches=document.createElement('ul');
+      for(let i=0;i<members.length;i++)for(let j=i+1;j<members.length;j++){
+        if(i>=4||j>=4)continue;
+        const li=document.createElement('li');li.textContent=(members[i].playerName||'Jugador X')+' vs '+(members[j].playerName||'Jugador X');matches.append(li);fixtures++;
+      }
+      if(!matches.children.length){const li=document.createElement('li');li.textContent='Pendiente de registrar jugadores';matches.append(li);}
+      details.append(matches);card.append(details);root.append(card);
+    }
+    $('groupPlayerCount').textContent=String(total);
+    $('groupMatchCount').textContent=String(fixtures);
+  }
+  $('refreshGroups').onclick=loadPlayers;
   function renderPlayers(){
     stats();
     const term=clean($('playerSearch').value);
