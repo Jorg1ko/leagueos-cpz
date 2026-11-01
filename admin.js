@@ -254,20 +254,22 @@
       const games=results.filter(r=>clean(r.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label) && String(r.date||'').startsWith('2026-11'));
       const standings=standingFor(names,games);
       const card=document.createElement('article');card.className='group-card';
-      const title=document.createElement('h3');title.textContent='GRUPO '+label;card.append(title);
-      const note=document.createElement('p');note.textContent='Clasificación provisional · '+games.length+' resultados registrados';card.append(note);
-      const scroll=document.createElement('div');scroll.style.overflowX='auto';
-      const table=document.createElement('table');table.style.cssText='width:100%;font-size:12px;border-collapse:collapse;min-width:570px';
-      const head=document.createElement('thead');head.innerHTML='<tr><th>Pos.</th><th>Jugador</th><th>Pts.</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets +/−</th><th>Dif. sets</th><th>Puntos +/−</th><th>Dif. puntos</th></tr>';table.append(head);
+      const title=document.createElement('h3');title.className='cpz-group-heading';title.textContent='GRUPO '+label+' · CLASIFICACIÓN';card.append(title);
+      const note=document.createElement('p');note.textContent=games.length+' de 6 encuentros registrados · noviembre 2026';card.append(note);
+      const scroll=document.createElement('div');scroll.className='cpz-standings-wrap';
+      const table=document.createElement('table');table.className='cpz-standings';
+      const head=document.createElement('thead');head.innerHTML='<tr><th>Clasif.</th><th>Jugador</th><th>Estado</th><th>P.J</th><th>P.G</th><th>P.P</th><th>Set F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Diferencia</th><th>Puntos</th></tr>';table.append(head);
       const body=document.createElement('tbody');const played=standings.some(p=>p.pj>0);
       standings.forEach((p,i)=>{
-        const tr=document.createElement('tr');const suffix=!played?'':(i===0&&label!=='A1'?' ↑':i===3&&label!=='B5'?' ↓':'');
-        const vals=[String(i+1)+suffix,p.name,String(p.pts),String(p.pj),String(p.pg),String(p.pp),p.sf+'/'+p.sc,String(p.sf-p.sc),p.pf+'/'+p.pc,String(p.pf-p.pc)];
-        for(const value of vals){const td=document.createElement('td');td.textContent=value;td.style.padding='7px 4px';td.style.borderBottom='1px solid rgba(18,105,166,.1)';tr.append(td)}
-        if(played&&(i===0||i===3))tr.style.background=i===0?'rgba(38,161,117,.12)':'rgba(222,116,68,.1)';
+        const tr=document.createElement('tr');const promotion=i===0&&label!=='A1',relegation=i===standings.length-1&&label!=='B5';
+        if(promotion)tr.classList.add('cpz-rise');if(relegation)tr.classList.add('cpz-drop');
+        const vals=[String(i+1),p.name,null,String(p.pj),String(p.pg),String(p.pp),p.sf+' / '+p.sc,String(p.sf-p.sc),p.pf+' / '+p.pc,String(p.pf-p.pc),String(p.pts)];
+        vals.forEach((value,j)=>{const td=document.createElement('td');if(j===0){td.className='cpz-pos';td.textContent=value}
+          else if(j===2){if(promotion||relegation){const flag=document.createElement('span');flag.className='cpz-movement '+(promotion?'up':'down');flag.textContent=promotion?'▲ ASCENSO':'▼ DESCENSO';td.append(flag)}else td.textContent='—'}
+          else td.textContent=value;tr.append(td)});
         body.append(tr);
       });table.append(body);scroll.append(table);card.append(scroll);
-      const legend=document.createElement('p');legend.style.fontSize='11px';legend.textContent=played?'↑ Ascenso provisional · ↓ Descenso provisional · Desempates pendientes de confirmar':'Sin resultados: orden inicial de identificación, no clasificación. Las marcas de ascenso y descenso aparecerán con resultados.';card.append(legend);
+      const legend=document.createElement('p');legend.className='cpz-standings-note';legend.textContent=played?'Verde: zona de ascenso · Rojo: zona de descenso. Posiciones provisionales hasta el cierre y resolución de empates.':'Sin resultados: el orden sigue siendo el del listado inicial. Las franjas verde y roja señalan las plazas de ascenso y descenso, NO una clasificación decidida.';card.append(legend);
       root.append(card);
     }
     $('groupPlayerCount').textContent=String(linked)+' / 40';

@@ -14,6 +14,23 @@
 .group-card .group-fixtures{margin-top:12px;border-top:1px solid rgba(22,105,166,.16);padding-top:12px}
 .group-card .group-fixtures summary{cursor:pointer;font-weight:700;color:#0c5899}.group-card .group-fixtures li{margin:7px 0}
 .group-card .empty-slot{opacity:.62;font-style:italic}
+
+/* Clasificación CPZ: tabla estilo acta con zonas deportivas visibles */
+.cpz-standings-wrap{overflow-x:auto;border:1px solid #d5e7f5;border-radius:13px;background:#fff;-webkit-overflow-scrolling:touch}
+.cpz-standings{width:100%;min-width:790px;border-collapse:collapse;font-size:13px;color:#233c52;font-variant-numeric:tabular-nums}
+.cpz-standings th{background:#f0f5fa;color:#284963;text-align:center;padding:12px 9px;font-size:11px;white-space:nowrap;font-weight:800}
+.cpz-standings th:nth-child(2),.cpz-standings td:nth-child(2){text-align:left;min-width:180px}
+.cpz-standings td{text-align:center;border-top:1px solid #c7e9ff;padding:11px 9px;white-space:nowrap}
+.cpz-standings tbody tr:nth-child(even){background:#f5f8fb}
+.cpz-standings tr.cpz-rise{background:#e9f9ee!important;box-shadow:inset 5px 0 #159b54}
+.cpz-standings tr.cpz-drop{background:#fff0f0!important;box-shadow:inset 5px 0 #dc3545}
+.cpz-standings .cpz-pos{font-weight:900;font-size:15px}
+.cpz-standings .cpz-movement{display:inline-flex;align-items:center;gap:4px;border-radius:7px;padding:5px 8px;font-size:10px;font-weight:900;white-space:nowrap}
+.cpz-standings .cpz-movement.up{background:#d4f5df;color:#087638}
+.cpz-standings .cpz-movement.down{background:#ffe0e0;color:#b52532}
+.cpz-standings tr.cpz-self td:nth-child(2){font-weight:900;color:#075eac}
+.cpz-group-heading{background:#6dd2f8;color:#08283d;padding:12px 15px;border-radius:12px;font-size:15px;font-weight:850;margin:0 0 12px}
+.cpz-standings-note{font-size:12px;color:#55758f;margin-top:12px}
 </style></head><body>
 <svg class="cpz-svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
   <symbol id="cpz-paddle" viewBox="0 0 64 64">
