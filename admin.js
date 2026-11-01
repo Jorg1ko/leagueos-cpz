@@ -207,7 +207,7 @@
     root.replaceChildren();
     let total=0,fixtures=0;
     for(const label of NOVEMBER_GROUPS){
-      const members=accounts.filter(a=>clean(a.groupLabel||'').replace(/\\s+/g,'')===clean(label));
+      const members=accounts.filter(a=>clean(a.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label));
       total+=members.length;
       const card=document.createElement('article');card.className='group-card';
       const heading=document.createElement('h3');heading.textContent='GRUPO '+label;card.append(heading);
