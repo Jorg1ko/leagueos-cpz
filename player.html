@@ -1050,6 +1050,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     </form>
   </div>
 </dialog>
+<dialog id="cpzGroupProfile" class="cpz-group-profile" aria-labelledby="cpzGroupProfileName"><div class="cpz-group-profile-head"><span>FICHA DE JUGADOR · RANKING CPZ</span><button type="button" id="cpzGroupProfileClose" aria-label="Cerrar ficha">✕</button></div><div class="cpz-group-profile-hero"><div class="cpz-group-profile-avatar" id="cpzGroupProfileAvatar">CPZ</div><div><h2 id="cpzGroupProfileName">Jugador</h2><p id="cpzGroupProfileSubtitle">Clasificación</p></div></div><div class="cpz-group-profile-stats" id="cpzGroupProfileStats"></div><p id="cpzGroupProfileNote"></p><button type="button" id="cpzGroupProfileMine" class="action" hidden>Ver mi perfil completo</button></dialog>
 <script>
 (function(){
   'use strict';
@@ -1608,10 +1609,11 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     loadMemberResults(); // Actualiza el resumen personal con datos reales, sin revelar rivales sin consentimiento.
     if(data.profile.legalApproved&&data.profile.privacyNeedsAcknowledgement)
       $('privacyWelcomeDialog').showModal();
-  }).catch(()=>{
-    location.replace('/');
+  }).catch(error=>{
+    const box=$('loading');if(box){box.textContent='No se ha podido abrir tu área de jugador: '+(error?.message||'Error inesperado')+'. Vuelve a iniciar sesión desde la portada.';}
+    console.error('CPZ player initialization',error);
   });
 })();
 </script>
-<dialog id="cpzGroupProfile" class="cpz-group-profile" aria-labelledby="cpzGroupProfileName"><div class="cpz-group-profile-head"><span>FICHA DE JUGADOR · RANKING CPZ</span><button type="button" id="cpzGroupProfileClose" aria-label="Cerrar ficha">✕</button></div><div class="cpz-group-profile-hero"><div class="cpz-group-profile-avatar" id="cpzGroupProfileAvatar">CPZ</div><div><h2 id="cpzGroupProfileName">Jugador</h2><p id="cpzGroupProfileSubtitle">Clasificación</p></div></div><div class="cpz-group-profile-stats" id="cpzGroupProfileStats"></div><p id="cpzGroupProfileNote"></p><button type="button" id="cpzGroupProfileMine" class="action" hidden>Ver mi perfil completo</button></dialog></body>
+</body>
 </html>
