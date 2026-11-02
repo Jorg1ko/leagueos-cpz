@@ -1152,9 +1152,9 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     $('cardGroup').textContent='GRUPO '+(data.group||'—');
     $('cardPosition').textContent='Ranking individual CPZ · '+(data.group||'sin grupo');
     $('cardInitials').textContent=data.name.split(' ').slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
-    const portrait=$('cardPhoto'),initials=$('cardInitials');
-    portrait.hidden=!data.hasPhoto;initials.hidden=!!data.hasPhoto;
-    if(data.hasPhoto){portrait.src='/api/member/photo?v='+Date.now();portrait.onload=()=>{portrait.hidden=false;initials.hidden=true};portrait.onerror=()=>{portrait.hidden=true;initials.hidden=false}}
+    const portrait=$('cardPhoto'),cardFallback=$('cardInitials');
+    portrait.hidden=!data.hasPhoto;cardFallback.hidden=!!data.hasPhoto;
+    if(data.hasPhoto){portrait.src='/api/member/photo?v='+Date.now();portrait.onload=()=>{portrait.hidden=false;cardFallback.hidden=true};portrait.onerror=()=>{portrait.hidden=true;cardFallback.hidden=false}}
     else portrait.removeAttribute('src');
     $('privacyReadForm').hidden=!(data.legalApproved&&data.privacyNeedsAcknowledgement);
     $('privacyReadCheckbox').checked=false;
