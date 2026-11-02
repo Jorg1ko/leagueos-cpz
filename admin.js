@@ -193,12 +193,12 @@
     say(id,'Guardando…');
     try{
       const d=await api('/api/accounts',{action,...payload});
-      accounts=d.accounts||[];renderPlayers();renderGroups();updateOperations();stats();say(id,'Cambios guardados.');return true;
+      accounts=d.accounts||[];renderPlayers();renderGroups();updateOperations();manualFixtures();stats();say(id,'Cambios guardados.');return true;
     }catch(e){say(id,e.message);return false}
   }
   async function loadPlayers(){
     try{
-      const data=await api('/api/accounts');accounts=data.accounts||[];renderPlayers();renderGroups();updateOperations();stats();say('playerStatus','');
+      const data=await api('/api/accounts');accounts=data.accounts||[];renderPlayers();renderGroups();updateOperations();manualFixtures();stats();say('playerStatus','');
     }catch(e){say('playerStatus',e.message);$('playerCards').innerHTML='<div class="empty">No se han podido cargar los jugadores.</div>'}
   }
   $('refreshPlayers').onclick=loadPlayers;
