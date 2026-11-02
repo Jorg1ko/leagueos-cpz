@@ -27,6 +27,7 @@ jobs:
           test -f player.html
           test -f admin.css
           test -f admin.js
+          test -f cpz-escudo.svg
           test -f functions/_middleware.js
           test -f functions/api/accounts.js
           test -f functions/api/results.js
@@ -51,6 +52,7 @@ jobs:
           cp legal.html dist/legal.html
           cp admin.css dist/admin.css
           cp admin.js dist/admin.js
+          cp cpz-escudo.svg dist/cpz-escudo.svg
 
       # Pages Functions debe estar en la raíz del repositorio, junto a dist/.
       # Wrangler la compila y la despliega automáticamente desde este directorio.
