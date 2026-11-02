@@ -63,6 +63,37 @@ export async function onRequest({request,env}){
     const raw=await request.text();
     if(raw.length>130000)return fail('Importación demasiado grande (máximo 200 partidos).',413);
     const body=JSON.parse(raw);
+
+    if(body?.action==='manual-save'){
+      const id=body.id==null?null:Number(body.id);
+      if(id!==null&&(!Number.isSafeInteger(id)||id<1))return fail('Identificador inválido.');
+      const date=String(body.date||''),round=String(body.round||'Noviembre 2026').trim(),group=String(body.groupLabel||'').trim().toUpperCase();
+      if(!validDate(date)||round.length<1||round.length>60||!(/^[AB][1-5]$/.test(group)))return fail('Fecha, jornada o grupo inválido.');
+      const one=Number(body.player1Id),two=Number(body.player2Id);
+      if(!Number.isSafeInteger(one)||!Number.isSafeInteger(two)||one===two||one<=0||two<=0)return fail('Selecciona dos jugadores distintos.');
+      const players=await env.LEAGUE_DB.prepare('SELECT id,player_name,group_label FROM cpz_player_accounts WHERE id IN (?,?) AND enabled=1').bind(one,two).all();
+      if((players.results||[]).length!==2)return fail('Los dos jugadores deben tener una cuenta activa.');
+      const a=players.results.find(p=>p.id===one),b=players.results.find(p=>p.id===two);
+      const canonical=x=>String(x||'').trim().toUpperCase().replace(/^GRUPO\s*/,'').replace(/\s/g,'');
+      if(canonical(a.group_label)!==group||canonical(b.group_label)!==group)return fail('Ambos jugadores deben pertenecer al grupo seleccionado.');
+      const parsed=parseSets(body.sets);
+      if(!parsed)return fail('Introduce 2 o 3 sets válidos: 11 puntos como mínimo, diferencia de 2 y victoria en 2 sets.');
+      const ids=[one,two].sort((x,y)=>x-y);
+      const key=date+'|'+normal(round)+'|'+ids[0]+'-'+ids[1];
+      const duplicate=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_match_results WHERE match_key=?').bind(key).first();
+      if(duplicate&&duplicate.id!==id)return fail('Ese partido ya tiene un resultado. Utiliza Editar.',409);
+      const winner=parsed.winner===1?one:two;
+      if(id!==null){
+        const existing=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_match_results WHERE id=?').bind(id).first();
+        if(!existing)return fail('Resultado no encontrado.',404);
+        await env.LEAGUE_DB.prepare("UPDATE cpz_match_results SET match_key=?,played_at=?,round_label=?,group_label=?,player_one_id=?,player_two_id=?,sets_json=?,winner_id=?,source_file='manual',imported_at=CURRENT_TIMESTAMP WHERE id=?")
+          .bind(key,date,round,group,one,two,JSON.stringify(parsed.sets),winner,id).run();
+      }else{
+        await env.LEAGUE_DB.prepare("INSERT INTO cpz_match_results(match_key,played_at,round_label,group_label,player_one_id,player_two_id,sets_json,winner_id,source_file) VALUES(?,?,?,?,?,?,?,?,'manual')")
+          .bind(key,date,round,group,one,two,JSON.stringify(parsed.sets),winner).run();
+      }
+      return respond(await read(env.LEAGUE_DB));
+    }
     if(body?.action==='delete'){
       const id=Number(body.id);
       if(!Number.isSafeInteger(id)||id<=0)return fail('ID inválido.');

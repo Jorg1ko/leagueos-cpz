@@ -674,7 +674,7 @@
     if(!recent.length){
       const message=document.createElement('div');message.className='tour-empty';
       const title=document.createElement('strong');title.textContent='Sin partidos confirmados todavía';
-      const detail=document.createElement('span');detail.textContent='Importa un Excel de la competición para que los encuentros aparezcan aquí.';
+      const detail=document.createElement('span');detail.textContent='Registra manualmente los resultados para que los encuentros aparezcan aquí.';
       message.append(title,detail);panel.append(message);return;
     }
     const fragment=document.createDocumentFragment();
@@ -691,26 +691,86 @@
     });
     panel.append(fragment);
   }
+
+  let manualEditingId=null;
+  const manualAccount=name=>accounts.find(a=>clean(a.playerName)===clean(name));
+  const manualFixtures=()=>{
+    const group=$('manualGroup').value,names=NOVEMBER_ROSTER[group]||[],select=$('manualFixture');
+    const prior=select.value;select.replaceChildren();
+    const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona un partido';select.append(placeholder);
+    for(let i=0;i<names.length;i++)for(let j=i+1;j<names.length;j++){
+      const a=manualAccount(names[i]),b=manualAccount(names[j]);
+      const opt=document.createElement('option');opt.value=names[i]+'||'+names[j];
+      const already=results.some(r=>clean(r.groupLabel)===clean(group)&&((clean(r.player1)===clean(names[i])&&clean(r.player2)===clean(names[j]))||(clean(r.player1)===clean(names[j])&&clean(r.player2)===clean(names[i]))));
+      opt.textContent=names[i]+' contra '+names[j]+(already?' · Resultado registrado':'');
+      if(!a||!b||a.enabled!==1||b.enabled!==1){opt.disabled=true;opt.textContent+=' · Falta cuenta activa'}
+      select.append(opt);
+    }
+    if([...select.options].some(x=>x.value===prior&&!x.disabled))select.value=prior;
+    manualSelected();
+  };
+  function manualSelected(){
+    const selected=$('manualFixture').value.split('||');
+    $('manualPlayersHint').textContent=selected.length===2?'Jugador 1: '+selected[0]+' · Jugador 2: '+selected[1]:'Elige uno de los seis partidos del grupo. Ambos jugadores necesitan una cuenta activa.';
+  }
+  function resetManual(){
+    manualEditingId=null;$('manualResultForm').reset();$('manualFormTitle').textContent='Nuevo resultado';
+    $('manualSave').textContent='Guardar resultado';$('manualRound').value='Noviembre 2026';
+    $('manualDate').value=new Date().toISOString().slice(0,10);
+    manualFixtures();say('manualStatus','');
+  }
+  function editManual(r){
+    manualEditingId=r.id;$('manualFormTitle').textContent='Editar resultado nº '+r.id;
+    $('manualSave').textContent='Guardar cambios';$('manualGroup').value=r.groupLabel||'';
+    manualFixtures();const wanted=[r.player1,r.player2].map(clean);
+    const selection=[...$('manualFixture').options].find(o=>o.value&&o.value.split('||').map(clean).every(v=>wanted.includes(v)));
+    if(selection){$('manualFixture').value=selection.value;manualSelected()}
+    $('manualDate').value=r.date;$('manualRound').value=r.round;
+    const flipped=selection&&clean(selection.value.split('||')[0])!==clean(r.player1);
+    for(let n=1;n<=3;n++){const scores=r.sets?.[n-1]||[];$('manualSet'+n+'a').value=scores.length?String(scores[flipped?1:0]):'';$('manualSet'+n+'b').value=scores.length?String(scores[flipped?0:1]):''}
+    document.getElementById('page-results').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  $('manualGroup').addEventListener('change',()=>{manualEditingId=null;manualFixtures()});
+  $('manualFixture').addEventListener('change',manualSelected);
+  $('manualReset').addEventListener('click',resetManual);
+  $('manualResultForm').addEventListener('submit',async event=>{
+    event.preventDefault();const pair=$('manualFixture').value.split('||');
+    if(pair.length!==2)return say('manualStatus','Selecciona un partido.');
+    const first=manualAccount(pair[0]),second=manualAccount(pair[1]);
+    if(!first||!second)return say('manualStatus','Crea primero las cuentas de los dos jugadores.');
+    const sets=[];
+    for(let n=1;n<=3;n++){const a=$('manualSet'+n+'a').value,b=$('manualSet'+n+'b').value;
+      if(!a&&!b&&n===3)continue;if(a===''||b==='')return say('manualStatus','Indica ambos marcadores en cada set.');sets.push([Number(a),Number(b)])}
+    $('manualSave').disabled=true;
+    try{
+      const d=await api('/api/results',{action:'manual-save',id:manualEditingId,date:$('manualDate').value,round:$('manualRound').value,groupLabel:$('manualGroup').value,player1Id:first.id,player2Id:second.id,sets});
+      results=d.results||[];renderResults();renderGroups();updateOperations();renderSeasonHistory();resetManual();
+      say('manualStatus','Resultado guardado correctamente.');
+    }catch(e){say('manualStatus',e.message)}
+    finally{$('manualSave').disabled=false}
+  });
+  resetManual();
   function renderResults(){
     stats();$('resultLabel').textContent=results.length+' resultados guardados';
     renderRecentResults();
-    if(!results.length){$('resultTable').innerHTML='<div class="empty">Aún no hay resultados. Importa el primer Excel cuando estén creadas las cuentas.</div>';return}
+    if(!results.length){$('resultTable').innerHTML='<div class="empty">Aún no hay resultados. Selecciona un grupo y guarda el primero manualmente.</div>';return}
     const table=document.createElement('table'),head=document.createElement('thead'),body=document.createElement('tbody');
     head.innerHTML='<tr><th>Fecha</th><th>Jornada</th><th>Grupo</th><th>Jugadores</th><th>Marcadores</th><th>Ganador</th><th>Acción</th></tr>';
     for(const r of results){
       const tr=document.createElement('tr');
       [r.date,r.round,r.groupLabel||'—',r.player1+' vs '+r.player2,(r.sets||[]).map(v=>v.join('-')).join(' · '),r.winner].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td)});
       const cell=document.createElement('td');
+      cell.append(b('Editar','secondary',()=>editManual(r)));
       cell.append(b('Eliminar','warning',async()=>{
         if(!confirm('¿Eliminar este resultado?'))return;
-        try{const d=await api('/api/results',{action:'delete',id:r.id});results=d.results||[];renderResults()}
-        catch(e){say('importStatus',e.message)}
+        try{const d=await api('/api/results',{action:'delete',id:r.id});results=d.results||[];renderResults();renderGroups();manualFixtures()}
+        catch(e){say('manualStatus',e.message)}
       }));tr.append(cell);body.append(tr);
     }
     table.append(head,body);$('resultTable').replaceChildren(table);
   }
   async function loadResults(){
-    try{const d=await api('/api/results');results=d.results||[];renderResults()}
+    try{const d=await api('/api/results');results=d.results||[];renderResults();manualFixtures()}
     catch(e){$('resultTable').innerHTML='<div class="empty">'+H(e.message)+'</div>'}
   }
   $('refreshResults').onclick=loadResults;

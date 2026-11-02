@@ -47,7 +47,7 @@
 .cpz-standings .cpz-movement{white-space:normal;font-size:9px;padding:4px 5px}
 @media(max-width:950px){.cpz-standings th{font-size:10px}.cpz-standings td{font-size:11px}.cpz-standings th:nth-child(2),.cpz-standings td:nth-child(2){width:23%}}
 @media(max-width:580px){.cpz-group-filters{display:grid;grid-template-columns:1fr 1fr}.cpz-group-filters select{min-width:0;width:100%}.cpz-group-filters p{grid-column:1/-1}.cpz-standings{font-size:10px!important}.cpz-standings th{font-size:9px;padding:8px 2px!important}.cpz-standings td{padding:9px 2px!important;font-size:10px}.cpz-standings .cpz-movement{font-size:8px}.cpz-standings .cpz-pos{font-size:12px}}
-</style></head><body>
+.cpz-manual-sets{display:grid;gap:6px;max-width:520px;margin:17px 0}.cpz-manual-sets>div{display:grid;grid-template-columns:140px 1fr 1fr;gap:12px;align-items:center}.cpz-manual-sets strong{font-size:12px;color:#476b84}.cpz-manual-sets input{width:100%;border-radius:10px;border:1px solid #c9dfed;padding:10px;color:#163a54;background:white}.cpz-manual-sets span{font-size:13px}.cpz-manual-sets input:focus{outline:2px solid #42b4ee}@media(max-width:560px){.cpz-manual-sets>div{grid-template-columns:95px 1fr 1fr;gap:6px}}</style></head><body>
 <svg class="cpz-svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
   <symbol id="cpz-paddle" viewBox="0 0 64 64">
     <g transform="rotate(-27 24 29)" stroke="currentColor" stroke-linejoin="round">
@@ -230,9 +230,17 @@
   <h2 style="margin-top:28px">Centro de operaciones · Noviembre</h2><div id="operationsDashboard" class="metrics" aria-live="polite"></div><p id="operationsWarning" class="notice"></p><div class="cpz-group-filters" aria-label="Seleccionar clasificación"><label for="rankCategory">Categoría<select id="rankCategory"><option value="A">Categoría A</option><option value="B">Categoría B</option></select></label><label for="rankGroup">Grupo<select id="rankGroup"><option value="1">Grupo 1</option><option value="2">Grupo 2</option><option value="3">Grupo 3</option><option value="4">Grupo 4</option><option value="5">Grupo 5</option></select></label><p id="rankSelectionHint" aria-live="polite"></p></div><div id="groupCards" class="cpz-single-ranking" aria-live="polite"></div><h2 style="margin-top:30px">Histórico de la temporada</h2><p>Resumen de actividad por mes basado únicamente en resultados registrados. No se inventan posiciones anteriores.</p><div id="seasonHistory" aria-live="polite"></div>
   <div class="notice"><strong>Reglas:</strong> todos contra todos una vez (6 partidos por grupo). El primero asciende y el último desciende al grupo contiguo cuando exista. Fecha límite: 30 de noviembre de 2026. El movimiento entre categorías requiere confirmar el reglamento.</div>
 </section>
-<section class="view" id="page-results" hidden>
- <div class="hero"><small>RESULTADOS DEL RANKING CPZ</small><h1>Importar resultados desde Excel</h1><p>Sube un .xlsx, .xls o CSV. El sistema detectará cada partido, validará jugadores, sets y fechas, y mostrará una vista previa. No se guarda nada hasta confirmar.</p></div>
- <div class="notice warn"><strong>Importante:</strong> primero deben existir las cuentas de los participantes. El Excel no creará jugadores, no inventará partidos y no calculará clasificaciones hasta confirmar el reglamento oficial.</div>
+<section class="view" id="page-results" hidden><div class="hero"><small>RESULTADOS · ADMINISTRACIÓN</small><h1>Gestión manual de resultados</h1><p>Selecciona un grupo, elige el partido e introduce los puntos de cada set. Puedes corregir o eliminar cualquier resultado.</p></div>
+<div class="card" style="margin:18px 0;padding:22px"><h2 id="manualFormTitle">Nuevo resultado</h2>
+<form class="form" id="manualResultForm">
+ <div class="grid2"><label>Grupo<select id="manualGroup" required><option value="">Elegir grupo</option><option value="A1">Grupo A1</option><option value="A2">Grupo A2</option><option value="A3">Grupo A3</option><option value="A4">Grupo A4</option><option value="A5">Grupo A5</option><option value="B1">Grupo B1</option><option value="B2">Grupo B2</option><option value="B3">Grupo B3</option><option value="B4">Grupo B4</option><option value="B5">Grupo B5</option></select></label><label>Partido<select id="manualFixture" required><option value="">Selecciona antes un grupo</option></select></label></div>
+ <div class="grid2"><label>Fecha del partido<input id="manualDate" type="date" required></label><label>Jornada<input id="manualRound" value="Noviembre 2026" maxlength="60" required></label></div>
+ <p id="manualPlayersHint" class="status">Selecciona un grupo para ver sus partidos.</p>
+ <div class="cpz-manual-sets"><div><strong>Set</strong><strong>Jugador 1</strong><strong>Jugador 2</strong></div><div><span>1</span><input id="manualSet1a" inputmode="numeric" type="number" min="0" max="99" placeholder="—" required><input id="manualSet1b" inputmode="numeric" type="number" min="0" max="99" placeholder="—" required></div><div><span>2</span><input id="manualSet2a" inputmode="numeric" type="number" min="0" max="99" placeholder="—" required><input id="manualSet2b" inputmode="numeric" type="number" min="0" max="99" placeholder="—" required></div><div><span>3 (opcional)</span><input id="manualSet3a" inputmode="numeric" type="number" min="0" max="99" placeholder="—" ><input id="manualSet3b" inputmode="numeric" type="number" min="0" max="99" placeholder="—" ></div></div>
+ <div class="actions"><button type="submit" class="button" id="manualSave">Guardar resultado</button><button type="button" class="button secondary" id="manualReset">Nuevo / cancelar edición</button></div><p class="status" id="manualStatus" role="status" aria-live="polite"></p>
+</form></div>
+<div class="section-title"><div><h2>Resultados guardados</h2><p id="resultLabel">0 partidos guardados</p></div><button class="button secondary" type="button" id="refreshResults">Actualizar</button></div>
+<div class="table-wrap" id="resultTable"><div class="empty">Cargando resultados…</div></div><div hidden id="legacyExcelControls"><div class="notice warn"><strong>Importante:</strong> primero deben existir las cuentas de los participantes. El Excel no creará jugadores, no inventará partidos y no calculará clasificaciones hasta confirmar el reglamento oficial.</div>
  <div class="grid2">
   <article class="card"><h3>1. Preparar e importar</h3>
    <div class="actions"><button type="button" class="button secondary" id="downloadTemplate">Descargar plantilla Excel</button></div>
@@ -250,9 +258,7 @@
   </article>
  </div>
  <div id="previewArea" hidden><div class="section-title"><h2>Vista previa</h2></div><div class="table-wrap" id="importTable"></div></div>
- <div class="section-title"><div><h2>Resultados guardados</h2><p id="resultLabel">0 partidos guardados</p></div><button class="button secondary" type="button" id="refreshResults">Actualizar</button></div>
- <div class="table-wrap" id="resultTable"><div class="empty">Cargando resultados…</div></div>
-</section>
+ </div></section>
 <section class="view" id="page-videos" hidden>
   <div class="hero"><small>COMUNIDAD DE PICKLEBALL</small><h1>Canales y vídeos</h1><p>Publica enlaces a canales o partidos de YouTube con autorización. No alojamos archivos de vídeo.</p></div>
   <div class="grid2">
