@@ -31,6 +31,7 @@ jobs:
           test -f functions/api/accounts.js
           test -f functions/api/results.js
           node --check admin.js
+          node -e 'const fs=require("fs"),vm=require("vm"); for(const file of ["player.html","index.html"]){const src=fs.readFileSync(file,"utf8");const re=/<script\\b[^>]*>([\\s\\S]*?)<\\/script>/gi;let m;while((m=re.exec(src))) if(m[1].trim())new vm.Script(m[1],{filename:file});}'
           find functions -type f -name '*.js' -print0 | xargs -0 -n 1 node --check
           node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const j=fs.readFileSync('admin.js','utf8');if(!h.includes('page-groups')||!j.includes('renderGroups'))process.exit(1)"
   publicar:
