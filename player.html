@@ -707,6 +707,43 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
 .cpz-standings .cpz-movement{white-space:normal;font-size:9px;padding:4px 5px}
 @media(max-width:950px){.cpz-standings th{font-size:10px}.cpz-standings td{font-size:11px}.cpz-standings th:nth-child(2),.cpz-standings td:nth-child(2){width:23%}}
 @media(max-width:580px){.cpz-group-filters{display:grid;grid-template-columns:1fr 1fr}.cpz-group-filters select{min-width:0;width:100%}.cpz-group-filters p{grid-column:1/-1}.cpz-standings{font-size:10px!important}.cpz-standings th{font-size:9px;padding:8px 2px!important}.cpz-standings td{padding:9px 2px!important;font-size:10px}.cpz-standings .cpz-movement{font-size:8px}.cpz-standings .cpz-pos{font-size:12px}}
+
+/* Perfil tipo carta deportiva CPZ — datos verificados y privacidad */
+.cpz-player-hub{display:grid;grid-template-columns:minmax(270px,.92fr) minmax(0,1.08fr);gap:22px;margin:18px 0 25px}
+.cpz-ultimate-card{position:relative;isolation:isolate;overflow:hidden;border-radius:25px;padding:23px;color:#fff;background:radial-gradient(circle at 70% 17%,#219add72,transparent 35%),linear-gradient(140deg,#031d3b,#104b88 58%,#06213f);box-shadow:0 18px 38px #062c4b33;border:2px solid #6ed3fd}
+.cpz-ultimate-card:before{content:"";position:absolute;inset:8px;border:1px solid #ffffff4b;border-radius:19px;pointer-events:none}
+.cpz-card-top,.cpz-card-main,.cpz-card-stats,.cpz-card-foot{position:relative;z-index:1}
+.cpz-card-top{display:flex;justify-content:space-between;gap:8px;font-weight:850;font-size:10px;letter-spacing:1.1px;color:#b6eeff}
+.cpz-card-top span:last-child{color:#b8f27c}
+.cpz-card-main{display:grid;grid-template-columns:42% 1fr;align-items:center;gap:14px;margin:25px 0}
+.cpz-card-photo{width:100%;aspect-ratio:4/5;border-radius:15px;overflow:hidden;border:2px solid #ffffff68;background:linear-gradient(160deg,#3784c2,#082744);display:grid;place-items:center}
+.cpz-card-photo img{height:100%;width:100%;object-fit:cover;grid-area:1/1}
+.cpz-card-photo img[hidden]{display:none}
+.cpz-card-photo span{font-size:clamp(28px,4vw,56px);font-weight:900;grid-area:1/1;color:#d7f6ff}
+.cpz-card-kicker{font-size:10px;letter-spacing:1px;color:#a6dcff;font-weight:850}
+.cpz-card-identity h2{font-size:clamp(20px,2.3vw,31px);line-height:1.08;margin:9px 0;color:white}
+.cpz-card-identity p{color:#e0f2ff;font-size:12px}
+.cpz-card-rating{display:flex;align-items:baseline;gap:6px;margin-top:17px}
+.cpz-card-rating strong{font-size:40px;color:#c1fb89}
+.cpz-card-rating span{font-size:11px;color:#d4f3ff}
+.cpz-card-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;border-top:1px solid #ffffff55;padding-top:17px}
+.cpz-card-stats div{display:flex;flex-direction:column;gap:4px;text-align:center}
+.cpz-card-stats b{font-size:clamp(13px,1.7vw,21px)}
+.cpz-card-stats small{font-size:9px;color:#a8e3ff;letter-spacing:.3px;font-weight:800}
+.cpz-card-foot{font-size:10px;color:#b7d9ed;line-height:1.55;margin:18px 0 0}
+.cpz-player-details{display:grid;align-content:start;gap:14px}
+.cpz-progress-panel{background:#fff;border:1px solid #d4e4f1;border-radius:18px;padding:19px;color:#173650}
+.cpz-progress-panel h3{margin:0 0 5px;font-size:17px}
+.cpz-progress-panel>p{font-size:12px;color:#658096}
+.cpz-achievements{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.cpz-achievement{display:flex;gap:7px;align-items:center;background:#e9f6ff;border:1px solid #b8dcef;color:#0c609b;border-radius:11px;padding:9px 11px;font-size:11px;font-weight:800}
+.cpz-achievement .cpz-medal{font-size:17px}
+.cpz-career{display:grid;gap:9px;margin-top:12px}
+.cpz-career-row{display:flex;justify-content:space-between;gap:12px;border-left:3px solid #47aaf0;background:#f1f8ff;border-radius:6px;padding:10px 12px;font-size:12px;color:#275376}
+.cpz-career-row strong{color:#0b5593}
+.cpz-unverified{padding:10px 12px;background:#f3f7fb;border-radius:9px}
+@media(max-width:1000px){.cpz-player-hub{grid-template-columns:1fr}.cpz-ultimate-card{max-width:540px;width:100%;margin:auto}}
+@media(max-width:520px){.cpz-ultimate-card{padding:18px}.cpz-card-main{gap:10px}.cpz-card-stats b{font-size:14px}.cpz-card-stats small{font-size:8px}}
 </style>
 </head>
 <body>
@@ -877,7 +914,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
         <p class="notice important">Si todavía no hay rival, significa que el administrador no ha asignado ningún enfrentamiento a tu perfil.</p>
       </section>
       <section class="view" id="view-results">
-        <div class="hero"><div><small>RESULTADOS CONFIRMADOS EN EXCEL</small><h1>Mis resultados</h1><p>Verás aquí los partidos en los que participas cuando el organizador los importe y valide desde Excel.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" viewBox="0 0 64 64" aria-hidden="true"><use href="#cpz-trophy"></use></svg></div></div>
+        <div class="hero"><div><small>RESULTADOS OFICIALES REGISTRADOS</small><h1>Mis resultados</h1><p>Verás aquí los partidos en los que participas cuando el administrador los registre y confirme.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" viewBox="0 0 64 64" aria-hidden="true"><use href="#cpz-trophy"></use></svg></div></div>
         <div class="subhead"><h2>Historial de partidos</h2><p>No hay resultados de demostración ni información de otros partidos ajenos.</p></div>
         <div id="monthlyProgress" class="list" aria-live="polite"></div><div id="memberResults" class="card"><p>Sin resultados importados.</p></div>
       </section>
@@ -903,6 +940,19 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
       </section>
       <section class="view" id="view-account">
         <div class="hero"><div><small>MI CUENTA DE JUGADOR</small><h1>Mi perfil</h1><p>Consulta tus datos de acceso y cambia tu contraseña cuando lo necesites.</p></div><div class="hero-emblem" aria-hidden="true"><svg class="cpz-icon" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><use href="#cpz-user"></use></svg></div></div>
+        <div class="cpz-player-hub">
+ <article class="cpz-ultimate-card" aria-label="Carta deportiva del jugador">
+  <div class="cpz-card-top"><span>CPZ · TEMPORADA 26/27</span><span id="cardGroup">GRUPO —</span></div>
+  <div class="cpz-card-main"><div class="cpz-card-photo"><img id="cardPhoto" alt="Foto del jugador" hidden><span id="cardInitials" aria-hidden="true">CPZ</span></div><div class="cpz-card-identity"><div class="cpz-card-kicker">MI CARTA DE JUGADOR</div><h2 id="cardName">Jugador CPZ</h2><p id="cardPosition">Clasificación sin determinar</p><div class="cpz-card-rating"><strong id="cardWinRate">—</strong><span>% victorias</span></div></div></div>
+  <div class="cpz-card-stats"><div><b id="cardPJ">0</b><small>PJ</small></div><div><b id="cardPG">0</b><small>PG</small></div><div><b id="cardPP">0</b><small>PP</small></div><div><b id="cardSets">0 / 0</b><small>SETS F/C</small></div><div><b id="cardPoints">0</b><small>PTS CPZ*</small></div></div>
+  <p class="cpz-card-foot">*Puntuación CPZ orientativa: 3 por victoria; pendiente de confirmación de las bases del club. No representa un rating DUPR.</p>
+ </article>
+ <div class="cpz-player-details">
+  <section class="cpz-progress-panel"><h3>Mis hitos</h3><p>Se desbloquean con resultados reales.</p><div id="playerAchievements" class="cpz-achievements" aria-live="polite">Sin partidos registrados todavía.</div></section>
+  <section class="cpz-progress-panel"><h3>Trayectoria competitiva</h3><p>Historial personal y evolución por mes.</p><div id="playerCareer" class="cpz-career" aria-live="polite">La trayectoria aparecerá con tus primeros resultados.</div></section>
+  <section class="cpz-progress-panel"><h3>Ranking externo · DUPR / Pro Tour</h3><p>Estos rankings son independientes del ranking CPZ.</p><p class="cpz-unverified">No hay datos oficiales vinculados. No se muestra ningún rating o posición sin verificar.</p></section>
+ </div>
+</div>
         <div id="privacyPlayerPanel" class="card" style="margin-top:16px">
           <h3>Privacidad de mi perfil</h3>
           <p id="privacyPlayerDescription">Puedes consultar qué datos se guardan y quién puede verlos.</p>
@@ -1051,8 +1101,44 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     if(!res.ok||!data.ok)throw Error(data.error||'No se pudo completar la solicitud.');
     return data;
   }
+
+  function populateCard(records){
+    const recs=Array.isArray(records)?records:[],wins=recs.filter(r=>r.winner==='Yo').length,losses=recs.length-wins;
+    $('cardPJ').textContent=String(recs.length);$('cardPG').textContent=String(wins);$('cardPP').textContent=String(losses);
+    $('cardPoints').textContent=String(wins*3);$('cardWinRate').textContent=recs.length?String(Math.round(100*wins/recs.length)):'—';
+    let sf=0,sc=0,streak=0,best=0;const chrono=[...recs].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+    for(const r of chrono){let local=0,away=0;const isP1=r.selfIsPlayer1===true;
+      for(const set of r.sets||[]){if(!Array.isArray(set)||set.length!==2)continue;const x=Number(set[isP1?0:1]),y=Number(set[isP1?1:0]);if(x>y)local++;else if(y>x)away++}
+      sf+=local;sc+=away;streak=r.winner==='Yo'?streak+1:0;best=Math.max(best,streak)}
+    $('cardSets').textContent=sf+' / '+sc;
+    const awards=[];
+    if(recs.length)awards.push(['◆','Primer partido']);
+    if(wins)awards.push(['★','Primera victoria']);
+    if(recs.length>=3)awards.push(['◈','3 partidos jugados']);
+    if(best>=2)awards.push(['↑','Racha de '+best+' victorias']);
+    if(wins===recs.length&&recs.length>=2)awards.push(['✦','Invicto']);
+    if(sf>sc&&recs.length)awards.push(['●','Balance positivo de sets']);
+    const root=$('playerAchievements');root.replaceChildren();
+    if(!awards.length)root.textContent='Tus hitos aparecerán cuando el administrador registre resultados.';
+    for(const [symbol,label] of awards){const item=document.createElement('div');item.className='cpz-achievement';
+      const ico=document.createElement('span');ico.className='cpz-medal';ico.textContent=symbol;const txt=document.createElement('span');txt.textContent=label;item.append(ico,txt);root.append(item)}
+    const career=$('playerCareer');career.replaceChildren();
+    if(!recs.length){career.textContent='Todavía no hay partidos registrados.';return}
+    const months=new Map();
+    for(const r of chrono){const month=String(r.date||'').slice(0,7);if(!/^20\\d{2}-(0[1-9]|1[0-2])$/.test(month))continue;
+      const row=months.get(month)||{played:0,wins:0};row.played++;if(r.winner==='Yo')row.wins++;months.set(month,row)}
+    for(const [month,v] of [...months.entries()].reverse()){const line=document.createElement('div');line.className='cpz-career-row';
+      const title=document.createElement('strong');title.textContent=month;const desc=document.createElement('span');desc.textContent=v.played+' partidos · '+v.wins+' victorias';line.append(title,desc);career.append(line)}
+  }
   function setProfile(data){
     profile=data;
+    $('cardName').textContent=data.name;
+    $('cardGroup').textContent='GRUPO '+(data.group||'—');
+    $('cardPosition').textContent='Ranking individual CPZ · '+(data.group||'sin grupo');
+    $('cardInitials').textContent=data.name.split(' ').slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+    const portrait=$('cardPhoto');portrait.hidden=!data.hasPhoto;
+    if(data.hasPhoto){portrait.src='/api/member/photo?v='+Date.now();portrait.onerror=()=>{portrait.hidden=true}}
+    else portrait.removeAttribute('src');
     $('privacyReadForm').hidden=!(data.legalApproved&&data.privacyNeedsAcknowledgement);
     $('privacyReadCheckbox').checked=false;
     $('shareNameWithPlayers').checked=data.shareName===true;
@@ -1379,7 +1465,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     if(!records.length){
       const emptyBox=document.createElement('div');emptyBox.className='tour-empty';
       const title=document.createElement('strong');title.textContent='Tu temporada empieza aquí';
-      const hint=document.createElement('span');hint.textContent='Cuando se importen tus partidos oficiales, aparecerán automáticamente.';
+      const hint=document.createElement('span');hint.textContent='Cuando se registren tus partidos oficiales, aparecerán automáticamente.';
       emptyBox.append(title,hint);panel.append(emptyBox);return;
     }
     const fragment=document.createDocumentFragment();
@@ -1415,10 +1501,11 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
       const data=await getJSON('/api/member/results');
       const records=data.results||[];
       renderTourSeason(records);
+      populateCard(records);
       renderMonthlyProgress(records);
       animateRealNumber('myResultsCount',records.length);
       const container=$('memberResults');container.replaceChildren();
-      if(!records.length){container.append(empty('Todavía no hay resultados tuyos importados desde Excel.'));return}
+      if(!records.length){container.append(empty('Todavía no hay resultados registrados por el administrador.'));return}
       for(const match of records){
         const row=document.createElement('article');
         row.className='result-row';
