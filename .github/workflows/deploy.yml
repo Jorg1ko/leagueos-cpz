@@ -21,6 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Obtener logotipo oficial del club
+        run: |
+          curl --fail --location --retry 3 --max-time 35 --user-agent "Mozilla/5.0" "https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" --output cpz-logo-oficial.webp
+          test "$(wc -c < cpz-logo-oficial.webp)" -gt 1000
+          file cpz-logo-oficial.webp | grep -qi 'webp image'
       - name: Validar JavaScript y estructura
         run: |
           test -f index.html
@@ -44,6 +49,11 @@ jobs:
       - name: Descargar código
         uses: actions/checkout@v4
 
+      - name: Obtener logotipo oficial del club
+        run: |
+          curl --fail --location --retry 3 --max-time 35 --user-agent "Mozilla/5.0" "https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" --output cpz-logo-oficial.webp
+          test "$(wc -c < cpz-logo-oficial.webp)" -gt 1000
+          file cpz-logo-oficial.webp | grep -qi 'webp image'
       - name: Preparar archivos estáticos
         run: |
           mkdir -p dist
@@ -53,6 +63,7 @@ jobs:
           cp admin.css dist/admin.css
           cp admin.js dist/admin.js
           cp cpz-escudo.svg dist/cpz-escudo.svg
+          cp cpz-logo-oficial.webp dist/cpz-logo-oficial.webp
 
       # Pages Functions debe estar en la raíz del repositorio, junto a dist/.
       # Wrangler la compila y la despliega automáticamente desde este directorio.
