@@ -718,7 +718,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
 .cpz-card-main{display:grid;grid-template-columns:42% 1fr;align-items:center;gap:14px;margin:25px 0}
 .cpz-card-photo{width:100%;aspect-ratio:4/5;border-radius:15px;overflow:hidden;border:2px solid #ffffff68;background:linear-gradient(160deg,#3784c2,#082744);display:grid;place-items:center}
 .cpz-card-photo img{height:100%;width:100%;object-fit:cover;grid-area:1/1}
-.cpz-card-photo img[hidden]{display:none}
+.cpz-card-photo img[hidden],.cpz-card-photo span[hidden]{display:none!important}
 .cpz-card-photo span{font-size:clamp(28px,4vw,56px);font-weight:900;grid-area:1/1;color:#d7f6ff}
 .cpz-card-kicker{font-size:10px;letter-spacing:1px;color:#a6dcff;font-weight:850}
 .cpz-card-identity h2{font-size:clamp(20px,2.3vw,31px);line-height:1.08;margin:9px 0;color:white}
@@ -744,6 +744,22 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
 .cpz-unverified{padding:10px 12px;background:#f3f7fb;border-radius:9px}
 @media(max-width:1000px){.cpz-player-hub{grid-template-columns:1fr}.cpz-ultimate-card{max-width:540px;width:100%;margin:auto}}
 @media(max-width:520px){.cpz-ultimate-card{padding:18px}.cpz-card-main{gap:10px}.cpz-card-stats b{font-size:14px}.cpz-card-stats small{font-size:8px}}
+
+.cpz-group-profile{width:min(92vw,540px);max-height:88dvh;padding:23px;border:1px solid #73bfeb;border-radius:22px;color:#143c5c;background:#fff;box-shadow:0 22px 85px #06294778}
+.cpz-group-profile::backdrop{background:#031b38a9;backdrop-filter:blur(4px)}
+.cpz-group-profile-head{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;font-weight:850;color:#1f7ab9;letter-spacing:.7px}
+.cpz-group-profile-head button{border:0;border-radius:50%;background:#eaf3fb;color:#184a70;width:35px;height:35px;cursor:pointer}
+.cpz-group-profile-hero{display:flex;align-items:center;gap:16px;padding:20px 0}
+.cpz-group-profile-avatar{display:grid;place-items:center;border-radius:17px;background:linear-gradient(145deg,#186eb0,#072f59);color:white;min-width:86px;height:105px;font-weight:900;font-size:24px}
+.cpz-group-profile-hero h2{margin:0 0 8px;color:#124774;font-size:26px}
+.cpz-group-profile-hero p{margin:0;color:#567d99}
+.cpz-group-profile-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cpz-group-profile-stats div{display:flex;flex-direction:column;text-align:center;padding:12px 4px;background:#eff7fd;border-radius:12px}
+.cpz-group-profile-stats strong{color:#0877c4;font-size:22px}
+.cpz-group-profile-stats span{font-size:10px;color:#436886;font-weight:800}
+.cpz-group-profile #cpzGroupProfileNote{font-size:12px;line-height:1.5;color:#66849b;margin-top:18px}
+.cpz-player-link{padding:0;border:0;background:none;color:#075fa7;font:inherit;font-weight:850;text-align:left;cursor:pointer;text-decoration:underline;text-decoration-color:#54b4e2;text-underline-offset:3px}
+.cpz-player-link:hover{color:#003c72}
 </style>
 </head>
 <body>
@@ -1136,8 +1152,9 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     $('cardGroup').textContent='GRUPO '+(data.group||'—');
     $('cardPosition').textContent='Ranking individual CPZ · '+(data.group||'sin grupo');
     $('cardInitials').textContent=data.name.split(' ').slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
-    const portrait=$('cardPhoto');portrait.hidden=!data.hasPhoto;
-    if(data.hasPhoto){portrait.src='/api/member/photo?v='+Date.now();portrait.onerror=()=>{portrait.hidden=true}}
+    const portrait=$('cardPhoto'),initials=$('cardInitials');
+    portrait.hidden=!data.hasPhoto;initials.hidden=!!data.hasPhoto;
+    if(data.hasPhoto){portrait.src='/api/member/photo?v='+Date.now();portrait.onload=()=>{portrait.hidden=false;initials.hidden=true};portrait.onerror=()=>{portrait.hidden=true;initials.hidden=false}}
     else portrait.removeAttribute('src');
     $('privacyReadForm').hidden=!(data.legalApproved&&data.privacyNeedsAcknowledgement);
     $('privacyReadCheckbox').checked=false;
@@ -1541,6 +1558,23 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     }catch(err){status.textContent=err.message}
     finally{$('passwordButton').disabled=false}
   });
+
+  const groupDialog=$('cpzGroupProfile');
+  $('cpzGroupProfileClose').addEventListener('click',()=>groupDialog.close());
+  groupDialog.addEventListener('click',e=>{if(e.target===groupDialog)groupDialog.close()});
+  $('cpzGroupProfileMine').addEventListener('click',()=>{groupDialog.close();view('account')});
+  function openGroupProfile(person,position,group){
+    $('cpzGroupProfileName').textContent=person.name;
+    $('cpzGroupProfileSubtitle').textContent='Grupo '+group+' · Posición '+position;
+    const avatar=$('cpzGroupProfileAvatar');avatar.textContent=person.name==='Jugador X'?'CPZ':person.name.split(' ').slice(0,2).map(n=>n.charAt(0)).join('').toUpperCase();
+    const stats=$('cpzGroupProfileStats');stats.replaceChildren();
+    for(const [label,value] of [['PJ',person.pj],['PG',person.pg],['PP',person.pp],['Puntos CPZ',person.pts],['Sets F/C',person.sf+' / '+person.sc],['Dif. sets',person.sf-person.sc],['Tantos F/C',person.pf+' / '+person.pc],['Dif. tantos',person.pf-person.pc]]){
+      const cell=document.createElement('div'),num=document.createElement('strong'),desc=document.createElement('span');
+      num.textContent=String(value);desc.textContent=label;cell.append(num,desc);stats.append(cell)}
+    $('cpzGroupProfileNote').textContent=person.self?'Esta es tu ficha resumida. Puedes abrir tu perfil deportivo completo con la foto y los hitos.':'Ficha deportiva limitada a las estadísticas visibles de este grupo. No se muestran fotografías ni datos personales sin autorización.';
+    $('cpzGroupProfileMine').hidden=!person.self;
+    groupDialog.showModal();
+  }
   async function loadNovemberGroup(){
     const status=$('novemberGroupStatus'),root=$('novemberGroupPlayers');
     if(!status||!root)return;root.replaceChildren();
@@ -1559,6 +1593,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
         const values=[String(i+1),p.name+(p.self?' (tú)':''),null,p.pj,p.pg,p.pp,p.sf+' / '+p.sc,p.sf-p.sc,p.pf+' / '+p.pc,p.pf-p.pc,p.pts];
         values.forEach((v,j)=>{const td=document.createElement('td');if(j===0){td.className='cpz-pos';td.textContent=String(v)}
           else if(j===2){if(up||down){const tag=document.createElement('span');tag.className='cpz-movement '+(up?'up':'down');tag.textContent=up?'▲ ASCENSO':'▼ DESCENSO';td.append(tag)}else td.textContent='—'}
+          else if(j===1){const button=document.createElement('button');button.type='button';button.className='cpz-player-link';button.textContent=String(v);button.addEventListener('click',()=>openGroupProfile(p,i+1,group));td.append(button)}
           else td.textContent=String(v);tr.append(td)});
         body.append(tr);
       });table.append(body);root.append(table);
@@ -1578,5 +1613,5 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
   });
 })();
 </script>
-</body>
+<dialog id="cpzGroupProfile" class="cpz-group-profile" aria-labelledby="cpzGroupProfileName"><div class="cpz-group-profile-head"><span>FICHA DE JUGADOR · RANKING CPZ</span><button type="button" id="cpzGroupProfileClose" aria-label="Cerrar ficha">✕</button></div><div class="cpz-group-profile-hero"><div class="cpz-group-profile-avatar" id="cpzGroupProfileAvatar">CPZ</div><div><h2 id="cpzGroupProfileName">Jugador</h2><p id="cpzGroupProfileSubtitle">Clasificación</p></div></div><div class="cpz-group-profile-stats" id="cpzGroupProfileStats"></div><p id="cpzGroupProfileNote"></p><button type="button" id="cpzGroupProfileMine" class="action" hidden>Ver mi perfil completo</button></dialog></body>
 </html>
