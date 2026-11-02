@@ -71,7 +71,7 @@ export async function onRequest({request,env}){
       if(!validDate(date)||round.length<1||round.length>60||!(/^[AB][1-5]$/.test(group)))return fail('Fecha, jornada o grupo inválido.');
       const one=Number(body.player1Id),two=Number(body.player2Id);
       if(!Number.isSafeInteger(one)||!Number.isSafeInteger(two)||one===two||one<=0||two<=0)return fail('Selecciona dos jugadores distintos.');
-      const players=await env.LEAGUE_DB.prepare('SELECT a.id,a.player_name,COALESCE(p.group_label,'') AS group_label FROM cpz_player_accounts a LEFT JOIN cpz_player_profiles p ON p.account_id=a.id WHERE a.id IN (?,?) AND a.enabled=1').bind(one,two).all();
+      const players=await env.LEAGUE_DB.prepare(`SELECT a.id,a.player_name,COALESCE(p.group_label,'') AS group_label FROM cpz_player_accounts a LEFT JOIN cpz_player_profiles p ON p.account_id=a.id WHERE a.id IN (?,?) AND a.enabled=1`).bind(one,two).all();
       if((players.results||[]).length!==2)return fail('Los dos jugadores deben tener una cuenta activa.');
       const a=players.results.find(p=>p.id===one),b=players.results.find(p=>p.id===two);
       const canonical=x=>String(x||'').trim().toUpperCase().replace(/^GRUPO\s*/,'').replace(/\s/g,'');
