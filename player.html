@@ -751,6 +751,9 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
 .cpz-group-profile-head button{border:0;border-radius:50%;background:#eaf3fb;color:#184a70;width:35px;height:35px;cursor:pointer}
 .cpz-group-profile-hero{display:flex;align-items:center;gap:16px;padding:20px 0}
 .cpz-group-profile-avatar{display:grid;place-items:center;border-radius:17px;background:linear-gradient(145deg,#186eb0,#072f59);color:white;min-width:86px;height:105px;font-weight:900;font-size:24px}
+.cpz-group-profile-avatar{overflow:hidden;position:relative;padding:0}
+.cpz-group-profile-avatar img{display:block;width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.cpz-group-profile-avatar img[hidden],.cpz-group-profile-avatar span[hidden]{display:none!important}
 .cpz-group-profile-hero h2{margin:0 0 8px;color:#124774;font-size:26px}
 .cpz-group-profile-hero p{margin:0;color:#567d99}
 .cpz-group-profile-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -1050,7 +1053,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     </form>
   </div>
 </dialog>
-<dialog id="cpzGroupProfile" class="cpz-group-profile" aria-labelledby="cpzGroupProfileName"><div class="cpz-group-profile-head"><span>FICHA DE JUGADOR · RANKING CPZ</span><button type="button" id="cpzGroupProfileClose" aria-label="Cerrar ficha">✕</button></div><div class="cpz-group-profile-hero"><div class="cpz-group-profile-avatar" id="cpzGroupProfileAvatar">CPZ</div><div><h2 id="cpzGroupProfileName">Jugador</h2><p id="cpzGroupProfileSubtitle">Clasificación</p></div></div><div class="cpz-group-profile-stats" id="cpzGroupProfileStats"></div><p id="cpzGroupProfileNote"></p><button type="button" id="cpzGroupProfileMine" class="action" hidden>Ver mi perfil completo</button></dialog>
+<dialog id="cpzGroupProfile" class="cpz-group-profile" aria-labelledby="cpzGroupProfileName"><div class="cpz-group-profile-head"><span>FICHA DE JUGADOR · RANKING CPZ</span><button type="button" id="cpzGroupProfileClose" aria-label="Cerrar ficha">✕</button></div><div class="cpz-group-profile-hero"><div class="cpz-group-profile-avatar" id="cpzGroupProfileAvatar"><img id="cpzGroupProfilePhoto" alt="Foto de perfil del jugador" hidden><span id="cpzGroupProfileInitials">CPZ</span></div><div><h2 id="cpzGroupProfileName">Jugador</h2><p id="cpzGroupProfileSubtitle">Clasificación</p></div></div><div class="cpz-group-profile-stats" id="cpzGroupProfileStats"></div><p id="cpzGroupProfileNote"></p><button type="button" id="cpzGroupProfileMine" class="action" hidden>Ver mi perfil completo</button></dialog>
 <script>
 (function(){
   'use strict';
@@ -1567,12 +1570,19 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
   function openGroupProfile(person,position,group){
     $('cpzGroupProfileName').textContent=person.name;
     $('cpzGroupProfileSubtitle').textContent='Grupo '+group+' · Posición '+position;
-    const avatar=$('cpzGroupProfileAvatar');avatar.textContent=person.name==='Jugador X'?'CPZ':person.name.split(' ').slice(0,2).map(n=>n.charAt(0)).join('').toUpperCase();
+    const avatarInitials=$('cpzGroupProfileInitials'),avatarPhoto=$('cpzGroupProfilePhoto');
+    avatarInitials.textContent=person.name==='Jugador X'?'CPZ':person.name.split(' ').slice(0,2).map(n=>n.charAt(0)).join('').toUpperCase();
+    avatarPhoto.hidden=true;avatarInitials.hidden=false;avatarPhoto.removeAttribute('src');
+    if(person.hasPhoto&&person.id){
+      avatarPhoto.onload=()=>{avatarPhoto.hidden=false;avatarInitials.hidden=true};
+      avatarPhoto.onerror=()=>{avatarPhoto.hidden=true;avatarInitials.hidden=false};
+      avatarPhoto.src='/api/member/photo?groupPlayer='+encodeURIComponent(person.id);
+    }
     const stats=$('cpzGroupProfileStats');stats.replaceChildren();
     for(const [label,value] of [['PJ',person.pj],['PG',person.pg],['PP',person.pp],['Puntos CPZ',person.pts],['Sets F/C',person.sf+' / '+person.sc],['Dif. sets',person.sf-person.sc],['Tantos F/C',person.pf+' / '+person.pc],['Dif. tantos',person.pf-person.pc]]){
       const cell=document.createElement('div'),num=document.createElement('strong'),desc=document.createElement('span');
       num.textContent=String(value);desc.textContent=label;cell.append(num,desc);stats.append(cell)}
-    $('cpzGroupProfileNote').textContent=person.self?'Esta es tu ficha resumida. Puedes abrir tu perfil deportivo completo con la foto y los hitos.':'Ficha deportiva limitada a las estadísticas visibles de este grupo. No se muestran fotografías ni datos personales sin autorización.';
+    $('cpzGroupProfileNote').textContent=person.self?'Esta es tu ficha resumida. Puedes abrir tu perfil deportivo completo con la foto y los hitos.':'Ficha deportiva del grupo. La fotografía solo se muestra si el jugador ha autorizado compartirla.';
     $('cpzGroupProfileMine').hidden=!person.self;
     groupDialog.showModal();
   }
