@@ -1107,7 +1107,7 @@ body{background:radial-gradient(circle at 85% 0%,#e1ecff,transparent 38%),#f5f8f
     $('cardPJ').textContent=String(recs.length);$('cardPG').textContent=String(wins);$('cardPP').textContent=String(losses);
     $('cardPoints').textContent=String(wins*3);$('cardWinRate').textContent=recs.length?String(Math.round(100*wins/recs.length)):'—';
     let sf=0,sc=0,streak=0,best=0;const chrono=[...recs].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-    for(const r of chrono){let local=0,away=0;const isP1=r.player1==='Yo';
+    for(const r of chrono){let local=0,away=0;const isP1=r.selfIsPlayer1===true;
       for(const set of r.sets||[]){if(!Array.isArray(set)||set.length!==2)continue;const x=Number(set[isP1?0:1]),y=Number(set[isP1?1:0]);if(x>y)local++;else if(y>x)away++}
       sf+=local;sc+=away;streak=r.winner==='Yo'?streak+1:0;best=Math.max(best,streak)}
     $('cardSets').textContent=sf+' / '+sc;
