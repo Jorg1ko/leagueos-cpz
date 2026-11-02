@@ -257,7 +257,7 @@ export async function onRequest({request,env,params}){
           date:r.date,round:r.round,groupLabel:r.groupLabel,
           player1:displayName(r.player1Id,r.player1,r.share1,r.ack1),
           player2:displayName(r.player2Id,r.player2,r.share2,r.ack2),
-          sets:JSON.parse(r.setsJson),winner:r.winnerId===row.id?'Yo':'Rival'
+          sets:JSON.parse(r.setsJson),selfIsPlayer1:r.player1Id===row.id,winner:r.winnerId===row.id?'Yo':'Rival'
         }))});
       }catch(e){
         return respond({ok:true,results:[]});
