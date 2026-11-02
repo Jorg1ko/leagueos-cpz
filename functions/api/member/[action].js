@@ -1,5 +1,7 @@
 // CPZ 2026/27 — inicio de sesión de jugadores y perfil de acceso reducido.
 // Cookie independiente de administrador, con firma HMAC, versión y caducidad.
+const GROUP_ROSTER={"A1":["Chema Balmori","Pedro Hernández","Javier Gimeno","Carlos Guillén"],"A2":["Jaime Mengual","Mario Pintanel","Eduardo Alvira","Ignacio Algas"],"A3":["Álvaro Esteban","Marcos Domeque","Javier Royo","Óscar Pinilla"],"A4":["Felipe Echevarría","Juan Jiménez","Alejandro Mendívil","Ramón Ruiz de Conejo"],"A5":["Jorge Ramón García","Mariano Guillén","Jorge Corbas","Pablo Oliván"],"B1":["Emilio Martín","Diego Cuervo","Carlos Lama","Enzo Navarro"],"B2":["Roberto Moreno","David Calavia","David Martos","Álex Aznar"],"B3":["David Serrate","Manuel Ángel Berges","Dani Sevil","Raúl García"],"B4":["Carlos Vilar","Gabriel Tena","Marco Antonio Lamata","Alejandro Embid"],"B5":["Gabriel Aguilar","Orlando Aguilar","Irene Martínez","Antonio Estopañán"]};
+const groupNormalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');
 const SESSION='__Host-cpz_member';
 const TTL=8*60*60;
 // Production Cloudflare Workers cap PBKDF2 at 100k iterations.
@@ -190,7 +192,7 @@ export async function onRequest({request,env,params}){
     if(action==='group'&&request.method==='GET'){
       const row=await member(request,env);if(!row)return fail('Inicia sesión como jugador.',401);
       await contactSchema(env.LEAGUE_DB);
-      const roster={"A1":["Chema Balmori","Pedro Hernández","Javier Gimeno","Carlos Guillén"],"A2":["Jaime Mengual","Mario Pintanel","Eduardo Alvira","Ignacio Algas"],"A3":["Álvaro Esteban","Marcos Domeque","Javier Royo","Óscar Pinilla"],"A4":["Felipe Echevarría","Juan Jiménez","Alejandro Mendívil","Ramón Ruiz de Conejo"],"A5":["Jorge Ramón García","Mariano Guillén","Jorge Corbas","Pablo Oliván"],"B1":["Emilio Martín","Diego Cuervo","Carlos Lama","Enzo Navarro"],"B2":["Roberto Moreno","David Calavia","David Martos","Álex Aznar"],"B3":["David Serrate","Manuel Ángel Berges","Dani Sevil","Raúl García"],"B4":["Carlos Vilar","Gabriel Tena","Marco Antonio Lamata","Alejandro Embid"],"B5":["Gabriel Aguilar","Orlando Aguilar","Irene Martínez","Antonio Estopañán"]};
+      const roster=GROUP_ROSTER;
       const normalize=s=>String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().trim().replace(/\\s+/g,' ');
       const own=await env.LEAGUE_DB.prepare('SELECT group_label FROM cpz_player_profiles WHERE account_id=?').bind(row.id).first();
       let group=String(own?.group_label||'').trim().toUpperCase().replace(/^GRUPO\\s+/, '');
@@ -200,11 +202,11 @@ export async function onRequest({request,env,params}){
       }
       if(!roster[group])return respond({ok:true,group:null,players:[],assigned:false});
       const legal=await env.LEAGUE_DB.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
-      const linked=await env.LEAGUE_DB.prepare("SELECT a.id,a.player_name,COALESCE(i.share_name,0) AS share_name,COALESCE(k.revision,0) AS ack FROM cpz_player_accounts a LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id WHERE a.enabled=1 LIMIT 250").all();
+      const linked=await env.LEAGUE_DB.prepare("SELECT a.id,a.player_name,COALESCE(i.share_name,0) AS share_name,COALESCE(k.revision,0) AS ack,COALESCE(m.share_social,0) AS share_social,CASE WHEN LENGTH(COALESCE(m.photo_data,''))>0 THEN 1 ELSE 0 END AS has_photo FROM cpz_player_accounts a LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id LEFT JOIN cpz_player_media m ON m.account_id=a.id WHERE a.enabled=1 LIMIT 250").all();
       const people=roster[group].map((name,index)=>{
         const account=(linked.results||[]).find(p=>normalize(p.player_name)===normalize(name)||normalize(p.player_name).startsWith(normalize(name)+' '));
         const self=account?.id===row.id || normalize(row.player_name)===normalize(name)||normalize(row.player_name).startsWith(normalize(name)+' ');
-        return {index,self,name:self?row.player_name:(account&&legal&&account.share_name===1&&account.ack>=legal.revision?account.player_name:'Jugador X'),id:account?.id||null};
+        const publicIdentity=!!(account&&legal&&account.share_name===1&&account.ack>=legal.revision);return {index,self,name:self?row.player_name:(publicIdentity?account.player_name:'Jugador X'),id:account?.id||null,hasPhoto:!!(account?.has_photo&&(self||(publicIdentity&&account.share_social===1)))};
       });
       let games=[];
       try{const results=await env.LEAGUE_DB.prepare("SELECT player_one_id AS p1,player_two_id AS p2,sets_json AS sets FROM cpz_match_results WHERE upper(trim(group_label))=? AND played_at>='2026-11-01' AND played_at<'2026-12-01' LIMIT 30").bind(group).all();games=results.results||[]}catch(_){}
@@ -267,6 +269,25 @@ export async function onRequest({request,env,params}){
       const row=await member(request,env);
       if(!row)return fail('Acceso exclusivo de jugadores.',401);
       await contactSchema(env.LEAGUE_DB);
+      const groupPlayer=new URL(request.url).searchParams.get('groupPlayer');
+      if(groupPlayer!==null){
+        const targetId=Number(groupPlayer);
+        if(!Number.isSafeInteger(targetId)||targetId<1)return fail('Jugador inválido.',400);
+        if(targetId===row.id){
+          const own=await env.LEAGUE_DB.prepare('SELECT photo_data FROM cpz_player_media WHERE account_id=?').bind(row.id).first();
+          return imageResponse(own?.photo_data);
+        }
+        const groupRow=await env.LEAGUE_DB.prepare('SELECT group_label FROM cpz_player_profiles WHERE account_id=?').bind(row.id).first();
+        const ownGroup=String(groupRow?.group_label||'').trim().toUpperCase().replace(/^GRUPO\s+/,'');
+        const ownName=groupNormalize(row.player_name);
+        const group=GROUP_ROSTER[ownGroup]?ownGroup:Object.keys(GROUP_ROSTER).find(g=>GROUP_ROSTER[g].some(n=>ownName===groupNormalize(n)||ownName.startsWith(groupNormalize(n)+' ')));
+        if(!group)return fail('Grupo no disponible.',403);
+        const participant=await env.LEAGUE_DB.prepare("SELECT a.player_name,m.photo_data,m.share_social,COALESCE(i.share_name,0) AS share_name,COALESCE(k.revision,0) AS ack FROM cpz_player_accounts a JOIN cpz_player_media m ON m.account_id=a.id LEFT JOIN cpz_player_identity i ON i.account_id=a.id LEFT JOIN cpz_player_privacy_ack k ON k.account_id=a.id WHERE a.id=? AND a.enabled=1").bind(targetId).first();
+        if(!participant||!GROUP_ROSTER[group].some(n=>groupNormalize(participant.player_name)===groupNormalize(n)||groupNormalize(participant.player_name).startsWith(groupNormalize(n)+' ')))return fail('Jugador fuera de tu grupo.',403);
+        const legal=await env.LEAGUE_DB.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
+        if(!legal||participant.share_name!==1||participant.share_social!==1||participant.ack<legal.revision)return fail('Foto no compartida.',403);
+        return imageResponse(participant.photo_data);
+      }
       const other=new URL(request.url).searchParams.get('opponent')==='1';
       if(other){
         if(!row.opponent_name)return fail('No hay rival asignado.',404);
