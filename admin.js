@@ -152,6 +152,7 @@
     document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
     document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!=='page-'+name);
     if(name==='players'||name==='groups')loadPlayers();
+    if(name==='doubles')renderDoubles();
     if(name==='results')loadResults();
     if(name==='groups')loadResults();
     if(name==='home'){loadPlayers();loadResults();}
@@ -244,6 +245,58 @@
     }
     return [...byName.values()].sort((x,y)=>y.pts-x.pts||(y.sf-y.sc)-(x.sf-x.sc)||(y.pf-y.pc)-(x.pf-x.pc)||x.order-y.order);
   }
+
+  // Dobles de noviembre: orden de organización facilitado por el club.
+  // Sin registros de resultados de dobles: no reutilizar los resultados individuales.
+  const NOVEMBER_DOUBLES={"A1":[["Carlos Guillén","Arturo Royo"],["Chema Balmori","Jorge Delgado"],["Mario Pintanel","Pedro Hernández"],["Javier Gimeno","Jaime Mengual"]],"A2":[["Miguel Val","Víctor Otín"],["Mariano Guillén","Jorge Ramón"],["David Martos","Jorge Corbas"],["Carlos Anés","Jaime Alloza"]],"B1":[["Ana Daroca","Javier Negrete"],["Ramón Ruiz de Conejo","Ramón Ruiz de Conejo"],["Enzo Navarro","Francisco Navarro"],["Judit Campos","Marta Ríos"]],"B2":[["Hugo Urbina","Pablo Oliván"],["Dani Sevil","Carlos Lama"],["Raúl Berges","Carlos Vilar"],["Andrea Ruiz","Mario Ruiz"]],"B3":[["Víctor Enguita","Roberto Moreno"],["Emilio Martín","Miguel Ángel Lázaro"],["Elías Tena","Luis Gracia"],["Carlos Bescós","Francisco Bescós"]],"B4":[["Orlando Aguilar","Sergio Lahoz"],["Alejandro Embid","Samuel James"],["Marco Antonio Lamata","Gabriel Tena"],["Julia Guerrero","Raquel Cisneros"]],"C1":[["Begoña Agüeras","Ángel Monzón"],["Silvia García","Carmen Morales"],["Belén Trol","Gema Orecilla"]],"C2":[["Gloria Villas","Omar El Kadmiri"],["Javier Palacio","Guillermo Lacasa"],["Ramón Ruiz de Conejo","Silvia Gracia"]]};
+  const DOUBLE_GROUPS=Object.keys(NOVEMBER_DOUBLES);
+  function renderDoubles(){
+    const category=$('doublesCategory'),select=$('doublesGroup'),root=$('doublesCards');
+    if(!category||!select||!root)return;
+    const labels=DOUBLE_GROUPS.filter(g=>g.startsWith(category.value));
+    const previous=select.value;
+    select.replaceChildren();
+    for(const label of labels){
+      const opt=document.createElement('option');opt.value=label.slice(1);opt.textContent='Grupo '+label.slice(1);select.append(opt);
+    }
+    select.value=labels.some(g=>g===category.value+previous)?previous:'1';
+    const group=category.value+select.value,pairs=NOVEMBER_DOUBLES[group]||[],count=pairs.length,games=count*(count-1)/2;
+    $('doublesSelectionHint').textContent='Mostrando '+group+' · '+count+' parejas · '+games+' partidos previstos';
+    root.replaceChildren();
+    const card=document.createElement('article');card.className='group-card';
+    const title=document.createElement('h3');title.className='cpz-group-heading';title.textContent='GRUPO '+group+' · PAREJAS DE NOVIEMBRE';card.append(title);
+    const caption=document.createElement('p');caption.className='cpz-doubles-caption';caption.textContent=count+' parejas · '+(count-1)+' encuentros por pareja · 0 resultados registrados de dobles';card.append(caption);
+    const wrap=document.createElement('div');wrap.className='cpz-standings-wrap';
+    const table=document.createElement('table');table.className='cpz-standings';
+    const head=document.createElement('thead');head.innerHTML='<tr><th>N.º inicial</th><th>Pareja</th><th>Estado</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Tantos F/C</th><th>Puntos</th></tr>';table.append(head);
+    const body=document.createElement('tbody');
+    pairs.forEach((pair,i)=>{
+      const tr=document.createElement('tr'),up=i===0&&group!=='A1',down=i===count-1&&group!=='C2';
+      if(up)tr.classList.add('cpz-rise');if(down)tr.classList.add('cpz-drop');
+      const pos=document.createElement('td');pos.className='cpz-pos';pos.textContent=String(i+1);tr.append(pos);
+      const team=document.createElement('td');const strong=document.createElement('span');strong.className='cpz-double-pair';strong.textContent=pair[0]+' / '+pair[1];team.append(strong);tr.append(team);
+      const status=document.createElement('td');
+      if(up||down){const flag=document.createElement('span');flag.className='cpz-movement '+(up?'up':'down');flag.textContent=up?'▲ ASCENSO':'▼ DESCENSO';status.append(flag)}else status.textContent='—';
+      tr.append(status);
+      for(const value of ['0','0','0','0 / 0','0 / 0','0']){const cell=document.createElement('td');cell.textContent=value;tr.append(cell)}
+      body.append(tr);
+    });table.append(body);wrap.append(table);card.append(wrap);
+    const desc=document.createElement('p');desc.className='cpz-standings-note';desc.textContent='El orden es exclusivamente para organizar los cruces. Verde y rojo indican las plazas previstas de ascenso o descenso, no clasificaciones confirmadas. Todos los marcadores siguen pendientes.';card.append(desc);
+    const fixtures=document.createElement('div');fixtures.className='cpz-fixtures';
+    const fh=document.createElement('h4');fh.textContent='Enfrentamientos previstos · '+games;fixtures.append(fh);
+    const list=document.createElement('div');list.className='cpz-fixture-list';let number=0;
+    for(let i=0;i<count;i++)for(let j=i+1;j<count;j++){
+      number++;
+      const item=document.createElement('div');item.className='cpz-fixture';
+      const label=document.createElement('strong');label.textContent='PARTIDO '+number+' · PENDIENTE';
+      const names=document.createElement('span');names.textContent=pairs[i].join(' / ')+' contra '+pairs[j].join(' / ');
+      item.append(label,names);list.append(item);
+    }
+    fixtures.append(list);card.append(fixtures);root.append(card);
+  }
+  $('doublesCategory').addEventListener('change',renderDoubles);
+  $('doublesGroup').addEventListener('change',renderDoubles);
+  renderDoubles();
   function renderGroups(){
     const root=$('groupCards');if(!root)return;
     root.replaceChildren();let linked=0;
