@@ -47,7 +47,19 @@
 .cpz-standings .cpz-movement{white-space:normal;font-size:9px;padding:4px 5px}
 @media(max-width:950px){.cpz-standings th{font-size:10px}.cpz-standings td{font-size:11px}.cpz-standings th:nth-child(2),.cpz-standings td:nth-child(2){width:23%}}
 @media(max-width:580px){.cpz-group-filters{display:grid;grid-template-columns:1fr 1fr}.cpz-group-filters select{min-width:0;width:100%}.cpz-group-filters p{grid-column:1/-1}.cpz-standings{font-size:10px!important}.cpz-standings th{font-size:9px;padding:8px 2px!important}.cpz-standings td{padding:9px 2px!important;font-size:10px}.cpz-standings .cpz-movement{font-size:8px}.cpz-standings .cpz-pos{font-size:12px}}
-.cpz-manual-sets{display:grid;gap:6px;max-width:520px;margin:17px 0}.cpz-manual-sets>div{display:grid;grid-template-columns:140px 1fr 1fr;gap:12px;align-items:center}.cpz-manual-sets strong{font-size:12px;color:#476b84}.cpz-manual-sets input{width:100%;border-radius:10px;border:1px solid #c9dfed;padding:10px;color:#163a54;background:white}.cpz-manual-sets span{font-size:13px}.cpz-manual-sets input:focus{outline:2px solid #42b4ee}@media(max-width:560px){.cpz-manual-sets>div{grid-template-columns:95px 1fr 1fr;gap:6px}}</style></head><body>
+.cpz-manual-sets{display:grid;gap:6px;max-width:520px;margin:17px 0}.cpz-manual-sets>div{display:grid;grid-template-columns:140px 1fr 1fr;gap:12px;align-items:center}.cpz-manual-sets strong{font-size:12px;color:#476b84}.cpz-manual-sets input{width:100%;border-radius:10px;border:1px solid #c9dfed;padding:10px;color:#163a54;background:white}.cpz-manual-sets span{font-size:13px}.cpz-manual-sets input:focus{outline:2px solid #42b4ee}@media(max-width:560px){.cpz-manual-sets>div{grid-template-columns:95px 1fr 1fr;gap:6px}}
+/* Dobles: una clasificación por vez, con nombres de parejas a dos líneas */
+#page-doubles .cpz-standings th:nth-child(2),#page-doubles .cpz-standings td:nth-child(2){min-width:180px;white-space:normal;text-align:left;line-height:1.4}
+#page-doubles .cpz-double-pair{font-weight:800;color:#173e64}
+#page-doubles .cpz-double-pair small{display:block;font-size:11px;color:#5d829b;font-weight:550}
+#page-doubles .cpz-fixtures{margin-top:18px;padding:18px;background:#eef7fd;border:1px solid #cee5f5;border-radius:14px}
+#page-doubles .cpz-fixtures h4{margin:0 0 12px;color:#103e67}
+#page-doubles .cpz-fixture-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#page-doubles .cpz-fixture{background:white;border:1px solid #d7e8f4;border-radius:11px;padding:11px 13px;font-size:12px;line-height:1.45;color:#274764}
+#page-doubles .cpz-fixture strong{display:block;font-size:10px;color:#0878bd;margin-bottom:4px}
+#page-doubles .cpz-doubles-caption{color:#546e85;font-size:12px}
+@media(max-width:760px){#page-doubles .cpz-fixture-list{grid-template-columns:1fr}#page-doubles .cpz-standings{font-size:10px!important}}
+</style></head><body>
 <svg class="cpz-svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
   <symbol id="cpz-paddle" viewBox="0 0 64 64">
     <g transform="rotate(-27 24 29)" stroke="currentColor" stroke-linejoin="round">
@@ -122,6 +134,7 @@
   <button class="nav active" data-view="home" type="button"><svg class="cpz-icon"><use href="#cpz-ranking"></use></svg>Resumen</button>
   <button class="nav" data-view="players" type="button"><svg class="cpz-icon"><use href="#cpz-user"></use></svg>Jugadores y cuentas</button>
   <button class="nav" data-view="groups" type="button"><svg class="cpz-icon"><use href="#cpz-trophy"></use></svg>Grupos de noviembre</button>
+  <button class="nav" data-view="doubles" type="button"><svg class="cpz-icon"><use href="#cpz-duel"></use></svg>Ranking dobles CPZ</button>
   <button class="nav" data-view="results" type="button"><svg class="cpz-icon"><use href="#cpz-trophy"></use></svg>Resultados manuales</button>
   <button class="nav" data-view="videos" type="button"><svg class="cpz-icon"><use href="#cpz-play"></use></svg>Comunidad y vídeos</button>
   <button class="nav" data-view="booking" type="button"><svg class="cpz-icon"><use href="#cpz-court"></use></svg>Reservas y normas</button>
@@ -229,6 +242,19 @@
   <div class="actions"><button type="button" class="button secondary" id="refreshGroups">Actualizar grupos</button></div>
   <h2 style="margin-top:28px">Centro de operaciones · Noviembre</h2><div id="operationsDashboard" class="metrics" aria-live="polite"></div><p id="operationsWarning" class="notice"></p><div class="cpz-group-filters" aria-label="Seleccionar clasificación"><label for="rankCategory">Categoría<select id="rankCategory"><option value="A">Categoría A</option><option value="B">Categoría B</option></select></label><label for="rankGroup">Grupo<select id="rankGroup"><option value="1">Grupo 1</option><option value="2">Grupo 2</option><option value="3">Grupo 3</option><option value="4">Grupo 4</option><option value="5">Grupo 5</option></select></label><p id="rankSelectionHint" aria-live="polite"></p></div><div id="groupCards" class="cpz-single-ranking" aria-live="polite"></div><h2 style="margin-top:30px">Histórico de la temporada</h2><p>Resumen de actividad por mes basado únicamente en resultados registrados. No se inventan posiciones anteriores.</p><div id="seasonHistory" aria-live="polite"></div>
   <div class="notice"><strong>Reglas:</strong> todos contra todos una vez (6 partidos por grupo). El primero asciende y el último desciende al grupo contiguo cuando exista. Fecha límite: 30 de noviembre de 2026. El movimiento entre categorías requiere confirmar el reglamento.</div>
+</section>
+<section class="view" id="page-doubles" hidden>
+ <div class="hero"><small>RANKING DOBLES CPZ · NOVIEMBRE 2026</small><h1>Grupos de dobles</h1><p>8 grupos · 30 parejas · 42 partidos previstos. Selecciona categoría y grupo para consultar las parejas y los cruces de noviembre.</p></div>
+ <div class="notice"><strong>Listado inicial, no clasificación:</strong> los números 1, 2, 3 y 4 solamente organizan los enfrentamientos. Todavía no hay resultados de dobles introducidos. Los datos del ranking individual no se mezclan con dobles.</div>
+ <div class="metrics"><div class="metric"><b>8</b><small>Grupos · A1–A2, B1–B4, C1–C2</small></div><div class="metric"><b>30</b><small>Parejas inscritas</small></div><div class="metric"><b>42</b><small>Partidos previstos en noviembre</small></div></div>
+ <div class="cpz-group-filters" aria-label="Seleccionar grupo de dobles">
+  <label for="doublesCategory">Categoría<select id="doublesCategory"><option value="A">Categoría A</option><option value="B">Categoría B</option><option value="C">Categoría C</option></select></label>
+  <label for="doublesGroup">Grupo<select id="doublesGroup"><option value="1">Grupo 1</option><option value="2">Grupo 2</option></select></label>
+  <p id="doublesSelectionHint" aria-live="polite">Mostrando grupo A1</p>
+ </div>
+ <div id="doublesCards" class="cpz-single-ranking" aria-live="polite"></div>
+ <div class="notice" style="margin-top:18px"><strong>Normas de noviembre:</strong> los grupos con 4 parejas disputan 3 partidos por pareja; C1 y C2, con 3 parejas, disputan 2 partidos por pareja. La primera pareja asciende al grupo inmediatamente superior y la última desciende al inferior, salvo en los extremos A1 y C2. Fecha límite: <strong>30 de noviembre de 2026</strong>. Los colores señalan plazas de movimiento, no ascensos o descensos ya obtenidos.</div>
+ <p class="cpz-standings-note">Dato a confirmar con la organización: en B1 figura «Ramón Ruiz de Conejo / Ramón Ruiz de Conejo». Se ha conservado exactamente como en el listado entregado.</p>
 </section>
 <section class="view" id="page-results" hidden><div class="hero"><small>RESULTADOS · ADMINISTRACIÓN</small><h1>Gestión manual de resultados</h1><p>Selecciona un grupo, elige el partido e introduce los puntos de cada set. Puedes corregir o eliminar cualquier resultado.</p></div>
 <div class="card" style="margin:18px 0;padding:22px"><h2 id="manualFormTitle">Nuevo resultado</h2>
