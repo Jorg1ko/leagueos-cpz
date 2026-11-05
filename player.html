@@ -35,7 +35,7 @@ tbody tr:nth-child(even){background:#f7fafc}
 @media(max-width:700px){.shell{padding:16px 12px 50px}.top{padding:20px}.card{padding:16px}.top-inner{gap:13px}.brand{height:60px;width:58px}.top .btn{width:100%}}
 </style>
 </head><body>
-<header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
+<header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Actualizar resultados</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
 <main class="shell">
  <nav class="nav" aria-label="Secciones de consulta"><button type="button" data-page="individual" aria-current="page">Ranking individual</button><button type="button" data-page="doubles">Ranking dobles</button><button type="button" data-page="results">Todos los resultados</button><button type="button" data-page="booking">Reservas</button><button type="button" data-page="rules">Normas y reglas oficiales</button></nav>
  <section id="loading" class="card" role="status">Cargando clasificaciones…</section>
@@ -172,7 +172,22 @@ $('group').addEventListener('change',renderSelected);
 $('resultType').addEventListener('change',renderAll);$('resultGroup').addEventListener('change',renderAll);
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.page)));
 $('logout').addEventListener('click',async()=>{try{await fetch('/api/shared/logout',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:'{}'})}finally{location.replace('/?role=player')}});
-fetch('/api/shared/data',{credentials:'same-origin',cache:'no-store'}).then(async response=>{const d=await response.json();if(!response.ok)throw Error(d.error||'Sin sesión');return d}).then(d=>{data=d;$('loading').hidden=true;$('app').hidden=false;switchPage('individual')}).catch(error=>{$('loading').textContent='No se pueden consultar los rankings: '+error.message+'. Vuelve a iniciar sesión.'});
+async function refreshRankings(initial=false){
+ const button=$('refreshRankings');button.disabled=true;button.textContent='Actualizando…';
+ try{
+  const response=await fetch('/api/shared/data',{credentials:'same-origin',cache:'no-store'});
+  const updated=await response.json();
+  if(!response.ok)throw Error(updated.error||'No se han podido actualizar los datos.');
+  data=updated;$('loading').hidden=true;$('app').hidden=false;
+  switchPage(initial?'individual':page);
+  button.textContent='Actualizar resultados';
+ }catch(error){
+  if(initial)$('loading').textContent='No se pueden consultar los rankings: '+error.message+'. Vuelve a iniciar sesión.';
+  else {button.textContent='Error al actualizar';alert('No se han podido actualizar las clasificaciones: '+error.message)}
+ }finally{button.disabled=false}
+}
+$('refreshRankings').addEventListener('click',()=>refreshRankings(false));
+refreshRankings(true);
 })();
 </script>
 </body></html>
