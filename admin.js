@@ -295,7 +295,7 @@
     const caption=document.createElement('p');caption.className='cpz-doubles-caption';caption.textContent=count+' parejas · '+(count-1)+' partidos por pareja · '+info.played+' de '+games+' resultados';card.append(caption);
     const wrap=document.createElement('div');wrap.className='cpz-standings-wrap';
     const table=document.createElement('table');table.className='cpz-standings';
-    const head=document.createElement('thead');head.innerHTML='<tr><th>Pos.</th><th>Pareja</th><th>Estado</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(head);
+    const head=document.createElement('thead');head.innerHTML='<tr><th>Pos.</th><th>Pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(head);
     const body=document.createElement('tbody');
     info.rows.forEach((p,i)=>{
       const tr=document.createElement('tr'),up=i===0&&group!=='A1',down=i===count-1&&group!=='C2';
@@ -305,10 +305,6 @@
       const help=document.createElement('button');help.type='button';help.className='cpz-criteria-info';help.textContent='ⓘ';help.setAttribute('aria-label','Explicar la posición de '+p.name);
       help.addEventListener('click',()=>alert(explainRank(p,i+1,info.complete)));
       team.append(help);tr.append(team);
-      const status=document.createElement('td');
-      if(up||down){const flag=document.createElement('span');flag.className='cpz-movement '+(up?'up':'down');flag.textContent=up?'▲ ASCENSO':'▼ DESCENSO';status.append(flag)}
-      else status.textContent='—';
-      tr.append(status);
       for(const v of [p.pj,p.pg,p.pp,p.sf+' / '+p.sc,p.sf-p.sc,p.pf+' / '+p.pc,p.pf-p.pc,p.pts]){
         const td=document.createElement('td');td.textContent=String(v);tr.append(td)}
       body.append(tr);
@@ -382,14 +378,13 @@
       const note=document.createElement('p');note.textContent=info.played+' de 6 encuentros registrados · noviembre 2026';card.append(note);
       const scroll=document.createElement('div');scroll.className='cpz-standings-wrap';
       const table=document.createElement('table');table.className='cpz-standings';
-      const head=document.createElement('thead');head.innerHTML='<tr><th>Clasif.</th><th>Jugador</th><th>Estado</th><th>P.J</th><th>P.G</th><th>P.P</th><th>Set F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Diferencia</th><th>Puntos</th></tr>';table.append(head);
+      const head=document.createElement('thead');head.innerHTML='<tr><th>Clasif.</th><th>Jugador</th><th>P.J</th><th>P.G</th><th>P.P</th><th>Set F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Diferencia</th><th>Puntos</th></tr>';table.append(head);
       const body=document.createElement('tbody');const played=standings.some(p=>p.pj>0);
       standings.forEach((p,i)=>{
         const tr=document.createElement('tr');const promotion=i===0&&label!=='A1',relegation=i===standings.length-1&&label!=='B5';
         if(promotion)tr.classList.add('cpz-rise');if(relegation)tr.classList.add('cpz-drop');
-        const vals=[String(i+1),p.name,null,String(p.pj),String(p.pg),String(p.pp),p.sf+' / '+p.sc,String(p.sf-p.sc),p.pf+' / '+p.pc,String(p.pf-p.pc),String(p.pts)];
+        const vals=[String(i+1),p.name,String(p.pj),String(p.pg),String(p.pp),p.sf+' / '+p.sc,String(p.sf-p.sc),p.pf+' / '+p.pc,String(p.pf-p.pc),String(p.pts)];
         vals.forEach((value,j)=>{const td=document.createElement('td');if(j===0){td.className='cpz-pos';td.textContent=value}
-          else if(j===2){if(promotion||relegation){const flag=document.createElement('span');flag.className='cpz-movement '+(promotion?'up':'down');flag.textContent=promotion?'▲ ASCENSO':'▼ DESCENSO';td.append(flag)}else td.textContent='—'}
           else if(j===1){td.textContent=value;
             const help=document.createElement('button');help.type='button';help.className='cpz-criteria-info';help.textContent='ⓘ';help.setAttribute('aria-label','Explicar posición de '+p.name);
             help.addEventListener('click',()=>alert(explainRank(p,i+1,info.complete)));td.append(help);
