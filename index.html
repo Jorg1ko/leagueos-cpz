@@ -165,10 +165,10 @@
     <div class="hero-copy">
       <span class="hero-kicker"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-ball"></use></svg> COMPETICIÓN PRIVADA · TEMPORADA 2026/27</span>
       <h1>El ranking, <span class="hero-highlight">bajo control.</span></h1>
-      <p>Tu centro de operaciones para organizar la temporada. Gestiona jugadores, asigna enfrentamientos e importa resultados reales, desde un solo lugar.</p>
+      <p>Tu centro de operaciones para organizar la temporada. Registra resultados individuales y de dobles, consulta las clasificaciones y configura el acceso general de jugadores desde un solo lugar.</p>
       <div class="hero-actions">
-        <button class="button hero-primary" type="button" data-target="players"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg> Gestionar jugadores <span aria-hidden="true">→</span></button>
-        <button class="button hero-outline" type="button" data-target="results">Importar resultados <span aria-hidden="true">↗</span></button>
+        <button class="button hero-primary" type="button" data-target="groups"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg> Ranking individual <span aria-hidden="true">→</span></button>
+        <button class="button hero-outline" type="button" data-target="results">Registrar resultados <span aria-hidden="true">↗</span></button>
       </div>
     </div>
     <div class="hero-season" aria-label="Temporada actual">
@@ -180,15 +180,15 @@
     </div>
   </div>
   <div class="metrics metrics--home">
-    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><span class="metric-trend">PARTICIPACIÓN</span></div><b id="playerCount">0</b><small>Jugadores registrados</small></div>
-    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--teal"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-paddle"></use></svg></span><span class="metric-trend">ACCESOS</span></div><b id="activeCount">0</b><small>Cuentas activas</small></div>
+    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><span class="metric-trend">PARTICIPACIÓN</span></div><b id="playerCount">0</b><small>Jugadores del listado</small></div>
+    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--teal"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-paddle"></use></svg></span><span class="metric-trend">ACCESOS</span></div><b id="activeCount">0</b><small>Grupos individuales y dobles</small></div>
     <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--amber"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-trophy"></use></svg></span><span class="metric-trend">COMPETICIÓN</span></div><b id="resultCount">0</b><small>Resultados confirmados</small></div>
   </div>
   <div class="competition-strip" aria-label="Información de la temporada">
     <div class="competition-strip-title"><span class="strip-roundel">CPZ</span><div><span class="strip-eyebrow">TEMPORADA 2026 / 2027</span><strong>Tu centro de competición</strong></div></div>
     <div class="competition-strip-actions"><button type="button" class="button secondary" data-target="results">Resultados del ranking <span aria-hidden="true">→</span></button><a class="button" href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Reservar pista en Taykus <span aria-hidden="true">↗</span></a></div>
   </div>
-  <div class="notice"><strong>Acceso privado.</strong> Solo el administrador crea cuentas. Los jugadores pueden modificar sus datos personales, pero no asignarse rivales ni alterar marcadores. Las reservas y pagos se realizan en Taykus, fuera de esta web.</div>
+  <div class="notice"><strong>Acceso privado.</strong> El administrador gestiona los resultados; los jugadores acceden con una contraseña común y solo pueden consultar clasificaciones y marcadores. Las reservas y pagos se realizan en Taykus, fuera de esta web.</div>
   <div class="grid2">
     <article class="card feature-card"><span class="feature-number">01 · PARTICIPANTES</span><span class="feature-icon feature-icon--blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><h3>Jugadores y perfiles</h3><p>Altas individuales, contraseñas privadas, grupos y rivales. También puedes crear plazas «Jugador X» sin datos de contacto.</p><button class="button" type="button" data-target="players">Gestionar participantes <span aria-hidden="true">→</span></button></article>
     <article class="card feature-card"><span class="feature-number">02 · RESULTADOS</span><span class="feature-icon feature-icon--teal"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-ranking"></use></svg></span><h3>Resultados sin complicaciones</h3><p>Descarga la plantilla Excel, revisa sets y fechas y confirma la importación. Solo se mostrarán partidos registrados.</p><button class="button secondary" type="button" data-target="results">Abrir gestión de resultados <span aria-hidden="true">→</span></button></article>
@@ -206,7 +206,7 @@
   </div>
 </section>
 <section class="view" id="page-players" hidden>
-  <div class="hero"><small>ALTAS Y ACCESOS PRIVADOS</small><h1>Jugadores y cuentas</h1><p>Todas las altas se realizan a mano desde administración. Cada jugador tiene un usuario y puede actualizar su correo, nombre preferido, WhatsApp y contraseña.</p></div>
+  <div class="hero"><small>ALTAS Y ACCESOS PRIVADOS</small><h1>Jugadores y cuentas</h1><p>Las cuentas personales anteriores no se utilizan en el acceso simplificado. Cada jugador tiene un usuario y puede actualizar su correo, nombre preferido, WhatsApp y contraseña.</p></div>
   <div class="metrics">
     <div class="metric"><b id="pairedCount">0</b><small>Jugadores con rival asignado</small></div>
     <div class="metric"><b>Solo admin</b><small>Alta de jugadores y rival</small></div>
