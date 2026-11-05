@@ -4,7 +4,7 @@
   const $ = id => document.getElementById(id);
   const clean = v => String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim().replace(/\s+/g, ' ');
   const H = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let accounts = [], results = [], community = {channels:[], videos:[]}, staged = [], stagedIssues = [], stagedName = '', issued = null;
+  let accounts = [], results = [], doubleResults = [], community = {channels:[], videos:[]}, staged = [], stagedIssues = [], stagedName = '', issued = null;
   let currentView = 'home';
 
   async function api(path, payload) {
@@ -152,7 +152,7 @@
     document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
     document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!=='page-'+name);
     if(name==='players'||name==='groups')loadPlayers();
-    if(name==='doubles')renderDoubles();
+    if(name==='doubles')loadDoubleResults();
     if(name==='results')loadResults();
     if(name==='groups')loadResults();
     if(name==='home'){loadPlayers();loadResults();}
@@ -228,75 +228,136 @@
   // Grupos privados: usar solo las cuentas autorizadas presentes en D1.
   const NOVEMBER_ROSTER={"A1":["Chema Balmori","Pedro Hernández","Javier Gimeno","Carlos Guillén"],"A2":["Jaime Mengual","Mario Pintanel","Eduardo Alvira","Ignacio Algas"],"A3":["Álvaro Esteban","Marcos Domeque","Javier Royo","Óscar Pinilla"],"A4":["Felipe Echevarría","Juan Jiménez","Alejandro Mendívil","Ramón Ruiz de Conejo"],"A5":["Jorge Ramón García","Mariano Guillén","Jorge Corbas","Pablo Oliván"],"B1":["Emilio Martín","Diego Cuervo","Carlos Lama","Enzo Navarro"],"B2":["Roberto Moreno","David Calavia","David Martos","Álex Aznar"],"B3":["David Serrate","Manuel Ángel Berges","Dani Sevil","Raúl García"],"B4":["Carlos Vilar","Gabriel Tena","Marco Antonio Lamata","Alejandro Embid"],"B5":["Gabriel Aguilar","Orlando Aguilar","Irene Martínez","Antonio Estopañán"]};
   const NOVEMBER_GROUPS=Object.keys(NOVEMBER_ROSTER);
-  function standingFor(names,records){
-    const byName=new Map(names.map((name,i)=>[clean(name),{name,order:i,pj:0,pg:0,pp:0,sf:0,sc:0,pf:0,pc:0,pts:0}]));
-    for(const m of records){
-      const one=byName.get(clean(m.player1)),two=byName.get(clean(m.player2));if(!one||!two||one===two)continue;
-      const sets=Array.isArray(m.sets)?m.sets:[];if(!sets.length)continue;
-      let s1=0,s2=0,p1=0,p2=0,valid=true;
-      for(const set of sets){
-        if(!Array.isArray(set)||set.length!==2||![set[0],set[1]].every(n=>Number.isInteger(n)&&n>=0)){valid=false;break}
-        if(set[0]===set[1]){valid=false;break}
-        s1+=set[0]>set[1]?1:0;s2+=set[1]>set[0]?1:0;p1+=set[0];p2+=set[1];
-      }
-      if(!valid||s1===s2)continue;
-      one.pj++;two.pj++;one.sf+=s1;one.sc+=s2;two.sf+=s2;two.sc+=s1;one.pf+=p1;one.pc+=p2;two.pf+=p2;two.pc+=p1;
-      const winner=s1>s2?one:two,loser=s1>s2?two:one;winner.pg++;loser.pp++;winner.pts+=3;
-    }
-    return [...byName.values()].sort((x,y)=>y.pts-x.pts||(y.sf-y.sc)-(x.sf-x.sc)||(y.pf-y.pc)-(x.pf-x.pc)||x.order-y.order);
-  }
-
+  function standingFor(names,records){return CPZRanking.rankCompetition(names,records).rows}
   // Dobles de noviembre: orden de organización facilitado por el club.
   // Sin registros de resultados de dobles: no reutilizar los resultados individuales.
   const NOVEMBER_DOUBLES={"A1":[["Carlos Guillén","Arturo Royo"],["Chema Balmori","Jorge Delgado"],["Mario Pintanel","Pedro Hernández"],["Javier Gimeno","Jaime Mengual"]],"A2":[["Miguel Val","Víctor Otín"],["Mariano Guillén","Jorge Ramón"],["David Martos","Jorge Corbas"],["Carlos Anés","Jaime Alloza"]],"B1":[["Ana Daroca","Javier Negrete"],["Ramón Ruiz de Conejo","Ramón Ruiz de Conejo"],["Enzo Navarro","Francisco Navarro"],["Judit Campos","Marta Ríos"]],"B2":[["Hugo Urbina","Pablo Oliván"],["Dani Sevil","Carlos Lama"],["Raúl Berges","Carlos Vilar"],["Andrea Ruiz","Mario Ruiz"]],"B3":[["Víctor Enguita","Roberto Moreno"],["Emilio Martín","Miguel Ángel Lázaro"],["Elías Tena","Luis Gracia"],["Carlos Bescós","Francisco Bescós"]],"B4":[["Orlando Aguilar","Sergio Lahoz"],["Alejandro Embid","Samuel James"],["Marco Antonio Lamata","Gabriel Tena"],["Julia Guerrero","Raquel Cisneros"]],"C1":[["Begoña Agüeras","Ángel Monzón"],["Silvia García","Carmen Morales"],["Belén Trol","Gema Orecilla"]],"C2":[["Gloria Villas","Omar El Kadmiri"],["Javier Palacio","Guillermo Lacasa"],["Ramón Ruiz de Conejo","Silvia Gracia"]]};
   const DOUBLE_GROUPS=Object.keys(NOVEMBER_DOUBLES);
+
+  function activeDoublesGroup(){return $('doublesCategory').value+$('doublesGroup').value}
+  function pairLabel(group,index){return (NOVEMBER_DOUBLES[group]?.[index]||['Pareja','no disponible']).join(' / ')}
+  function doubleRecords(group){
+    return doubleResults.filter(r=>r.groupLabel===group).map(r=>({
+      player1:pairLabel(group,r.pair1),player2:pairLabel(group,r.pair2),sets:r.sets
+    }));
+  }
+  function doubleFixtureOptions(){
+    const group=activeDoublesGroup(),pairs=NOVEMBER_DOUBLES[group]||[],select=$('doubleFixture'),prior=select.value;
+    select.replaceChildren();const blank=document.createElement('option');blank.value='';blank.textContent='Elegir enfrentamiento';select.append(blank);
+    for(let i=0;i<pairs.length;i++)for(let j=i+1;j<pairs.length;j++){
+      const opt=document.createElement('option');opt.value=i+'|'+j;
+      const existing=doubleResults.some(r=>r.groupLabel===group&&r.pair1===i&&r.pair2===j);
+      opt.textContent=pairLabel(group,i)+' contra '+pairLabel(group,j)+(existing?' · Ya registrado':'');
+      select.append(opt);
+    }
+    if([...select.options].some(o=>o.value===prior))select.value=prior;
+  }
+  function renderDoubleHistory(){
+    const root=$('doubleResultHistory');if(!root)return;root.replaceChildren();
+    if(!doubleResults.length){root.textContent='Aún no hay resultados de dobles registrados.';return}
+    const table=document.createElement('table'),head=document.createElement('thead'),body=document.createElement('tbody');
+    head.innerHTML='<tr><th>Fecha</th><th>Grupo</th><th>Parejas</th><th>Sets</th><th>Ganador</th><th>Acción</th></tr>';
+    for(const r of doubleResults){
+      const tr=document.createElement('tr');
+      const vals=[r.date,r.groupLabel,pairLabel(r.groupLabel,r.pair1)+' contra '+pairLabel(r.groupLabel,r.pair2),r.sets.map(x=>x.join('-')).join(' · '),pairLabel(r.groupLabel,r.winnerPair)];
+      for(const value of vals){const td=document.createElement('td');td.textContent=String(value);tr.append(td)}
+      const cell=document.createElement('td');
+      cell.append(b('Editar','secondary',()=>editDouble(r)),b('Eliminar','warning',async()=>{
+        if(!confirm('¿Eliminar este resultado de dobles?'))return;
+        try{const data=await api('/api/doubles-results',{action:'delete',id:r.id});
+          doubleResults=data.results||[];renderDoubles();renderDoubleHistory();say('doubleStatus','Resultado eliminado.')}
+        catch(error){say('doubleStatus',error.message)}
+      }));tr.append(cell);body.append(tr);
+    }
+    table.append(head,body);root.append(table);
+  }
   function renderDoubles(){
     const category=$('doublesCategory'),select=$('doublesGroup'),root=$('doublesCards');
     if(!category||!select||!root)return;
-    const labels=DOUBLE_GROUPS.filter(g=>g.startsWith(category.value));
-    const previous=select.value;
+    const labels=DOUBLE_GROUPS.filter(g=>g.startsWith(category.value)),previous=select.value;
     select.replaceChildren();
-    for(const label of labels){
-      const opt=document.createElement('option');opt.value=label.slice(1);opt.textContent='Grupo '+label.slice(1);select.append(opt);
-    }
+    for(const label of labels){const opt=document.createElement('option');opt.value=label.slice(1);opt.textContent='Grupo '+label.slice(1);select.append(opt)}
     select.value=labels.some(g=>g===category.value+previous)?previous:'1';
-    const group=category.value+select.value,pairs=NOVEMBER_DOUBLES[group]||[],count=pairs.length,games=count*(count-1)/2;
-    $('doublesSelectionHint').textContent='Mostrando '+group+' · '+count+' parejas · '+games+' partidos previstos';
+    const group=activeDoublesGroup(),pairs=NOVEMBER_DOUBLES[group]||[],count=pairs.length,games=count*(count-1)/2;
+    const info=CPZRanking.rankCompetition(pairs.map(x=>x.join(' / ')),doubleRecords(group));
+    $('doublesSelectionHint').textContent='Mostrando '+group+' · '+count+' parejas · '+info.played+' de '+games+' partidos registrados';
     root.replaceChildren();
     const card=document.createElement('article');card.className='group-card';
-    const title=document.createElement('h3');title.className='cpz-group-heading';title.textContent='GRUPO '+group+' · PAREJAS DE NOVIEMBRE';card.append(title);
-    const caption=document.createElement('p');caption.className='cpz-doubles-caption';caption.textContent=count+' parejas · '+(count-1)+' encuentros por pareja · 0 resultados registrados de dobles';card.append(caption);
+    const title=document.createElement('h3');title.className='cpz-group-heading';title.textContent='GRUPO '+group+' · CLASIFICACIÓN DOBLES';card.append(title);
+    const caption=document.createElement('p');caption.className='cpz-doubles-caption';caption.textContent=count+' parejas · '+(count-1)+' partidos por pareja · '+info.played+' de '+games+' resultados';card.append(caption);
     const wrap=document.createElement('div');wrap.className='cpz-standings-wrap';
     const table=document.createElement('table');table.className='cpz-standings';
-    const head=document.createElement('thead');head.innerHTML='<tr><th>N.º inicial</th><th>Pareja</th><th>Estado</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Tantos F/C</th><th>Puntos</th></tr>';table.append(head);
+    const head=document.createElement('thead');head.innerHTML='<tr><th>Pos.</th><th>Pareja</th><th>Estado</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(head);
     const body=document.createElement('tbody');
-    pairs.forEach((pair,i)=>{
+    info.rows.forEach((p,i)=>{
       const tr=document.createElement('tr'),up=i===0&&group!=='A1',down=i===count-1&&group!=='C2';
       if(up)tr.classList.add('cpz-rise');if(down)tr.classList.add('cpz-drop');
       const pos=document.createElement('td');pos.className='cpz-pos';pos.textContent=String(i+1);tr.append(pos);
-      const team=document.createElement('td');const strong=document.createElement('span');strong.className='cpz-double-pair';strong.textContent=pair[0]+' / '+pair[1];team.append(strong);tr.append(team);
+      const team=document.createElement('td'),name=document.createElement('span');name.className='cpz-double-pair';name.textContent=p.name;team.append(name);
+      const help=document.createElement('button');help.type='button';help.className='cpz-criteria-info';help.textContent='ⓘ';help.setAttribute('aria-label','Explicar la posición de '+p.name);
+      help.addEventListener('click',()=>alert(p.name+' · Posición '+(i+1)+'\n'+p.criterion+'\nPartidos ganados: '+p.pg+'\nDiferencia de sets: '+(p.sf-p.sc)+'\nDiferencia de puntos: '+(p.pf-p.pc)+'\nPuntos a favor: '+p.pf+(p.unresolved?'\nEmpate pendiente de resolución según las bases.':'')));
+      team.append(help);tr.append(team);
       const status=document.createElement('td');
-      if(up||down){const flag=document.createElement('span');flag.className='cpz-movement '+(up?'up':'down');flag.textContent=up?'▲ ASCENSO':'▼ DESCENSO';status.append(flag)}else status.textContent='—';
+      if(up||down){const flag=document.createElement('span');flag.className='cpz-movement '+(up?'up':'down');flag.textContent=up?'▲ ASCENSO':'▼ DESCENSO';status.append(flag)}
+      else status.textContent='—';
       tr.append(status);
-      for(const value of ['0','0','0','0 / 0','0 / 0','0']){const cell=document.createElement('td');cell.textContent=value;tr.append(cell)}
+      for(const v of [p.pj,p.pg,p.pp,p.sf+' / '+p.sc,p.sf-p.sc,p.pf+' / '+p.pc,p.pf-p.pc,p.pts]){
+        const td=document.createElement('td');td.textContent=String(v);tr.append(td)}
       body.append(tr);
     });table.append(body);wrap.append(table);card.append(wrap);
-    const desc=document.createElement('p');desc.className='cpz-standings-note';desc.textContent='El orden es exclusivamente para organizar los cruces. Verde y rojo indican las plazas previstas de ascenso o descenso, no clasificaciones confirmadas. Todos los marcadores siguen pendientes.';card.append(desc);
+    const desc=document.createElement('p');desc.className='cpz-standings-note';
+    desc.textContent=info.complete?'Todos los enfrentamientos registrados. Desempates según las normas proporcionadas; revisión final por organización.':info.played?'Clasificación provisional: no todos los partidos están registrados. El color indica zona de movimiento, no ascenso o descenso confirmado.':'Orden inicial para organizar cruces; todavía no hay resultados. Las posiciones no son clasificación oficial.';card.append(desc);
+    if(info.warnings.length){const warn=document.createElement('p');warn.className='cpz-ranking-warning';warn.textContent='Empates pendientes: '+info.warnings.join(' · ');card.append(warn)}
+    const expl=document.createElement('p');expl.className='cpz-ranking-explainer';expl.textContent='Orden oficial: victorias → enfrentamiento directo (2 empatados) → diferencia de sets → diferencia de puntos → puntos a favor. Si empatan 3, se calculan esos tres últimos criterios solo entre ellos. Pulsa ⓘ para consultar el motivo.';card.append(expl);
     const fixtures=document.createElement('div');fixtures.className='cpz-fixtures';
-    const fh=document.createElement('h4');fh.textContent='Enfrentamientos previstos · '+games;fixtures.append(fh);
+    const fh=document.createElement('h4');fh.textContent='Enfrentamientos · '+games;fixtures.append(fh);
     const list=document.createElement('div');list.className='cpz-fixture-list';let number=0;
     for(let i=0;i<count;i++)for(let j=i+1;j<count;j++){
-      number++;
+      number++;const done=doubleResults.find(r=>r.groupLabel===group&&r.pair1===i&&r.pair2===j);
       const item=document.createElement('div');item.className='cpz-fixture';
-      const label=document.createElement('strong');label.textContent='PARTIDO '+number+' · PENDIENTE';
-      const names=document.createElement('span');names.textContent=pairs[i].join(' / ')+' contra '+pairs[j].join(' / ');
+      const label=document.createElement('strong');label.textContent='PARTIDO '+number+(done?' · RESULTADO '+done.sets.map(s=>s.join('-')).join(' / '):' · PENDIENTE');
+      const names=document.createElement('span');names.textContent=pairLabel(group,i)+' contra '+pairLabel(group,j);
       item.append(label,names);list.append(item);
     }
     fixtures.append(list);card.append(fixtures);root.append(card);
+    doubleFixtureOptions();
   }
-  $('doublesCategory').addEventListener('change',renderDoubles);
-  $('doublesGroup').addEventListener('change',renderDoubles);
-  renderDoubles();
+  let editingDoubleId=null;
+  function resetDouble(){
+    editingDoubleId=null;$('doubleResultForm').reset();$('doubleRound').value='Noviembre 2026';
+    $('doubleDate').value=new Date().toISOString().slice(0,10);
+    $('doubleSave').textContent='Guardar resultado';doubleFixtureOptions();say('doubleStatus','');
+  }
+  function editDouble(r){
+    editingDoubleId=r.id;$('doublesCategory').value=r.groupLabel[0];$('doublesGroup').value=r.groupLabel.slice(1);renderDoubles();
+    $('doubleFixture').value=r.pair1+'|'+r.pair2;$('doubleDate').value=r.date;$('doubleRound').value=r.round;
+    for(let i=1;i<=3;i++){const scores=r.sets[i-1]||[];$('doubleS'+i+'a').value=scores.length?String(scores[0]):'';$('doubleS'+i+'b').value=scores.length?String(scores[1]):''}
+    $('doubleSave').textContent='Guardar cambios';$('doubleResultForm').scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  async function loadDoubleResults(){
+    try{const data=await api('/api/doubles-results');doubleResults=data.results||[];renderDoubles();renderDoubleHistory();say('doubleStatus','')}
+    catch(error){say('doubleStatus',error.message)}
+  }
+  $('doubleResultForm').addEventListener('submit',async event=>{
+    event.preventDefault();const pair=$('doubleFixture').value.split('|').map(Number),group=activeDoublesGroup();
+    if(pair.length!==2||!pair.every(Number.isInteger)||pair[0]===pair[1])return say('doubleStatus','Selecciona un enfrentamiento.');
+    const sets=[];
+    for(let i=1;i<=3;i++){const x=$('doubleS'+i+'a').value,y=$('doubleS'+i+'b').value;
+      if(i===3&&x===''&&y==='')continue;
+      if(x===''||y==='')return say('doubleStatus','Rellena los dos tanteos de cada set.');
+      sets.push([Number(x),Number(y)]);
+    }
+    $('doubleSave').disabled=true;
+    try{const data=await api('/api/doubles-results',{action:'save',id:editingDoubleId,groupLabel:group,pair1:pair[0],pair2:pair[1],date:$('doubleDate').value,round:$('doubleRound').value,sets});
+      doubleResults=data.results||[];renderDoubles();renderDoubleHistory();resetDouble();say('doubleStatus','Resultado de dobles guardado. Clasificación recalculada.')}
+    catch(error){say('doubleStatus',error.message)}
+    finally{$('doubleSave').disabled=false}
+  });
+  $('doubleClear').addEventListener('click',resetDouble);
+  $('doubleRefresh').addEventListener('click',loadDoubleResults);
+  $('doublesCategory').addEventListener('change',()=>{editingDoubleId=null;renderDoubles()});
+  $('doublesGroup').addEventListener('change',()=>{editingDoubleId=null;renderDoubles()});
+  renderDoubles();resetDouble();
   function renderGroups(){
     const root=$('groupCards');if(!root)return;
     root.replaceChildren();let linked=0;
@@ -307,10 +368,10 @@
       const members=accounts.filter(a=>clean(a.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label));
       linked+=names.filter(n=>members.some(a=>clean(a.playerName)===clean(n))).length;
       const games=results.filter(r=>clean(r.groupLabel||'').replace('grupo ','').replaceAll(' ','')===clean(label) && String(r.date||'').startsWith('2026-11'));
-      const standings=standingFor(names,games);
+      const info=CPZRanking.rankCompetition(names,games),standings=info.rows;
       const card=document.createElement('article');card.className='group-card';
       const title=document.createElement('h3');title.className='cpz-group-heading';title.textContent='GRUPO '+label+' · CLASIFICACIÓN';card.append(title);
-      const note=document.createElement('p');note.textContent=games.length+' de 6 encuentros registrados · noviembre 2026';card.append(note);
+      const note=document.createElement('p');note.textContent=info.played+' de 6 encuentros registrados · noviembre 2026';card.append(note);
       const scroll=document.createElement('div');scroll.className='cpz-standings-wrap';
       const table=document.createElement('table');table.className='cpz-standings';
       const head=document.createElement('thead');head.innerHTML='<tr><th>Clasif.</th><th>Jugador</th><th>Estado</th><th>P.J</th><th>P.G</th><th>P.P</th><th>Set F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Diferencia</th><th>Puntos</th></tr>';table.append(head);
@@ -321,10 +382,15 @@
         const vals=[String(i+1),p.name,null,String(p.pj),String(p.pg),String(p.pp),p.sf+' / '+p.sc,String(p.sf-p.sc),p.pf+' / '+p.pc,String(p.pf-p.pc),String(p.pts)];
         vals.forEach((value,j)=>{const td=document.createElement('td');if(j===0){td.className='cpz-pos';td.textContent=value}
           else if(j===2){if(promotion||relegation){const flag=document.createElement('span');flag.className='cpz-movement '+(promotion?'up':'down');flag.textContent=promotion?'▲ ASCENSO':'▼ DESCENSO';td.append(flag)}else td.textContent='—'}
-          else td.textContent=value;tr.append(td)});
+          else if(j===1){td.textContent=value;
+            const help=document.createElement('button');help.type='button';help.className='cpz-criteria-info';help.textContent='ⓘ';help.setAttribute('aria-label','Explicar posición de '+p.name);
+            help.addEventListener('click',()=>alert(p.name+' · Posición '+(i+1)+'\\n'+p.criterion+'\\nVictorias: '+p.pg+'\\nDiferencia de sets: '+(p.sf-p.sc)+'\\nDiferencia de puntos: '+(p.pf-p.pc)+'\\nPuntos a favor: '+p.pf+(p.unresolved?'\\nDesempate pendiente de resolución.':'')));td.append(help);
+          }else td.textContent=value;tr.append(td)});
         body.append(tr);
       });table.append(body);scroll.append(table);card.append(scroll);
-      const legend=document.createElement('p');legend.className='cpz-standings-note';legend.textContent=played?'Verde: zona de ascenso · Rojo: zona de descenso. Posiciones provisionales hasta el cierre y resolución de empates.':'Sin resultados: el orden sigue siendo el del listado inicial. Las franjas verde y roja señalan las plazas de ascenso y descenso, NO una clasificación decidida.';card.append(legend);
+      const legend=document.createElement('p');legend.className='cpz-standings-note';legend.textContent=info.complete?'Partidos completos. Desempates calculados según las normas, pendientes de validación final por el club.':played?'Clasificación provisional: todavía hay encuentros pendientes. Verde y rojo indican plazas de movimiento, no ascensos decididos.':'Sin resultados: el orden es el listado inicial, no clasificación oficial. Las zonas de color solo identifican plazas de movimiento.';card.append(legend);
+      if(info.warnings.length){const warning=document.createElement('p');warning.className='cpz-ranking-warning';warning.textContent='Empates sin resolución definitiva: '+info.warnings.join(' · ');card.append(warning)}
+      const explanation=document.createElement('p');explanation.className='cpz-ranking-explainer';explanation.textContent='Criterios oficiales: victorias, enfrentamiento directo entre 2, diferencia de sets, diferencia de puntos y puntos a favor. Empate de 3: miniclasificación de sus enfrentamientos. Pulsa ⓘ para ver el motivo.';card.append(explanation);
       if(label===selectedLabel)root.append(card);
     }
     if($('rankSelectionHint'))$('rankSelectionHint').textContent='Mostrando '+selectedLabel+' · 4 participantes · 6 enfrentamientos';

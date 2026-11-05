@@ -1,3 +1,4 @@
+import '../../../ranking-engine.js';
 // CPZ 2026/27 — inicio de sesión de jugadores y perfil de acceso reducido.
 // Cookie independiente de administrador, con firma HMAC, versión y caducidad.
 const GROUP_ROSTER={"A1":["Chema Balmori","Pedro Hernández","Javier Gimeno","Carlos Guillén"],"A2":["Jaime Mengual","Mario Pintanel","Eduardo Alvira","Ignacio Algas"],"A3":["Álvaro Esteban","Marcos Domeque","Javier Royo","Óscar Pinilla"],"A4":["Felipe Echevarría","Juan Jiménez","Alejandro Mendívil","Ramón Ruiz de Conejo"],"A5":["Jorge Ramón García","Mariano Guillén","Jorge Corbas","Pablo Oliván"],"B1":["Emilio Martín","Diego Cuervo","Carlos Lama","Enzo Navarro"],"B2":["Roberto Moreno","David Calavia","David Martos","Álex Aznar"],"B3":["David Serrate","Manuel Ángel Berges","Dani Sevil","Raúl García"],"B4":["Carlos Vilar","Gabriel Tena","Marco Antonio Lamata","Alejandro Embid"],"B5":["Gabriel Aguilar","Orlando Aguilar","Irene Martínez","Antonio Estopañán"]};
@@ -210,13 +211,14 @@ export async function onRequest({request,env,params}){
       });
       let games=[];
       try{const results=await env.LEAGUE_DB.prepare("SELECT player_one_id AS p1,player_two_id AS p2,sets_json AS sets FROM cpz_match_results WHERE upper(trim(group_label))=? AND played_at>='2026-11-01' AND played_at<'2026-12-01' LIMIT 30").bind(group).all();games=results.results||[]}catch(_){}
-      const stats=people.map(p=>({pts:0,pj:0,pg:0,pp:0,sf:0,sc:0,pf:0,pc:0}));
-      for(const game of games){let x=people.findIndex(p=>p.id===game.p1),y=people.findIndex(p=>p.id===game.p2);if(x<0||y<0||x===y)continue;let sets;try{sets=JSON.parse(game.sets)}catch(_){continue}if(!Array.isArray(sets)||!sets.length)continue;
-        let sx=0,sy=0,px=0,py=0,valid=true;for(const set of sets){if(!Array.isArray(set)||set.length!==2||!set.every(n=>Number.isInteger(n)&&n>=0)||set[0]===set[1]){valid=false;break}sx+=set[0]>set[1]?1:0;sy+=set[1]>set[0]?1:0;px+=set[0];py+=set[1]}
-        if(!valid||sx===sy)continue;let a=stats[x],b=stats[y];a.pj++;b.pj++;a.sf+=sx;a.sc+=sy;b.sf+=sy;b.sc+=sx;a.pf+=px;a.pc+=py;b.pf+=py;b.pc+=px;if(sx>sy){a.pg++;b.pp++;a.pts+=3}else{b.pg++;a.pp++;b.pts+=3}
-      }
-      const players=people.map((p,k)=>({name:p.name,self:p.self,...stats[k],original:k})).sort((a,b)=>b.pts-a.pts||(b.sf-b.sc)-(a.sf-a.sc)||(b.pf-b.pc)-(a.pf-a.pc)||a.original-b.original);
-      return respond({ok:true,group,assigned:!!own?.group_label,players,provisional:players.some(p=>p.pj>0)});
+      const entries=games.flatMap(game=>{
+        const x=people.findIndex(p=>p.id===game.p1),y=people.findIndex(p=>p.id===game.p2);
+        if(x<0||y<0||x===y)return [];
+        try{return [{player1:'member_'+x,player2:'member_'+y,sets:JSON.parse(game.sets)}]}catch{return []}
+      });
+      const standing=globalThis.CPZRanking.rankCompetition(people.map((_,i)=>'member_'+i),entries);
+      const players=standing.rows.map(p=>({...p,name:people[p.order].name,self:people[p.order].self,id:people[p.order].id,hasPhoto:people[p.order].hasPhoto}));
+      return respond({ok:true,group,assigned:!!own?.group_label,players,provisional:!standing.complete,warnings:standing.warnings});
     }
     if(action==='community'&&request.method==='GET'){
       const row=await member(request,env);

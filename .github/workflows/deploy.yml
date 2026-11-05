@@ -27,11 +27,15 @@ jobs:
           test -f player.html
           test -f admin.css
           test -f admin.js
+          test -f ranking-engine.js
+          test -f functions/api/doubles-results.js
           test -f cpz-escudo.svg
           test -f functions/_middleware.js
           test -f functions/api/accounts.js
           test -f functions/api/results.js
           node --check admin.js
+          node --check ranking-engine.js
+          node tests/ranking-engine.test.cjs
           node -e 'const fs=require("fs"),vm=require("vm"); for(const file of ["player.html","index.html"]){const src=fs.readFileSync(file,"utf8");const re=/<script\b[^>]*>([\s\S]*?)<\/script>/gi;let m;while((m=re.exec(src))) if(m[1].trim())new vm.Script(m[1],{filename:file});}'
           find functions -type f -name '*.js' -print0 | xargs -0 -n 1 node --check
           node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const j=fs.readFileSync('admin.js','utf8');if(!h.includes('page-groups')||!j.includes('renderGroups'))process.exit(1)"
@@ -52,6 +56,7 @@ jobs:
           cp legal.html dist/legal.html
           cp admin.css dist/admin.css
           cp admin.js dist/admin.js
+          cp ranking-engine.js dist/ranking-engine.js
           cp cpz-escudo.svg dist/cpz-escudo.svg
 
       # Pages Functions debe estar en la raíz del repositorio, junto a dist/.
@@ -64,6 +69,7 @@ jobs:
           test -f functions/api/accounts.js
           test -f functions/api/results.js
           node --check dist/admin.js
+          node --check dist/ranking-engine.js
           find functions -type f -name '*.js' -print0 | xargs -0 -n 1 node --check
 
       - name: Subir a Cloudflare Pages
