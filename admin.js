@@ -867,8 +867,9 @@
     $('manualSave').disabled=true;
     try{
       const d=await api('/api/results',{action:'manual-save',id:manualEditingId,date:$('manualDate').value,round:$('manualRound').value,groupLabel:$('manualGroup').value,player1Name:pair[0],player2Name:pair[1],sets});
-      results=d.results||[];renderResults();renderGroups();updateOperations();renderSeasonHistory();resetManual();
-      say('manualStatus','Resultado guardado correctamente.');
+      results=d.results||[];
+      renderResults();renderGroups();updateOperations();renderSeasonHistory();resetManual();
+      say('manualStatus','Resultado guardado. La clasificación de noviembre se ha actualizado. Puedes comprobarlo en Ranking Individual CPZ.');
     }catch(e){say('manualStatus',e.message)}
     finally{$('manualSave').disabled=false}
   });
@@ -893,8 +894,17 @@
     table.append(head,body);$('resultTable').replaceChildren(table);
   }
   async function loadResults(){
-    try{const d=await api('/api/results');results=d.results||[];renderResults();manualFixtures()}
-    catch(e){$('resultTable').innerHTML='<div class="empty">'+H(e.message)+'</div>'}
+    try{
+      const d=await api('/api/results');
+      results=d.results||[];
+      renderResults();
+      manualFixtures();
+      // La clasificación se debe volver a calcular DESPUÉS de recibir los resultados.
+      // Antes solo se recalculaba al cargar cuentas, lo que dejaba la tabla obsoleta.
+      renderGroups();
+      renderSeasonHistory();
+      updateOperations();
+    }catch(e){$('resultTable').innerHTML='<div class="empty">'+H(e.message)+'</div>'}
   }
   $('refreshResults').onclick=loadResults;
   // Comunidad existente, sin vídeos falsos.

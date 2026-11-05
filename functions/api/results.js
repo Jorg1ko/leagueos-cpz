@@ -70,6 +70,7 @@ export async function onRequest({request,env}){
       if(id!==null&&(!Number.isSafeInteger(id)||id<1))return fail('Identificador inválido.');
       const date=String(body.date||''),round=String(body.round||'Noviembre 2026').trim(),group=String(body.groupLabel||'').trim().toUpperCase();
       if(!validDate(date)||round.length<1||round.length>60||!(/^[AB][1-5]$/.test(group)))return fail('Fecha, jornada o grupo inválido.');
+      if(!date.startsWith('2026-11-'))return fail('Estos grupos corresponden a noviembre de 2026. Selecciona una fecha entre el 1 y el 30 de noviembre para que el partido se refleje en su clasificación.');
       // Las cuentas de acceso personales ya no son necesarias. Los resultados
       // conservan referencias internas para mantener los partidos históricos.
       const roster=NOVEMBER_ROSTER[group]||[];
