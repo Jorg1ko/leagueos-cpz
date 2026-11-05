@@ -62,6 +62,9 @@
 @media(max-width:760px){#page-doubles .cpz-fixture-list{grid-template-columns:1fr}#page-doubles .cpz-standings{font-size:10px!important}}
 
 .cpz-criteria-info{margin-left:8px;padding:4px 8px;border:1px solid #bbdcf2;border-radius:8px;color:#0a6ba7;background:#eff8ff;font-size:11px;font-weight:800;cursor:pointer}.cpz-criteria-info:focus-visible{outline:3px solid #4dc1fc}.cpz-ranking-warning{font-size:12px;line-height:1.5;color:#8a561d;background:#fff8e9;border:1px solid #f3dca5;padding:11px 13px;border-radius:11px;margin:14px 0}.cpz-pending{font-weight:850;color:#8c581a}.cpz-ranking-explainer{font-size:12px;color:#49677f;margin:12px 0;line-height:1.65}
+
+/* Modo simplificado: las cuentas individuales y la comunidad se retiran de la interfaz. */
+[data-view="players"],[data-view="videos"],#page-players,#page-videos{display:none!important}
 </style></head><body>
 <svg class="cpz-svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
   <symbol id="cpz-paddle" viewBox="0 0 64 64">
@@ -239,9 +242,19 @@
   </div>
 </section>
 <section class="view" id="page-groups" hidden>
+<section class="card" id="sharedAccessCard" style="margin:20px 0;padding:22px">
+ <h2>Acceso general de jugadores</h2><p>Los jugadores consultan todas las clasificaciones y resultados con una única contraseña compartida. No necesitan nombre de usuario ni perfil individual. No pueden editar resultados ni acceder a datos de administración.</p>
+ <form id="sharedPasswordForm" class="form" autocomplete="off">
+ <label>Contraseña general de jugadores (mínimo 12 caracteres)
+ <input id="sharedPassword" type="password" minlength="12" maxlength="128" required autocomplete="new-password" placeholder="Introduce una contraseña segura"></label>
+ <div class="actions"><button class="button" type="submit">Guardar o cambiar contraseña general</button></div>
+ <p id="sharedPasswordStatus" class="status" role="status">Consultando el acceso…</p>
+ </form>
+ <p class="small">Al cambiarla se invalidan todos los accesos de jugadores anteriores. Comparte la contraseña de forma privada. Acceso: <a href="/?role=player" target="_blank" rel="noopener noreferrer">Entrada de jugadores</a>.</p>
+</section>
   <div class="hero"><small>RANKING INDIVIDUAL · NOVIEMBRE 2026</small><h1>Ranking Individual CPZ</h1><p>Diez grupos · Cuatro jugadores por grupo · Tres partidos por jugador. Los números iniciales no indican clasificación.</p></div>
-  <div class="notice"><strong>Gestión privada.</strong> Este panel muestra los jugadores y rivales que ya estén registrados en D1. No crea cuentas ni modifica resultados. Los enfrentamientos se calculan dentro de cada grupo; verifica las altas antes de asignarlos.</div>
-  <div class="metrics"><div class="metric"><b>10</b><small>Grupos A1–A5 · B1–B5</small></div><div class="metric"><b id="groupPlayerCount">0</b><small>Jugadores dados de alta en esos grupos</small></div><div class="metric"><b id="groupMatchCount">0</b><small>Enfrentamientos calculados</small></div></div>
+  <div class="notice"><strong>Gestión de resultados.</strong> Este panel muestra los jugadores y rivales que ya estén registrados en D1. No crea cuentas ni modifica resultados. Los enfrentamientos se calculan directamente a partir del listado oficial, sin crear cuentas personales.</div>
+  <div class="metrics"><div class="metric"><b>10</b><small>Grupos A1–A5 · B1–B5</small></div><div class="metric"><b id="groupPlayerCount">0</b><small>Nombres de los grupos oficiales</small></div><div class="metric"><b id="groupMatchCount">0</b><small>Enfrentamientos calculados</small></div></div>
   <div class="actions"><button type="button" class="button secondary" id="refreshGroups">Actualizar grupos</button></div>
   <h2 style="margin-top:28px">Centro de operaciones · Noviembre</h2><div id="operationsDashboard" class="metrics" aria-live="polite"></div><p id="operationsWarning" class="notice"></p><div class="cpz-group-filters" aria-label="Seleccionar clasificación"><label for="rankCategory">Categoría<select id="rankCategory"><option value="A">Categoría A</option><option value="B">Categoría B</option></select></label><label for="rankGroup">Grupo<select id="rankGroup"><option value="1">Grupo 1</option><option value="2">Grupo 2</option><option value="3">Grupo 3</option><option value="4">Grupo 4</option><option value="5">Grupo 5</option></select></label><p id="rankSelectionHint" aria-live="polite"></p></div><div id="groupCards" class="cpz-single-ranking" aria-live="polite"></div>
 <details class="card" style="margin:18px 0"><summary style="cursor:pointer;font-weight:850;color:#155982">Cómo se ordena la clasificación y se resuelven los empates</summary><p>La clasificación se calcula automáticamente después de cada resultado registrado.</p><ol><li>Mayor número de partidos ganados.</li><li>Enfrentamiento directo si empatan exactamente dos jugadores o parejas.</li><li>Diferencia de sets (ganados menos perdidos).</li><li>Diferencia de puntos (a favor menos en contra).</li><li>Mayor número de puntos a favor.</li></ol><p><strong>Tres empatados:</strong> se calcula una miniclasificación contando exclusivamente sus enfrentamientos mutuos; dentro de ella se compara primero la diferencia de sets, luego la diferencia de puntos y finalmente los puntos a favor.</p><p><strong>Regla no definida o encuentros pendientes:</strong> cuando hay cuatro empatados, persiste un empate absoluto o falta el enfrentamiento directo, se muestra el aviso «pendiente» y no se atribuye un ascenso definitivo. Las posiciones parciales son provisionales.</p></details><h2 style="margin-top:30px">Histórico de la temporada</h2><p>Resumen de actividad por mes basado únicamente en resultados registrados. No se inventan posiciones anteriores.</p><div id="seasonHistory" aria-live="polite"></div>
