@@ -25,9 +25,13 @@ tbody tr:nth-child(even){background:#f7fafc}
 .up{box-shadow:inset 4px 0 #269b61}.down{box-shadow:inset 4px 0 #df5454}
 .tag{display:inline-block;border-radius:7px;background:#e3f1fd;padding:4px 7px;font-size:10px;font-weight:800;color:#125986}
 .tag.warn{background:#fff0d3;color:#7c5419}
-.explain{display:inline;margin-left:6px;font-size:11px;color:#0d71b1;cursor:pointer;font-weight:800}
-.explain summary{list-style:none;display:inline;outline-offset:2px}.explain summary::-webkit-details-marker{display:none}
-.explain[open]{display:block;max-width:440px;margin:8px 0 0;font-weight:400;line-height:1.6;color:#3e5d71;background:#ebf6fd;padding:10px;border-radius:9px}
+.explain{display:inline-block;margin-left:7px;vertical-align:middle;font-size:12px;color:#0b6ba9}
+.explain summary{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:1px solid #badcf0;border-radius:50%;background:#eaf6ff;color:#09669d;font-size:13px;font-weight:850;line-height:1;cursor:pointer;list-style:none}
+.explain summary::-webkit-details-marker{display:none}
+.explain summary:hover,.explain[open] summary{background:#d5edfc;border-color:#79bde8}
+.explain summary:focus-visible{outline:3px solid #298fd0;outline-offset:2px}
+.explain[open]{display:block;margin:8px 0 0;max-width:440px}
+.explain p{margin:8px 0 2px;padding:11px 13px;font-size:12px;font-weight:400;line-height:1.65;color:#3e5d71;background:#ebf6fd;border:1px solid #d0e8f8;border-radius:10px}
 .rules{margin:0 0 16px;padding:14px 17px;background:#edf7fd;border-radius:12px;color:#285c7d;font-size:13px;line-height:1.65}
 .rules summary{font-weight:800;cursor:pointer}.rules p{margin:10px 0 0}
 .message{padding:13px;background:#fff7e9;border:1px solid #f1ddb3;border-radius:11px;font-size:12px;color:#825724;margin-top:12px}
@@ -128,7 +132,9 @@ function renderSelected(){
  result.rows.forEach((p,i)=>{
   const tr=element('tr',i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'');
   const pos=element('td','pos',i+1);tr.append(pos);
-  const name=element('td','',p.name),details=element('details','explain'),summary=element('summary','', '¿Por qué esta posición?');
+  const name=element('td','',p.name),details=element('details','explain'),summary=element('summary','', 'ⓘ');
+  summary.setAttribute('aria-label','Explicar la posición de '+p.name);
+  summary.setAttribute('title','Ver explicación de la posición');
   details.append(summary,element('p','',criterionText(p,result)));name.append(details);tr.append(name);
   const status=element('td');status.append(element('span','tag'+(p.unresolved?' warn':''),p.unresolved?'Desempate pendiente':i===0&&group!=='A1'?'Zona ascenso':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'Zona descenso':'—'));tr.append(status);
   [p.pj,p.pg,p.pp,p.sf+' / '+p.sc,p.sf-p.sc,p.pf+' / '+p.pc,p.pf-p.pc,p.pts].forEach(value=>tr.append(element('td','',value)));
