@@ -127,7 +127,7 @@ function renderSelected(){
  const root=$('ranking');root.replaceChildren();
  const headline=element('h3','', 'Grupo '+group+' · '+result.played+' de '+result.expected+' partidos registrados');root.append(headline);
  const wrap=element('div','table-wrap'),table=element('table');
- const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>Estado</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
+ const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
  const body=element('tbody');
  result.rows.forEach((p,i)=>{
   const tr=element('tr',i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'');
@@ -136,7 +136,6 @@ function renderSelected(){
   summary.setAttribute('aria-label','Explicar la posición de '+p.name);
   summary.setAttribute('title','Ver explicación de la posición');
   details.append(summary,element('p','',criterionText(p,result)));name.append(details);tr.append(name);
-  const status=element('td');status.append(element('span','tag'+(p.unresolved?' warn':''),p.unresolved?'Desempate pendiente':i===0&&group!=='A1'?'Zona ascenso':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'Zona descenso':'—'));tr.append(status);
   [p.pj,p.pg,p.pp,p.sf+' / '+p.sc,p.sf-p.sc,p.pf+' / '+p.pc,p.pf-p.pc,p.pts].forEach(value=>tr.append(element('td','',value)));
   body.append(tr);
  });
