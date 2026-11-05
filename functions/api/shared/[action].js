@@ -1,6 +1,6 @@
 import {SHARED_COOKIE,ensureShared,hashPassword,newSalt,validPassword,sharedCookie,clearSharedCookie} from '../../shared-auth.js';
 import {NOVEMBER_ROSTER,NOVEMBER_DOUBLES} from '../../../rosters.js';
-const json=(body,status=200,cookie)=>{const headers=new Headers({'Content-Type':'application/json; charset=utf-8','Cache-Control':'private,no-store','X-Content-Type-Options':'nosniff'});if(cookie)headers.set('Set-Cookie',cookie);return new Response(JSON.stringify(body),{status,headers})};
+const json=(body,status=200,cookie)=>{const headers=new Headers({'Content-Type':'application/json; charset=utf-8','Cache-Control':'private,no-store','X-Content-Type-Options':'nosniff'});if(cookie){headers.append('Set-Cookie',cookie);if(cookie.startsWith('__Host-cpz_readonly=1.'))headers.append('Set-Cookie','__Host-leagueos_admin=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0')}return new Response(JSON.stringify(body),{status,headers})};
 const error=(message,status=400)=>json({ok:false,error:message},status);
 const asJson=async request=>{if((request.headers.get('Content-Type')||'').split(';')[0]!=='application/json')throw Error('Tipo de solicitud incorrecto');const raw=await request.text();if(raw.length>5000)throw Error('Solicitud demasiado larga');return JSON.parse(raw)};
 const sameOrigin=request=>{const origin=request.headers.get('Origin'),base=new URL(request.url).origin;if(origin)return origin===base;const site=request.headers.get('Sec-Fetch-Site');return site==='same-origin'||(!site&&request.headers.get('Referer')?.startsWith(base+'/'))};
@@ -29,7 +29,7 @@ export async function onRequest({request,env,params}){
    await ensureShared(db);
    if(request.method==='GET'){const status=await db.prepare('SELECT version,updated_at AS updatedAt FROM cpz_shared_access WHERE id=1').first();return json({ok:true,configured:!!status,updatedAt:status?.updatedAt||null})}
    if(request.method!=='POST'||!sameOrigin(request))return error('Solicitud no autorizada',403);
-   const body=await asJson(request),password=body?.password;
+   const body=await asJson(request),password=typeof body?.password==='string'?body.password.trim():'';
    if(!validPassword(password))return error('La contraseña general debe tener entre 12 y 128 caracteres.');
    const salt=newSalt(),hash=await hashPassword(password,salt);
    await db.prepare("INSERT INTO cpz_shared_access (id,salt,hash,version) VALUES (1,?,?,1) ON CONFLICT(id) DO UPDATE SET salt=excluded.salt,hash=excluded.hash,version=cpz_shared_access.version+1,updated_at=CURRENT_TIMESTAMP").bind(salt,hash).run();
