@@ -217,7 +217,7 @@ export async function onRequest({request,env,params}){
         try{return [{player1:'member_'+x,player2:'member_'+y,sets:JSON.parse(game.sets)}]}catch{return []}
       });
       const standing=globalThis.CPZRanking.rankCompetition(people.map((_,i)=>'member_'+i),entries);
-      const players=standing.rows.map(p=>({...p,name:people[p.order].name,self:people[p.order].self,id:people[p.order].id,hasPhoto:people[p.order].hasPhoto}));
+      const players=standing.rows.map(p=>({...p,name:people[p.order].name,self:people[p.order].self,id:(people[p.order].self||people[p.order].hasPhoto)?people[p.order].id:null,hasPhoto:people[p.order].hasPhoto}));
       return respond({ok:true,group,assigned:!!own?.group_label,players,provisional:!standing.complete,warnings:standing.warnings});
     }
     if(action==='community'&&request.method==='GET'){
