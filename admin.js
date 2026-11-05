@@ -228,6 +228,15 @@
   // Grupos privados: usar solo las cuentas autorizadas presentes en D1.
   const NOVEMBER_ROSTER={"A1":["Chema Balmori","Pedro Hernández","Javier Gimeno","Carlos Guillén"],"A2":["Jaime Mengual","Mario Pintanel","Eduardo Alvira","Ignacio Algas"],"A3":["Álvaro Esteban","Marcos Domeque","Javier Royo","Óscar Pinilla"],"A4":["Felipe Echevarría","Juan Jiménez","Alejandro Mendívil","Ramón Ruiz de Conejo"],"A5":["Jorge Ramón García","Mariano Guillén","Jorge Corbas","Pablo Oliván"],"B1":["Emilio Martín","Diego Cuervo","Carlos Lama","Enzo Navarro"],"B2":["Roberto Moreno","David Calavia","David Martos","Álex Aznar"],"B3":["David Serrate","Manuel Ángel Berges","Dani Sevil","Raúl García"],"B4":["Carlos Vilar","Gabriel Tena","Marco Antonio Lamata","Alejandro Embid"],"B5":["Gabriel Aguilar","Orlando Aguilar","Irene Martínez","Antonio Estopañán"]};
   const NOVEMBER_GROUPS=Object.keys(NOVEMBER_ROSTER);
+  function explainRank(p,position,complete){
+    if(!p.pj)return p.name+' está en la posición '+position+' porque todavía no se han registrado partidos. El orden es el del listado inicial y NO representa resultados deportivos.';
+    let reason='La clasificación se ordena primero por número de victorias.';
+    if(p.criterion.includes('directo ganado'))reason='Ha quedado por delante de otro participante con las mismas victorias porque ganó el partido que jugaron entre sí.';
+    else if(p.criterion.includes('directo perdido'))reason='Ha quedado por detrás de otro participante con las mismas victorias porque perdió el enfrentamiento directo.';
+    else if(p.criterion.includes('triple')||p.criterion.includes('entre 3'))reason='Hay tres participantes empatados en victorias. Se han comparado exclusivamente sus enfrentamientos mutuos, primero por diferencia de sets, después por diferencia de puntos y finalmente por puntos a favor. Criterio aplicado: '+p.criterion+'.';
+    else if(p.unresolved)reason='El desempate todavía no puede resolverse según las normas disponibles. Motivo: '+p.criterion+'. La posición mostrada es provisional.';
+    return p.name+' · Posición '+position+'.\n\nHa ganado '+p.pg+' de '+p.pj+' partidos. Su diferencia de sets es '+(p.sf-p.sc)+', su diferencia de puntos es '+(p.pf-p.pc)+' y ha conseguido '+p.pf+' puntos a favor.\n\n'+reason+(!complete?'\n\nLa tabla todavía es provisional: faltan encuentros o confirmar desempates.':'');
+  }
   function standingFor(names,records){return CPZRanking.rankCompetition(names,records).rows}
   // Dobles de noviembre: orden de organización facilitado por el club.
   // Sin registros de resultados de dobles: no reutilizar los resultados individuales.
@@ -295,7 +304,7 @@
       const pos=document.createElement('td');pos.className='cpz-pos';pos.textContent=String(i+1);tr.append(pos);
       const team=document.createElement('td'),name=document.createElement('span');name.className='cpz-double-pair';name.textContent=p.name;team.append(name);
       const help=document.createElement('button');help.type='button';help.className='cpz-criteria-info';help.textContent='ⓘ';help.setAttribute('aria-label','Explicar la posición de '+p.name);
-      help.addEventListener('click',()=>alert(p.name+' · Posición '+(i+1)+'\n'+p.criterion+'\nPartidos ganados: '+p.pg+'\nDiferencia de sets: '+(p.sf-p.sc)+'\nDiferencia de puntos: '+(p.pf-p.pc)+'\nPuntos a favor: '+p.pf+(p.unresolved?'\nEmpate pendiente de resolución según las bases.':'')));
+      help.addEventListener('click',()=>alert(explainRank(p,i+1,info.complete)));
       team.append(help);tr.append(team);
       const status=document.createElement('td');
       if(up||down){const flag=document.createElement('span');flag.className='cpz-movement '+(up?'up':'down');flag.textContent=up?'▲ ASCENSO':'▼ DESCENSO';status.append(flag)}
@@ -384,7 +393,7 @@
           else if(j===2){if(promotion||relegation){const flag=document.createElement('span');flag.className='cpz-movement '+(promotion?'up':'down');flag.textContent=promotion?'▲ ASCENSO':'▼ DESCENSO';td.append(flag)}else td.textContent='—'}
           else if(j===1){td.textContent=value;
             const help=document.createElement('button');help.type='button';help.className='cpz-criteria-info';help.textContent='ⓘ';help.setAttribute('aria-label','Explicar posición de '+p.name);
-            help.addEventListener('click',()=>alert(p.name+' · Posición '+(i+1)+'\\n'+p.criterion+'\\nVictorias: '+p.pg+'\\nDiferencia de sets: '+(p.sf-p.sc)+'\\nDiferencia de puntos: '+(p.pf-p.pc)+'\\nPuntos a favor: '+p.pf+(p.unresolved?'\\nDesempate pendiente de resolución.':'')));td.append(help);
+            help.addEventListener('click',()=>alert(explainRank(p,i+1,info.complete)));td.append(help);
           }else td.textContent=value;tr.append(td)});
         body.append(tr);
       });table.append(body);scroll.append(table);card.append(scroll);
