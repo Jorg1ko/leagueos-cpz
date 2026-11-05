@@ -53,7 +53,7 @@ export async function onRequest({request,env,params}){
    if(diff){const failures=(attempts?.until_ms>Date.now()?attempts.failures:0)+1;await db.prepare('INSERT INTO cpz_shared_login_attempts(iphash,failures,until_ms) VALUES (?,?,?) ON CONFLICT(iphash) DO UPDATE SET failures=excluded.failures,until_ms=excluded.until_ms').bind(hashIp,failures,Date.now()+15*60*1000).run();return error('Contraseña incorrecta.',401)}
    await db.prepare('DELETE FROM cpz_shared_login_attempts WHERE iphash=?').bind(hashIp).run();
    const cookie=await sharedCookie(env.ADMIN_PASSWORD,state.version);
-   return json({ok:true,role:'read-only'},200,cookie+', '+clearSharedCookie());
+   return json({ok:true,role:'read-only'},200,cookie);
   }
   if(action==='logout'){
    if(request.method!=='POST'||!sameOrigin(request))return error('Método no permitido',405);
