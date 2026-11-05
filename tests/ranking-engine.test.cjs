@@ -10,8 +10,10 @@ const match=(a,b,s)=>({player1:a,player2:b,sets:s});
 {
  const info=rank(['Carlos','Pedro','Luis','Ana'],[
   match('Carlos','Pedro',sets(11,7,11,8)),
-  match('Luis','Carlos',sets(11,6,11,9)),
-  match('Pedro','Ana',sets(11,9,11,7))
+  match('Carlos','Ana',sets(11,6,11,7)),
+  match('Pedro','Ana',sets(11,9,11,7)),
+  match('Pedro','Luis',sets(11,9,11,8)),
+  match('Luis','Carlos',sets(11,6,11,9))
  ]);
  assert(info.rows.findIndex(p=>p.name==='Carlos')<info.rows.findIndex(p=>p.name==='Pedro'),'2 empatados: prevalece enfrentamiento directo');
  assert.equal(info.rows.find(p=>p.name==='Carlos').criterion,'Enfrentamiento directo ganado');
