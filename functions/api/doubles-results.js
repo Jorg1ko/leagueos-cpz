@@ -76,7 +76,7 @@ export async function onRequest({request,env}){
   if(id!==null&&(!Number.isSafeInteger(id)||id<1))return fail('Resultado inválido.');
   const first=Math.min(a,b),second=Math.max(a,b);
   const date=String(body.date||''),round=String(body.round||'').trim();
-  if(!validDate(date)||round.length<1||round.length>60||/[<>\u0000-\u001f]/.test(round))return fail('Fecha o jornada inválida.');
+  if(!validDate(date)||!date.startsWith('2026-11-')||round.length<1||round.length>60||/[<>\u0000-\u001f]/.test(round))return fail('Fecha de noviembre de 2026 o jornada inválida.');
   const parsed=parseSets(body.sets);if(!parsed)return fail('Sets inválidos: dos sets ganados a un mínimo de 11 y diferencia de 2.');
   const winner=parsed.winner===1?a:b;
   const existing=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_doubles_results WHERE group_label=? AND pair_one=? AND pair_two=?').bind(group,first,second).first();
