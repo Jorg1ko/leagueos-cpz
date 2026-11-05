@@ -37,7 +37,7 @@ tbody tr:nth-child(even){background:#f7fafc}
 </head><body>
 <header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
 <main class="shell">
- <nav class="nav" aria-label="Secciones de consulta"><button type="button" data-page="individual" aria-current="page">Ranking individual</button><button type="button" data-page="doubles">Ranking dobles</button><button type="button" data-page="results">Todos los resultados</button></nav>
+ <nav class="nav" aria-label="Secciones de consulta"><button type="button" data-page="individual" aria-current="page">Ranking individual</button><button type="button" data-page="doubles">Ranking dobles</button><button type="button" data-page="results">Todos los resultados</button><button type="button" data-page="booking">Reservas</button><button type="button" data-page="rules">Normas y reglas oficiales</button></nav>
  <section id="loading" class="card" role="status">Cargando clasificaciones…</section>
  <section id="app" hidden>
  <div id="overview" class="card"><h2 id="sectionTitle">Ranking individual CPZ</h2><p class="muted" id="sectionSubtitle">Consulta cualquier categoría y grupo. Las posiciones se actualizan cuando se registran resultados.</p>
@@ -47,6 +47,44 @@ tbody tr:nth-child(even){background:#f7fafc}
  </div>
  <div id="resultsPanel" class="card hidden"><h2>Todos los resultados</h2><p class="muted">Partidos registrados por la organización. No se muestran datos privados de cuentas ni opciones de administración.</p><div class="filters"><label>Modalidad<select id="resultType"><option value="individual">Individual</option><option value="doubles">Dobles</option><option value="all">Ambas modalidades</option></select></label><label>Grupo<select id="resultGroup"><option value="all">Todos los grupos</option></select></label></div><div id="allResults"></div></div>
  </section>
+<div id="bookingPanel" class="card hidden">
+ <h2>Reserva de pistas</h2>
+ <p class="muted">Las reservas y los pagos se gestionan directamente a través de Taykus, la plataforma de reservas del Club Pickleball Zaragoza. Este ranking no cobra ni gestiona los pagos.</p>
+ <div class="rules" style="margin-top:20px">
+  <h3 style="margin-top:0">Cómo reservar</h3>
+  <p>Entra en la plataforma de reservas del club, consulta la disponibilidad, elige el tipo de reserva y completa el proceso con las condiciones indicadas allí.</p>
+  <a class="btn" style="display:inline-block;text-decoration:none;margin-top:14px" href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Abrir reservas del club ↗</a>
+ </div>
+ <p class="muted">Si necesitas información sobre instalaciones, clases u otras actividades, visita la <a href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer">web del Club Pickleball Zaragoza</a>.</p>
+</div>
+<div id="rulesPanel" class="card hidden">
+ <h2>Normas y reglas oficiales</h2>
+ <p class="muted">Consulta por separado las normas del ranking del club y las reglas técnicas del pickleball. Las reglas RFET no sustituyen las bases específicas de ascensos, descensos y desempates del ranking CPZ.</p>
+ <h3>Normas del ranking CPZ · Noviembre 2026</h3>
+ <div class="rules">
+  <p><strong>Enfrentamientos:</strong> en individual, cada grupo tiene cuatro jugadores y se juega una vez contra cada rival (tres partidos por persona). En dobles, los grupos de cuatro parejas disputan tres partidos por pareja, y los grupos C1 y C2, con tres parejas, disputan dos.</p>
+  <p><strong>Ascensos y descensos:</strong> la primera posición asciende al grupo inmediatamente superior y la última desciende al grupo inmediatamente inferior, salvo cuando no exista un grupo superior o inferior. Los movimientos se confirman al cerrar la clasificación.</p>
+  <p><strong>Fecha límite:</strong> 30 de noviembre de 2026. Los números del listado inicial son solo para organizar los cruces; no son resultados ni posiciones ganadas.</p>
+ </div>
+ <h3>¿Cómo se decide la clasificación?</h3>
+ <div class="rules">
+  <p>Primero cuenta el número de <strong>partidos ganados</strong>. Si empatan exactamente dos jugadores o parejas, se coloca delante quien ganó el enfrentamiento directo. Después se compara la diferencia de sets, la diferencia de puntos y, finalmente, los puntos a favor.</p>
+  <p><strong>Empate entre tres:</strong> se forma una clasificación solo con los partidos entre esos tres. En esa miniclasificación se compara primero la diferencia de sets, después la diferencia de puntos y por último los puntos a favor.</p>
+  <p>Si faltan partidos, empatan cuatro participantes o los criterios no resuelven el empate, se señala como <strong>provisional o pendiente de decisión del club</strong>. Los colores verde y rojo muestran zonas de ascenso y descenso, no movimientos ya confirmados.</p>
+ </div>
+ <h3>Reglas oficiales de juego · RFET</h3>
+ <div class="rules">
+  <p><strong>Pista y zona de no volea:</strong> la pista mide 6,10 × 13,41 m; la zona de no volea se extiende 2,13 m desde la red a cada lado.</p>
+  <p><strong>Saque y doble bote:</strong> el saque se efectúa en diagonal; tanto el saque como la devolución deben botar antes de realizar una volea.</p>
+  <p><strong>Puntuación:</strong> habitualmente, los juegos se disputan a 11 puntos, con dos de diferencia, aunque el reglamento contempla otros formatos.</p>
+  <p><strong>Líneas y juego limpio:</strong> las líneas forman parte de la pista, con las excepciones establecidas para el saque. Las dudas sobre líneas se resuelven beneficiando al adversario.</p>
+  <p>Se trata de un resumen de consulta. Para detalles sobre faltas, tiempos muertos, arbitraje y formatos de competición, consulta el documento oficial.</p>
+ </div>
+ <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:20px">
+  <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.rfet.es/descargar/file-pickleball/18_Adjunto/reglas-oficiales-de-pickleball-2026.pdf" style="text-decoration:none">Reglas oficiales RFET 2026 ↗</a>
+  <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.rfet.es/descargar/file-pickleball/1_Adjunto/reglas-oficiales-de-pickleball-2025.pdf" style="text-decoration:none">Edición RFET 2025 ↗</a>
+ </div>
+</div>
 </main>
 <script src="/ranking-engine.js"></script>
 <script>
@@ -121,8 +159,13 @@ function renderAll(){
 }
 function switchPage(next){
  page=next;document.querySelectorAll('[data-page]').forEach(b=>{if(b.dataset.page===next)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
- const results=next==='results';$('overview').classList.toggle('hidden',results);$('resultsPanel').classList.toggle('hidden',!results);
- if(results)renderAll();else{$('sectionTitle').textContent=next==='individual'?'Ranking individual CPZ':'Ranking dobles CPZ';$('sectionSubtitle').textContent='Selecciona una categoría y un grupo para ver la clasificación, los resultados y el motivo de cada posición.';renderRank()}
+ const ranking=next==='individual'||next==='doubles';
+ $('overview').classList.toggle('hidden',!ranking);
+ $('resultsPanel').classList.toggle('hidden',next!=='results');
+ $('bookingPanel').classList.toggle('hidden',next!=='booking');
+ $('rulesPanel').classList.toggle('hidden',next!=='rules');
+ if(next==='results')renderAll();
+ else if(ranking){$('sectionTitle').textContent=next==='individual'?'Ranking individual CPZ':'Ranking dobles CPZ';$('sectionSubtitle').textContent='Selecciona una categoría y un grupo para ver la clasificación, los resultados y el motivo de cada posición.';renderRank()}
 }
 $('category').addEventListener('change',()=>{$('group').value='';renderRank()});
 $('group').addEventListener('change',renderSelected);
