@@ -67,12 +67,11 @@
   }
   function updateOperations(){
     const host=$('operationsDashboard');if(!host)return;
-    const linked=Object.entries(NOVEMBER_ROSTER).flatMap(([group,names])=>names.map(name=>({group,name}))).filter(p=>accounts.some(a=>clean(a.playerName)===clean(p.name)&&clean(a.groupLabel).replace('grupo ','').replaceAll(' ','')===clean(p.group)));
     const november=results.filter(r=>String(r.date||'').startsWith('2026-11'));
-    const metrics=[['Cuentas vinculadas',linked.length+' / 40'],['Altas pendientes',40-linked.length],['Resultados noviembre',november.length+' / 60'],['Partidos por disputar',Math.max(0,60-november.length)]];
+    const metrics=[['Grupos individuales','10'],['Jugadores en el listado','40'],['Resultados noviembre',november.length+' / 60'],['Partidos pendientes',Math.max(0,60-november.length)]];
     host.replaceChildren();
-    for(const [label,value] of metrics){const item=document.createElement('div');item.className='metric';const number=document.createElement('b');number.textContent=String(value);const caption=document.createElement('small');caption.textContent=label;item.append(number,caption);host.append(item)}
-    const warning=$('operationsWarning');if(warning){const missing=40-linked.length;warning.textContent=missing?missing+' jugadores del listado oficial todavía no están vinculados a un grupo y una cuenta. No se crearán cuentas automáticamente.':'Los 40 participantes oficiales están vinculados a cuentas y grupos.'}
+    for(const [label,value] of metrics){const item=document.createElement('div');item.className='metric';const number=document.createElement('b');number.textContent=value;const caption=document.createElement('small');caption.textContent=label;item.append(number,caption);host.append(item)}
+    const warning=$('operationsWarning');if(warning)warning.textContent='Los partidos se pueden introducir directamente desde el listado oficial. No es necesario crear cuentas personales.';
   }
   function renderSeasonHistory(){
     const host=$('seasonHistory');if(!host)return;
@@ -88,8 +87,8 @@
       row.append(title,meta);host.append(row)}
   }
   function stats(){
-    animateMetric('playerCount',accounts.length);
-    animateMetric('activeCount',accounts.filter(x=>x.enabled===1).length);
+    animateMetric('playerCount',40);
+    animateMetric('activeCount',18);
     animateMetric('pairedCount',accounts.filter(x=>x.opponentName).length);
     animateMetric('resultCount',results.length);
     $('resultLabel').textContent=results.length+' partidos guardados';
@@ -403,7 +402,7 @@
       if(label===selectedLabel)root.append(card);
     }
     if($('rankSelectionHint'))$('rankSelectionHint').textContent='Mostrando '+selectedLabel+' · 4 participantes · 6 enfrentamientos';
-    $('groupPlayerCount').textContent=String(linked)+' / 40';
+    $('groupPlayerCount').textContent='40';
     $('groupMatchCount').textContent='60';
   }
   $('rankCategory').addEventListener('change',renderGroups);
