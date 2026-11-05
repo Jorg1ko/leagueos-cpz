@@ -62,6 +62,9 @@
 @media(max-width:760px){#page-doubles .cpz-fixture-list{grid-template-columns:1fr}#page-doubles .cpz-standings{font-size:10px!important}}
 
 .cpz-criteria-info{margin-left:8px;padding:4px 8px;border:1px solid #bbdcf2;border-radius:8px;color:#0a6ba7;background:#eff8ff;font-size:11px;font-weight:800;cursor:pointer}.cpz-criteria-info:focus-visible{outline:3px solid #4dc1fc}.cpz-ranking-warning{font-size:12px;line-height:1.5;color:#8a561d;background:#fff8e9;border:1px solid #f3dca5;padding:11px 13px;border-radius:11px;margin:14px 0}.cpz-pending{font-weight:850;color:#8c581a}.cpz-ranking-explainer{font-size:12px;color:#49677f;margin:12px 0;line-height:1.65}
+
+/* Modo simplificado: las cuentas individuales y la comunidad se retiran de la interfaz. */
+[data-view="players"],[data-view="videos"],#page-players,#page-videos{display:none!important}
 </style></head><body>
 <svg class="cpz-svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
   <symbol id="cpz-paddle" viewBox="0 0 64 64">
@@ -162,10 +165,10 @@
     <div class="hero-copy">
       <span class="hero-kicker"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-ball"></use></svg> COMPETICIÓN PRIVADA · TEMPORADA 2026/27</span>
       <h1>El ranking, <span class="hero-highlight">bajo control.</span></h1>
-      <p>Tu centro de operaciones para organizar la temporada. Gestiona jugadores, asigna enfrentamientos e importa resultados reales, desde un solo lugar.</p>
+      <p>Tu centro de operaciones para organizar la temporada. Registra resultados individuales y de dobles, consulta las clasificaciones y configura el acceso general de jugadores desde un solo lugar.</p>
       <div class="hero-actions">
-        <button class="button hero-primary" type="button" data-target="players"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg> Gestionar jugadores <span aria-hidden="true">→</span></button>
-        <button class="button hero-outline" type="button" data-target="results">Importar resultados <span aria-hidden="true">↗</span></button>
+        <button class="button hero-primary" type="button" data-target="groups"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg> Ranking individual <span aria-hidden="true">→</span></button>
+        <button class="button hero-outline" type="button" data-target="results">Registrar resultados <span aria-hidden="true">↗</span></button>
       </div>
     </div>
     <div class="hero-season" aria-label="Temporada actual">
@@ -177,15 +180,15 @@
     </div>
   </div>
   <div class="metrics metrics--home">
-    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><span class="metric-trend">PARTICIPACIÓN</span></div><b id="playerCount">0</b><small>Jugadores registrados</small></div>
-    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--teal"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-paddle"></use></svg></span><span class="metric-trend">ACCESOS</span></div><b id="activeCount">0</b><small>Cuentas activas</small></div>
+    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><span class="metric-trend">PARTICIPACIÓN</span></div><b id="playerCount">0</b><small>Jugadores del listado</small></div>
+    <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--teal"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-paddle"></use></svg></span><span class="metric-trend">ACCESOS</span></div><b id="activeCount">0</b><small>Grupos individuales y dobles</small></div>
     <div class="metric"><div class="metric-top"><span class="metric-icon metric-icon--amber"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-trophy"></use></svg></span><span class="metric-trend">COMPETICIÓN</span></div><b id="resultCount">0</b><small>Resultados confirmados</small></div>
   </div>
   <div class="competition-strip" aria-label="Información de la temporada">
     <div class="competition-strip-title"><span class="strip-roundel">CPZ</span><div><span class="strip-eyebrow">TEMPORADA 2026 / 2027</span><strong>Tu centro de competición</strong></div></div>
     <div class="competition-strip-actions"><button type="button" class="button secondary" data-target="results">Resultados del ranking <span aria-hidden="true">→</span></button><a class="button" href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Reservar pista en Taykus <span aria-hidden="true">↗</span></a></div>
   </div>
-  <div class="notice"><strong>Acceso privado.</strong> Solo el administrador crea cuentas. Los jugadores pueden modificar sus datos personales, pero no asignarse rivales ni alterar marcadores. Las reservas y pagos se realizan en Taykus, fuera de esta web.</div>
+  <div class="notice"><strong>Acceso privado.</strong> El administrador gestiona los resultados; los jugadores acceden con una contraseña común y solo pueden consultar clasificaciones y marcadores. Las reservas y pagos se realizan en Taykus, fuera de esta web.</div>
   <div class="grid2">
     <article class="card feature-card"><span class="feature-number">01 · PARTICIPANTES</span><span class="feature-icon feature-icon--blue"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-user"></use></svg></span><h3>Jugadores y perfiles</h3><p>Altas individuales, contraseñas privadas, grupos y rivales. También puedes crear plazas «Jugador X» sin datos de contacto.</p><button class="button" type="button" data-target="players">Gestionar participantes <span aria-hidden="true">→</span></button></article>
     <article class="card feature-card"><span class="feature-number">02 · RESULTADOS</span><span class="feature-icon feature-icon--teal"><svg class="cpz-icon" aria-hidden="true"><use href="#cpz-ranking"></use></svg></span><h3>Resultados sin complicaciones</h3><p>Descarga la plantilla Excel, revisa sets y fechas y confirma la importación. Solo se mostrarán partidos registrados.</p><button class="button secondary" type="button" data-target="results">Abrir gestión de resultados <span aria-hidden="true">→</span></button></article>
@@ -203,7 +206,7 @@
   </div>
 </section>
 <section class="view" id="page-players" hidden>
-  <div class="hero"><small>ALTAS Y ACCESOS PRIVADOS</small><h1>Jugadores y cuentas</h1><p>Todas las altas se realizan a mano desde administración. Cada jugador tiene un usuario y puede actualizar su correo, nombre preferido, WhatsApp y contraseña.</p></div>
+  <div class="hero"><small>ALTAS Y ACCESOS PRIVADOS</small><h1>Jugadores y cuentas</h1><p>Las cuentas personales anteriores no se utilizan en el acceso simplificado. Cada jugador tiene un usuario y puede actualizar su correo, nombre preferido, WhatsApp y contraseña.</p></div>
   <div class="metrics">
     <div class="metric"><b id="pairedCount">0</b><small>Jugadores con rival asignado</small></div>
     <div class="metric"><b>Solo admin</b><small>Alta de jugadores y rival</small></div>
@@ -239,9 +242,19 @@
   </div>
 </section>
 <section class="view" id="page-groups" hidden>
+<section class="card" id="sharedAccessCard" style="margin:20px 0;padding:22px">
+ <h2>Acceso general de jugadores</h2><p>Los jugadores consultan todas las clasificaciones y resultados con una única contraseña compartida. No necesitan nombre de usuario ni perfil individual. No pueden editar resultados ni acceder a datos de administración.</p>
+ <form id="sharedPasswordForm" class="form" autocomplete="off">
+ <label>Contraseña general de jugadores (mínimo 12 caracteres)
+ <input id="sharedPassword" type="password" minlength="12" maxlength="128" required autocomplete="new-password" placeholder="Introduce una contraseña segura"></label>
+ <div class="actions"><button class="button" type="submit">Guardar o cambiar contraseña general</button></div>
+ <p id="sharedPasswordStatus" class="status" role="status">Consultando el acceso…</p>
+ </form>
+ <p class="small">Al cambiarla se invalidan todos los accesos de jugadores anteriores. Comparte la contraseña de forma privada. Acceso: <a href="/?role=player" target="_blank" rel="noopener noreferrer">Entrada de jugadores</a>.</p>
+</section>
   <div class="hero"><small>RANKING INDIVIDUAL · NOVIEMBRE 2026</small><h1>Ranking Individual CPZ</h1><p>Diez grupos · Cuatro jugadores por grupo · Tres partidos por jugador. Los números iniciales no indican clasificación.</p></div>
-  <div class="notice"><strong>Gestión privada.</strong> Este panel muestra los jugadores y rivales que ya estén registrados en D1. No crea cuentas ni modifica resultados. Los enfrentamientos se calculan dentro de cada grupo; verifica las altas antes de asignarlos.</div>
-  <div class="metrics"><div class="metric"><b>10</b><small>Grupos A1–A5 · B1–B5</small></div><div class="metric"><b id="groupPlayerCount">0</b><small>Jugadores dados de alta en esos grupos</small></div><div class="metric"><b id="groupMatchCount">0</b><small>Enfrentamientos calculados</small></div></div>
+  <div class="notice"><strong>Gestión de resultados.</strong> Este panel muestra los jugadores y rivales que ya estén registrados en D1. No crea cuentas ni modifica resultados. Los enfrentamientos se calculan directamente a partir del listado oficial, sin crear cuentas personales.</div>
+  <div class="metrics"><div class="metric"><b>10</b><small>Grupos A1–A5 · B1–B5</small></div><div class="metric"><b id="groupPlayerCount">0</b><small>Nombres de los grupos oficiales</small></div><div class="metric"><b id="groupMatchCount">0</b><small>Enfrentamientos calculados</small></div></div>
   <div class="actions"><button type="button" class="button secondary" id="refreshGroups">Actualizar grupos</button></div>
   <h2 style="margin-top:28px">Centro de operaciones · Noviembre</h2><div id="operationsDashboard" class="metrics" aria-live="polite"></div><p id="operationsWarning" class="notice"></p><div class="cpz-group-filters" aria-label="Seleccionar clasificación"><label for="rankCategory">Categoría<select id="rankCategory"><option value="A">Categoría A</option><option value="B">Categoría B</option></select></label><label for="rankGroup">Grupo<select id="rankGroup"><option value="1">Grupo 1</option><option value="2">Grupo 2</option><option value="3">Grupo 3</option><option value="4">Grupo 4</option><option value="5">Grupo 5</option></select></label><p id="rankSelectionHint" aria-live="polite"></p></div><div id="groupCards" class="cpz-single-ranking" aria-live="polite"></div>
 <details class="card" style="margin:18px 0"><summary style="cursor:pointer;font-weight:850;color:#155982">Cómo se ordena la clasificación y se resuelven los empates</summary><p>La clasificación se calcula automáticamente después de cada resultado registrado.</p><ol><li>Mayor número de partidos ganados.</li><li>Enfrentamiento directo si empatan exactamente dos jugadores o parejas.</li><li>Diferencia de sets (ganados menos perdidos).</li><li>Diferencia de puntos (a favor menos en contra).</li><li>Mayor número de puntos a favor.</li></ol><p><strong>Tres empatados:</strong> se calcula una miniclasificación contando exclusivamente sus enfrentamientos mutuos; dentro de ella se compara primero la diferencia de sets, luego la diferencia de puntos y finalmente los puntos a favor.</p><p><strong>Regla no definida o encuentros pendientes:</strong> cuando hay cuatro empatados, persiste un empate absoluto o falta el enfrentamiento directo, se muestra el aviso «pendiente» y no se atribuye un ascenso definitivo. Las posiciones parciales son provisionales.</p></details><h2 style="margin-top:30px">Histórico de la temporada</h2><p>Resumen de actividad por mes basado únicamente en resultados registrados. No se inventan posiciones anteriores.</p><div id="seasonHistory" aria-live="polite"></div>

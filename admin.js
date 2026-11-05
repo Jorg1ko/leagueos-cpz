@@ -67,12 +67,11 @@
   }
   function updateOperations(){
     const host=$('operationsDashboard');if(!host)return;
-    const linked=Object.entries(NOVEMBER_ROSTER).flatMap(([group,names])=>names.map(name=>({group,name}))).filter(p=>accounts.some(a=>clean(a.playerName)===clean(p.name)&&clean(a.groupLabel).replace('grupo ','').replaceAll(' ','')===clean(p.group)));
     const november=results.filter(r=>String(r.date||'').startsWith('2026-11'));
-    const metrics=[['Cuentas vinculadas',linked.length+' / 40'],['Altas pendientes',40-linked.length],['Resultados noviembre',november.length+' / 60'],['Partidos por disputar',Math.max(0,60-november.length)]];
+    const metrics=[['Grupos individuales','10'],['Jugadores en el listado','40'],['Resultados noviembre',november.length+' / 60'],['Partidos pendientes',Math.max(0,60-november.length)]];
     host.replaceChildren();
-    for(const [label,value] of metrics){const item=document.createElement('div');item.className='metric';const number=document.createElement('b');number.textContent=String(value);const caption=document.createElement('small');caption.textContent=label;item.append(number,caption);host.append(item)}
-    const warning=$('operationsWarning');if(warning){const missing=40-linked.length;warning.textContent=missing?missing+' jugadores del listado oficial todavía no están vinculados a un grupo y una cuenta. No se crearán cuentas automáticamente.':'Los 40 participantes oficiales están vinculados a cuentas y grupos.'}
+    for(const [label,value] of metrics){const item=document.createElement('div');item.className='metric';const number=document.createElement('b');number.textContent=value;const caption=document.createElement('small');caption.textContent=label;item.append(number,caption);host.append(item)}
+    const warning=$('operationsWarning');if(warning)warning.textContent='Los partidos se pueden introducir directamente desde el listado oficial. No es necesario crear cuentas personales.';
   }
   function renderSeasonHistory(){
     const host=$('seasonHistory');if(!host)return;
@@ -88,8 +87,8 @@
       row.append(title,meta);host.append(row)}
   }
   function stats(){
-    animateMetric('playerCount',accounts.length);
-    animateMetric('activeCount',accounts.filter(x=>x.enabled===1).length);
+    animateMetric('playerCount',40);
+    animateMetric('activeCount',18);
     animateMetric('pairedCount',accounts.filter(x=>x.opponentName).length);
     animateMetric('resultCount',results.length);
     $('resultLabel').textContent=results.length+' partidos guardados';
@@ -228,6 +227,15 @@
   // Grupos privados: usar solo las cuentas autorizadas presentes en D1.
   const NOVEMBER_ROSTER={"A1":["Chema Balmori","Pedro Hernández","Javier Gimeno","Carlos Guillén"],"A2":["Jaime Mengual","Mario Pintanel","Eduardo Alvira","Ignacio Algas"],"A3":["Álvaro Esteban","Marcos Domeque","Javier Royo","Óscar Pinilla"],"A4":["Felipe Echevarría","Juan Jiménez","Alejandro Mendívil","Ramón Ruiz de Conejo"],"A5":["Jorge Ramón García","Mariano Guillén","Jorge Corbas","Pablo Oliván"],"B1":["Emilio Martín","Diego Cuervo","Carlos Lama","Enzo Navarro"],"B2":["Roberto Moreno","David Calavia","David Martos","Álex Aznar"],"B3":["David Serrate","Manuel Ángel Berges","Dani Sevil","Raúl García"],"B4":["Carlos Vilar","Gabriel Tena","Marco Antonio Lamata","Alejandro Embid"],"B5":["Gabriel Aguilar","Orlando Aguilar","Irene Martínez","Antonio Estopañán"]};
   const NOVEMBER_GROUPS=Object.keys(NOVEMBER_ROSTER);
+  function explainRank(p,position,complete){
+    if(!p.pj)return p.name+' está en la posición '+position+' porque todavía no se han registrado partidos. El orden es el del listado inicial y NO representa resultados deportivos.';
+    let reason='La clasificación se ordena primero por número de victorias.';
+    if(p.criterion.includes('directo ganado'))reason='Ha quedado por delante de otro participante con las mismas victorias porque ganó el partido que jugaron entre sí.';
+    else if(p.criterion.includes('directo perdido'))reason='Ha quedado por detrás de otro participante con las mismas victorias porque perdió el enfrentamiento directo.';
+    else if(p.criterion.includes('triple')||p.criterion.includes('entre 3'))reason='Hay tres participantes empatados en victorias. Se han comparado exclusivamente sus enfrentamientos mutuos, primero por diferencia de sets, después por diferencia de puntos y finalmente por puntos a favor. Criterio aplicado: '+p.criterion+'.';
+    else if(p.unresolved)reason='El desempate todavía no puede resolverse según las normas disponibles. Motivo: '+p.criterion+'. La posición mostrada es provisional.';
+    return p.name+' · Posición '+position+'.\n\nHa ganado '+p.pg+' de '+p.pj+' partidos. Su diferencia de sets es '+(p.sf-p.sc)+', su diferencia de puntos es '+(p.pf-p.pc)+' y ha conseguido '+p.pf+' puntos a favor.\n\n'+reason+(!complete?'\n\nLa tabla todavía es provisional: faltan encuentros o confirmar desempates.':'');
+  }
   function standingFor(names,records){return CPZRanking.rankCompetition(names,records).rows}
   // Dobles de noviembre: orden de organización facilitado por el club.
   // Sin registros de resultados de dobles: no reutilizar los resultados individuales.
@@ -295,7 +303,7 @@
       const pos=document.createElement('td');pos.className='cpz-pos';pos.textContent=String(i+1);tr.append(pos);
       const team=document.createElement('td'),name=document.createElement('span');name.className='cpz-double-pair';name.textContent=p.name;team.append(name);
       const help=document.createElement('button');help.type='button';help.className='cpz-criteria-info';help.textContent='ⓘ';help.setAttribute('aria-label','Explicar la posición de '+p.name);
-      help.addEventListener('click',()=>alert(p.name+' · Posición '+(i+1)+'\n'+p.criterion+'\nPartidos ganados: '+p.pg+'\nDiferencia de sets: '+(p.sf-p.sc)+'\nDiferencia de puntos: '+(p.pf-p.pc)+'\nPuntos a favor: '+p.pf+(p.unresolved?'\nEmpate pendiente de resolución según las bases.':'')));
+      help.addEventListener('click',()=>alert(explainRank(p,i+1,info.complete)));
       team.append(help);tr.append(team);
       const status=document.createElement('td');
       if(up||down){const flag=document.createElement('span');flag.className='cpz-movement '+(up?'up':'down');flag.textContent=up?'▲ ASCENSO':'▼ DESCENSO';status.append(flag)}
@@ -384,7 +392,7 @@
           else if(j===2){if(promotion||relegation){const flag=document.createElement('span');flag.className='cpz-movement '+(promotion?'up':'down');flag.textContent=promotion?'▲ ASCENSO':'▼ DESCENSO';td.append(flag)}else td.textContent='—'}
           else if(j===1){td.textContent=value;
             const help=document.createElement('button');help.type='button';help.className='cpz-criteria-info';help.textContent='ⓘ';help.setAttribute('aria-label','Explicar posición de '+p.name);
-            help.addEventListener('click',()=>alert(p.name+' · Posición '+(i+1)+'\\n'+p.criterion+'\\nVictorias: '+p.pg+'\\nDiferencia de sets: '+(p.sf-p.sc)+'\\nDiferencia de puntos: '+(p.pf-p.pc)+'\\nPuntos a favor: '+p.pf+(p.unresolved?'\\nDesempate pendiente de resolución.':'')));td.append(help);
+            help.addEventListener('click',()=>alert(explainRank(p,i+1,info.complete)));td.append(help);
           }else td.textContent=value;tr.append(td)});
         body.append(tr);
       });table.append(body);scroll.append(table);card.append(scroll);
@@ -394,7 +402,7 @@
       if(label===selectedLabel)root.append(card);
     }
     if($('rankSelectionHint'))$('rankSelectionHint').textContent='Mostrando '+selectedLabel+' · 4 participantes · 6 enfrentamientos';
-    $('groupPlayerCount').textContent=String(linked)+' / 40';
+    $('groupPlayerCount').textContent='40';
     $('groupMatchCount').textContent='60';
   }
   $('rankCategory').addEventListener('change',renderGroups);
@@ -818,11 +826,9 @@
     const prior=select.value;select.replaceChildren();
     const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona un partido';select.append(placeholder);
     for(let i=0;i<names.length;i++)for(let j=i+1;j<names.length;j++){
-      const a=manualAccount(names[i]),b=manualAccount(names[j]);
       const opt=document.createElement('option');opt.value=names[i]+'||'+names[j];
       const already=results.some(r=>clean(r.groupLabel)===clean(group)&&((clean(r.player1)===clean(names[i])&&clean(r.player2)===clean(names[j]))||(clean(r.player1)===clean(names[j])&&clean(r.player2)===clean(names[i]))));
       opt.textContent=names[i]+' contra '+names[j]+(already?' · Resultado registrado':'');
-      if(!a||!b||a.enabled!==1||b.enabled!==1){opt.disabled=true;opt.textContent+=' · Falta cuenta activa'}
       select.append(opt);
     }
     if([...select.options].some(x=>x.value===prior&&!x.disabled))select.value=prior;
@@ -830,7 +836,7 @@
   };
   function manualSelected(){
     const selected=$('manualFixture').value.split('||');
-    $('manualPlayersHint').textContent=selected.length===2?'Jugador 1: '+selected[0]+' · Jugador 2: '+selected[1]:'Elige uno de los seis partidos del grupo. Ambos jugadores necesitan una cuenta activa.';
+    $('manualPlayersHint').textContent=selected.length===2?'Jugador 1: '+selected[0]+' · Jugador 2: '+selected[1]:'Elige uno de los seis partidos del grupo. No es necesario crear cuentas personales.';
   }
   function resetManual(){
     manualEditingId=null;$('manualResultForm').reset();$('manualFormTitle').textContent='Nuevo resultado';
@@ -855,14 +861,12 @@
   $('manualResultForm').addEventListener('submit',async event=>{
     event.preventDefault();const pair=$('manualFixture').value.split('||');
     if(pair.length!==2)return say('manualStatus','Selecciona un partido.');
-    const first=manualAccount(pair[0]),second=manualAccount(pair[1]);
-    if(!first||!second)return say('manualStatus','Crea primero las cuentas de los dos jugadores.');
     const sets=[];
     for(let n=1;n<=3;n++){const a=$('manualSet'+n+'a').value,b=$('manualSet'+n+'b').value;
       if(!a&&!b&&n===3)continue;if(a===''||b==='')return say('manualStatus','Indica ambos marcadores en cada set.');sets.push([Number(a),Number(b)])}
     $('manualSave').disabled=true;
     try{
-      const d=await api('/api/results',{action:'manual-save',id:manualEditingId,date:$('manualDate').value,round:$('manualRound').value,groupLabel:$('manualGroup').value,player1Id:first.id,player2Id:second.id,sets});
+      const d=await api('/api/results',{action:'manual-save',id:manualEditingId,date:$('manualDate').value,round:$('manualRound').value,groupLabel:$('manualGroup').value,player1Name:pair[0],player2Name:pair[1],sets});
       results=d.results||[];renderResults();renderGroups();updateOperations();renderSeasonHistory();resetManual();
       say('manualStatus','Resultado guardado correctamente.');
     }catch(e){say('manualStatus',e.message)}
@@ -935,6 +939,33 @@
       e.currentTarget.reset();renderVideos();say('videoStatus','Vídeo guardado.');
     }catch(err){say('videoStatus',err.message)}
   };
+  // Configuración de la única contraseña de lectura, sin perfiles individuales.
+  const sharedForm=$('sharedPasswordForm');
+  if(sharedForm){
+    const status=$('sharedPasswordStatus');
+    async function loadSharedConfig(){
+      try{
+        const res=await fetch('/api/shared/config',{credentials:'same-origin',cache:'no-store'});
+        const data=await res.json();
+        status.textContent=data.configured
+          ?'La contraseña general está configurada. Puedes cambiarla cuando quieras; el cambio cerrará las sesiones anteriores.'
+          :'Todavía no hay contraseña general. Configúrala antes de dar acceso a jugadores.';
+      }catch(err){status.textContent='No se pudo consultar la configuración.'}
+    }
+    sharedForm.addEventListener('submit',async event=>{
+      event.preventDefault();
+      const password=$('sharedPassword').value;
+      if(password.length<12){status.textContent='Introduce al menos 12 caracteres.';return}
+      const button=sharedForm.querySelector('button[type="submit"]');button.disabled=true;
+      try{
+        const response=await fetch('/api/shared/config',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({password})});
+        const data=await response.json();if(!response.ok)throw Error(data.error||'No se pudo guardar');
+        sharedForm.reset();status.textContent=data.message;
+      }catch(err){status.textContent=err.message}
+      finally{button.disabled=false}
+    });
+    loadSharedConfig();
+  }
   (async()=>{try{
     const session=await fetch('/api/session',{credentials:'same-origin',cache:'no-store'}).then(r=>r.json());
     if(!session.authenticated){location.replace('/');return}

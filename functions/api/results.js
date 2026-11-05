@@ -1,3 +1,4 @@
+import {NOVEMBER_ROSTER} from '../../rosters.js';
 // Importación controlada de resultados del ranking CPZ 2026/27.
 // Únicamente admin; Excel se analiza localmente, el servidor valida y guarda filas en D1.
 const COOKIE='__Host-leagueos_admin',AGE=8*60*60,te=new TextEncoder();
@@ -69,13 +70,21 @@ export async function onRequest({request,env}){
       if(id!==null&&(!Number.isSafeInteger(id)||id<1))return fail('Identificador inválido.');
       const date=String(body.date||''),round=String(body.round||'Noviembre 2026').trim(),group=String(body.groupLabel||'').trim().toUpperCase();
       if(!validDate(date)||round.length<1||round.length>60||!(/^[AB][1-5]$/.test(group)))return fail('Fecha, jornada o grupo inválido.');
-      const one=Number(body.player1Id),two=Number(body.player2Id);
-      if(!Number.isSafeInteger(one)||!Number.isSafeInteger(two)||one===two||one<=0||two<=0)return fail('Selecciona dos jugadores distintos.');
-      const players=await env.LEAGUE_DB.prepare(`SELECT a.id,a.player_name,COALESCE(p.group_label,'') AS group_label FROM cpz_player_accounts a LEFT JOIN cpz_player_profiles p ON p.account_id=a.id WHERE a.id IN (?,?) AND a.enabled=1`).bind(one,two).all();
-      if((players.results||[]).length!==2)return fail('Los dos jugadores deben tener una cuenta activa.');
-      const a=players.results.find(p=>p.id===one),b=players.results.find(p=>p.id===two);
-      const canonical=x=>String(x||'').trim().toUpperCase().replace(/^GRUPO\s*/,'').replace(/\s/g,'');
-      if(canonical(a.group_label)!==group||canonical(b.group_label)!==group)return fail('Ambos jugadores deben pertenecer al grupo seleccionado.');
+      // Las cuentas de acceso personales ya no son necesarias. Los resultados
+      // conservan referencias internas para mantener los partidos históricos.
+      const roster=NOVEMBER_ROSTER[group]||[];
+      const name1=String(body.player1Name||''),name2=String(body.player2Name||'');
+      if(!roster.includes(name1)||!roster.includes(name2)||name1===name2)return fail('Selecciona dos nombres diferentes del grupo oficial.');
+      const memberId=async name=>{
+        let account=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_player_accounts WHERE player_name=?').bind(name).first();
+        if(account)return account.id;
+        const random=Array.from(crypto.getRandomValues(new Uint8Array(24))).map(x=>x.toString(16).padStart(2,'0')).join('');
+        await env.LEAGUE_DB.prepare('INSERT OR IGNORE INTO cpz_player_accounts(player_name,username,password_salt,password_hash,enabled) VALUES(?,?,?,?,0)').bind(name,'roster_'+random,random,random).run();
+        account=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_player_accounts WHERE player_name=?').bind(name).first();
+        if(!account)throw Error('No se pudo registrar el nombre de competición');
+        return account.id;
+      };
+      const one=await memberId(name1),two=await memberId(name2);
       const parsed=parseSets(body.sets);
       if(!parsed)return fail('Introduce 2 o 3 sets válidos: 11 puntos como mínimo, diferencia de 2 y victoria en 2 sets.');
       const ids=[one,two].sort((x,y)=>x-y);
