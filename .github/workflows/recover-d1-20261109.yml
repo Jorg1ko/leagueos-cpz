@@ -1,0 +1,57 @@
+name: Copia de seguridad D1 antes de recuperacion 2026-11-09
+on:
+  push:
+    paths:
+      - .github/workflows/recover-d1-20261109.yml
+permissions:
+  contents: read
+concurrency:
+  group: d1-recovery-nov9
+  cancel-in-progress: false
+jobs:
+  copia:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exportar estado actual sin modificar D1
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os,json,urllib.request,time,sys
+          token=os.environ.get('CF_TOKEN')
+          if not token: raise SystemExit('No hay token de Cloudflare')
+          url='https://api.cloudflare.com/client/v4/accounts/91f1c143e0758ef69970b4d75629f605/d1/database/34356bf4-507b-4cc8-8de0-aca736e23cf9/export'
+          def call(data):
+              req=urllib.request.Request(url,data=json.dumps(data).encode(),headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'},method='POST')
+              with urllib.request.urlopen(req,timeout=45) as r: return json.load(r)
+          bookmark=None
+          for n in range(25):
+              payload={'output_format':'polling'}
+              if bookmark:payload['current_bookmark']=bookmark
+              obj=call(payload)
+              if not obj.get('success',False):raise SystemExit('Exportación fallida: '+str(obj.get('errors',[])))
+              result=obj.get('result') or {}
+              if result.get('status')=='error':raise SystemExit('Exportación fallida: '+str(result.get('error')))
+              bookmark=result.get('at_bookmark') or bookmark
+              if result.get('status')=='complete':
+                  signed=(result.get('result') or {}).get('signed_url')
+                  if not signed:raise SystemExit('No hay URL para descargar copia')
+                  with urllib.request.urlopen(signed,timeout=75) as response, open('cpz-d1-before-recovery.sql','wb') as out:
+                      import shutil
+                      shutil.copyfileobj(response,out)
+                  size=os.path.getsize('cpz-d1-before-recovery.sql')
+                  if size<100:raise SystemExit('Copia anormalmente pequeña')
+                  print('Copia actual guardada de forma privada; tamaño bytes:',size)
+                  break
+              time.sleep(2)
+          else:raise SystemExit('Exportación no finalizada')
+          PY
+      - name: Conservar copia cifrada por GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpz-d1-before-recovery-20261109
+          path: cpz-d1-before-recovery.sql
+          retention-days: 1
+          if-no-files-found: error
