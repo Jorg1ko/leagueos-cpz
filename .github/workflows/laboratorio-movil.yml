@@ -22,8 +22,10 @@ jobs:
           cp player.html lab-static/dist/index.html
           cp ranking-engine.js lab-static/dist/ranking-engine.js
           cp lab-data.js lab-static/dist/lab-data.js
+          cp lab-results.js lab-static/dist/lab-results.js
           test ! -e lab-static/functions
           node --check lab-static/dist/lab-data.js
+          node --check lab-static/dist/lab-results.js
           node --check lab-static/dist/ranking-engine.js
           node tests/ranking-engine.test.cjs
           node - <<'NODE'
@@ -34,6 +36,19 @@ jobs:
           if(!html.includes('window.CPZ_LAB_DATA')||!html.includes('LABORATORIO'))throw Error('No es la version aislada');
           if(html.includes("fetch('/api/shared/data'"))throw Error('API de produccion detectada');
           NODE
+      - name: Obtener copia de resultados oficiales con consultas SELECT
+        id: snapshot
+        continue-on-error: true
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          python3 scripts/build-lab-snapshot.py
+          node --check lab-static/dist/lab-results.js
+      - name: Avisar si falta permiso de lectura en D1
+        if: steps.snapshot.outcome == 'failure'
+        run: |
+          echo "::warning::No se pudo obtener la copia de resultados. Configurar un token con permiso D1 Read en GitHub Secrets para completar el laboratorio. La web se publicará sin marcadores."
+          echo "Copia de resultados no disponible: se utiliza el archivo vacío y no se inventan marcadores." >> "$GITHUB_STEP_SUMMARY"
       - name: Publicar vista estatica en rama preview de Cloudflare
         uses: cloudflare/wrangler-action@v4
         with:
