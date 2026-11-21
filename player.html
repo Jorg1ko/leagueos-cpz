@@ -154,6 +154,48 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
  #bookingPanel .rules h3,#bookingPanel .rules p{color:#fff}
  #bookingPanel .rules a.btn{background:#a2f258;color:#10395c;border:0;font-weight:900;width:100%;min-height:52px;box-shadow:0 8px 18px #03294d40}
 }
+
+/* CPZ LAB 3 · interfaz deportiva premium y visualización detallada */
+:root{--ink:#092b4c;--royal:#047cd6;--mint:#90ed61}
+.top{position:relative;overflow:hidden}
+.top:after{content:"";position:absolute;right:-35px;top:-95px;width:260px;height:260px;border:1px solid #ffffff35;border-radius:50%;box-shadow:0 0 0 35px #ffffff08,0 0 0 80px #ffffff09;pointer-events:none}
+.top-inner{position:relative;z-index:1}
+#sectionTitle{font-weight:900}
+#overview .rules{border:1px solid #d5eafb;background:#f0f8ff}
+.rank-heading{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap}
+.rank-heading h3{margin:12px 0}
+.progress-label{font-size:11px;font-weight:850;color:#2875a4;background:#e8f6ff;padding:7px 9px;border-radius:999px}
+.rank-track{height:8px;background:#e9f2fa;overflow:hidden;border-radius:100px;margin:0 0 15px}
+.rank-track>span{height:100%;display:block;border-radius:100px;background:linear-gradient(90deg,#28b2f6,#0672c9)}
+.mobile-player-name{font-weight:900}
+.mobile-rankings .mobile-player:first-child{box-shadow:0 8px 24px #55bc4b18}
+.mobile-player .mobile-detail{padding-top:10px;border-top:1px solid #e9eff5}
+.mobile-player .mobile-detail:last-child{border:0;padding:0;margin:4px 0 0}
+.mobile-medal{font-size:10px;display:inline-flex;align-items:center;gap:5px;font-weight:850;text-transform:uppercase;letter-spacing:.04em;color:#438a43;background:#e4f9da;border-radius:100px;padding:3px 9px;margin-top:6px}
+.mobile-medal.down{color:#b34b4b;background:#fff0f0}
+.match-card{border:1px solid #dceafa;background:#fff;border-radius:15px;padding:14px;margin-bottom:10px;box-shadow:0 4px 13px #144a790b}
+.match-meta{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:11px;color:#587e9c;margin-bottom:13px}
+.match-type{color:#065d9d;font-weight:850;background:#e8f5ff;padding:5px 9px;border-radius:100px}
+.match-player{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;font-size:13px;font-weight:800;color:#183d5a}
+.match-player span:first-child{min-width:0;overflow-wrap:anywhere}
+.match-sets{display:flex;gap:4px;flex-shrink:0}
+.match-sets b{background:#eff3f8;min-width:27px;text-align:center;padding:6px 4px;border-radius:7px;color:#365674}
+.match-sets.winner b{background:#d7f7cf;color:#1c772b}
+@media(min-width:701px){.mobile-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.match-card{margin:0}}
+@media(max-width:700px){
+ .top{background:linear-gradient(118deg,#062c52 0%,#075392 61%,#078fda)}
+ .rank-heading h3{font-size:15px;margin:10px 0 9px}
+ .rank-track{margin-bottom:14px}
+ .mobile-player{border:1px solid #d9e8f5;border-left-width:4px!important}
+ .mobile-player-top{align-items:center}
+ .mobile-player-name{font-size:14px}
+ .mobile-pos{background:#e8f6ff}
+ #overview .filters{position:relative}
+ #overview .filters select{box-shadow:0 5px 14px #174e7410}
+ .mobile-player.up .mobile-medal{display:inline-flex}
+ .mobile-player .mobile-detail{font-size:11px}
+ .mobile-results{display:grid;gap:10px}
+}
 </style>
 </head><body>
 <header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">✦ LABORATORIO</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
@@ -243,7 +285,11 @@ function renderRank(){
 function renderSelected(){
  const group=$('group').value,type=page,people=names(type,group),result=CPZRanking.rankCompetition(people,records(type,group));
  const root=$('ranking');root.replaceChildren();
- const headline=element('h3','', 'Grupo '+group+' · '+result.played+' de '+result.expected+' partidos registrados');root.append(headline);
+ const heading=element('div','rank-heading');
+ const headline=element('h3','', 'Grupo '+group);
+ const progress=element('span','progress-label',result.played+' / '+result.expected+' partidos');
+ heading.append(headline,progress);root.append(heading);
+ const track=element('div','rank-track'),bar=element('span');bar.style.width=Math.round(result.expected?result.played/result.expected*100:0)+'%';track.append(bar);root.append(track);
  const wrap=element('div','table-wrap ranking-table-wrap'),table=element('table');
  const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
  const body=element('tbody');
@@ -273,6 +319,8 @@ function renderSelected(){
       const stat=element('div','mobile-stat');stat.append(element('strong','',value),element('span','',label));stats.append(stat);
     });
     card.append(stats,element('div','mobile-detail','Sets '+p.sf+' / '+p.sc+' · Dif. '+(p.sf-p.sc)+' · Puntos '+p.pf+' / '+p.pc+' · Dif. '+(p.pf-p.pc)+' · PTS* '+p.pts));
+    if(i===0&&group!=='A1'){const medal=element('span','mobile-medal','▲ Zona de ascenso');player.append(medal)}
+    else if(i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')){const medal=element('span','mobile-medal down','▼ Zona de descenso');player.append(medal)}
     cards.append(card);
   });
   root.append(cards);
@@ -283,11 +331,23 @@ function renderSelected(){
  const scores=records(type,group);renderResultsTable(root,scores);
 }
 function renderResultsTable(root,list){
- if(!list.length){root.append(element('p','muted','No hay resultados en este laboratorio. Los resultados reales solo están en la web oficial.'));return}
- const wrap=element('div','table-wrap results-table'),table=element('table'),thead=element('thead'),tbody=element('tbody');
- thead.innerHTML='<tr><th>Fecha</th><th>Modalidad</th><th>Grupo</th><th>Enfrentamiento</th><th>Marcadores</th></tr>';table.append(thead);
- list.forEach(r=>{const tr=element('tr');const type=data.doublesResults.includes(r)?'Dobles':'Individual';[r.date,type,r.groupLabel,r.player1+' contra '+r.player2,r.sets.map(s=>s.join('–')).join(' · ')].forEach(v=>tr.append(element('td','',v)));tbody.append(tr)});
- table.append(tbody);wrap.append(table);root.append(wrap);
+ if(!list.length){root.append(element('p','muted','Aún no hay resultados disponibles en esta versión. Los marcadores oficiales no se han copiado al laboratorio.'));return}
+ const cards=element('div','mobile-results');
+ for(const r of list){
+   const pair1=r.sets.filter(x=>x[0]>x[1]).length,pair2=r.sets.length-pair1;
+   const card=element('article','match-card');
+   const meta=element('div','match-meta'),day=element('span','',r.date+' · '+r.groupLabel);
+   const type=element('span','match-type',data.doublesResults.includes(r)?'Dobles':'Individual');
+   meta.append(day,type);card.append(meta);
+   const first=element('div','match-player'),second=element('div','match-player');
+   first.append(element('span','',r.player1));second.append(element('span','',r.player2));
+   for(const [row,side,won] of [[first,0,pair1>pair2],[second,1,pair2>pair1]]){
+     const sets=element('div','match-sets'+(won?' winner':''));
+     r.sets.forEach(score=>sets.append(element('b','',score[side])));row.append(sets);
+   }
+   card.append(first,second);cards.append(card);
+ }
+ root.append(cards);
 }
 function renderAll(){
  const type=$('resultType').value,select=$('resultGroup'),previous=select.value;
