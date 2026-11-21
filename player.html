@@ -37,11 +37,70 @@ tbody tr:nth-child(even){background:#f7fafc}
 .message{padding:13px;background:#fff7e9;border:1px solid #f1ddb3;border-radius:11px;font-size:12px;color:#825724;margin-top:12px}
 .scores{white-space:nowrap}.mini{color:#6c8ba2;font-size:12px}.hidden{display:none!important}
 @media(max-width:700px){.shell{padding:16px 12px 50px}.top{padding:20px}.card{padding:16px}.top-inner{gap:13px}.brand{height:60px;width:58px}.top .btn{width:100%}}
+
+/* LABORATORIO CPZ · experiencia móvil para enlaces compartidos por WhatsApp */
+.lab-marker{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid #a9d9ff;border-radius:999px;background:#eaf6ff;color:#075b91;font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;margin-top:9px}
+.mobile-rankings{display:none}
+@media(max-width:700px){
+  html{scroll-padding-top:12px}
+  body{background:#f0f5fa;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px));-webkit-tap-highlight-color:transparent}
+  .top{border-radius:0 0 19px 19px;padding:14px 16px 17px;box-shadow:0 8px 22px #0b34531a}
+  .top-inner{display:grid;grid-template-columns:45px minmax(0,1fr) auto;gap:10px;align-items:center}
+  .brand{width:45px;height:47px;border-radius:11px}
+  .top h1{font-size:19px;letter-spacing:-.5px}
+  .top p{font-size:10px;line-height:1.5;margin-top:3px}
+  .top .grow{display:none}
+  .top #refreshRankings{grid-column:3;grid-row:1;padding:10px 11px;width:auto;font-size:0;line-height:1;min-width:44px;min-height:44px}
+  .top #refreshRankings:after{content:"↻";font-size:23px}
+  .top #logout{grid-column:1/-1;width:auto;justify-self:end;padding:5px 0;background:transparent;border:0;color:#e4f3ff;font-size:11px;min-height:26px}
+  .lab-marker{font-size:9px;padding:4px 7px;margin-top:6px}
+  .shell{padding:14px 12px 18px}
+  .nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;margin:0;background:#fff;border-top:1px solid #d7e5f0;padding:8px 5px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -5px 22px #0a355018}
+  .nav button{border:0;border-radius:10px;background:transparent;color:#66849c;padding:9px 2px 8px;min-width:0;min-height:52px;font-size:10px;font-weight:750;line-height:1.3}
+  .nav button[aria-current="page"]{background:#e7f4ff;color:#086cae}
+  .nav .desktop-nav{display:none}
+  .nav .mobile-nav{display:block}
+  .card{padding:17px 14px;border-radius:16px;margin-bottom:13px;box-shadow:0 4px 14px #0a3f650a}
+  h2{font-size:21px;line-height:1.25}
+  h3{font-size:16px;line-height:1.35}
+  .muted{font-size:12px}
+  .filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0}
+  .filters label{min-width:0;font-size:11px}
+  .filters select{min-width:0;width:100%;font-size:16px;padding:12px 9px}
+  .rules{padding:12px;font-size:12px}
+  .ranking-table-wrap{display:none}
+  .mobile-rankings{display:grid;gap:10px;margin:14px 0 17px}
+  .mobile-player{border:1px solid #dbe7f1;border-radius:14px;background:#fff;padding:13px;box-shadow:0 3px 10px #123e6009}
+  .mobile-player.up{border-left:4px solid #269b61}
+  .mobile-player.down{border-left:4px solid #df5454}
+  .mobile-player-top{display:flex;align-items:flex-start;gap:11px}
+  .mobile-pos{width:39px;height:39px;display:grid;place-items:center;background:#e8f4ff;color:#0b6ba9;border-radius:11px;font-size:20px;font-weight:900;flex-shrink:0}
+  .mobile-player-name{font-size:14px;color:#153e5c;font-weight:850;line-height:1.45;overflow-wrap:anywhere;min-width:0;flex:1}
+  .mobile-player-name .explain{margin-left:5px}
+  .mobile-player-name .explain[open]{margin:7px 0 0}
+  .mobile-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:13px}
+  .mobile-stat{background:#f0f6fb;border-radius:9px;padding:9px 5px;text-align:center}
+  .mobile-stat strong{display:block;color:#0a4b78;font-size:17px}
+  .mobile-stat span{display:block;font-size:10px;color:#607e94;margin-top:3px}
+  .mobile-detail{color:#627f95;font-size:11px;margin-top:9px;line-height:1.5}
+  .results-table{border:0;overflow:visible}
+  .results-table table{display:block;min-width:0;background:transparent}
+  .results-table thead{display:none}
+  .results-table tbody{display:grid;gap:10px}
+  .results-table tr{display:block;border:1px solid #dbe7f1;border-radius:12px;background:#fff!important;padding:10px 12px}
+  .results-table td{display:block;padding:4px 0;border:0;font-size:12px;overflow-wrap:anywhere}
+  .results-table td:first-child{color:#6b8598;font-size:11px}
+  .results-table td:nth-child(2),.results-table td:nth-child(3){display:inline-block;padding-right:10px;color:#517d9d;font-size:11px}
+  .results-table td:nth-child(4){font-weight:800;color:#153c5d;font-size:13px;line-height:1.5;margin:5px 0}
+  .results-table td:nth-child(5){color:#0873b7;font-weight:800}
+  .btn{min-height:44px;display:inline-flex!important;align-items:center;justify-content:center;text-align:center}
+}
+@media(min-width:701px){.nav .mobile-nav{display:none}}
 </style>
 </head><body>
-<header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Actualizar resultados</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
+<header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">Versión de pruebas</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Actualizar resultados</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
 <main class="shell">
- <nav class="nav" aria-label="Secciones de consulta"><button type="button" data-page="individual" aria-current="page">Ranking individual</button><button type="button" data-page="doubles">Ranking dobles</button><button type="button" data-page="results">Todos los resultados</button><button type="button" data-page="booking">Reservas</button><button type="button" data-page="rules">Normas y reglas oficiales</button></nav>
+ <nav class="nav" aria-label="Secciones de consulta"><button type="button" data-page="individual" aria-current="page"><span class="desktop-nav">Ranking individual</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">▤</span>Individual</span></button><button type="button" data-page="doubles"><span class="desktop-nav">Ranking dobles</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">▦</span>Dobles</span></button><button type="button" data-page="results"><span class="desktop-nav">Todos los resultados</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">≡</span>Resultados</span></button><button type="button" data-page="booking"><span class="desktop-nav">Reservas</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">⌁</span>Reservas</span></button><button type="button" data-page="rules"><span class="desktop-nav">Normas y reglas oficiales</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">ⓘ</span>Reglas</span></button></nav>
  <section id="loading" class="card" role="status">Cargando clasificaciones…</section>
  <section id="app" hidden>
  <div id="overview" class="card"><h2 id="sectionTitle">Ranking individual CPZ</h2><p class="muted" id="sectionSubtitle">Consulta cualquier categoría y grupo. Las posiciones se actualizan cuando se registran resultados.</p>
@@ -126,7 +185,7 @@ function renderSelected(){
  const group=$('group').value,type=page,people=names(type,group),result=CPZRanking.rankCompetition(people,records(type,group));
  const root=$('ranking');root.replaceChildren();
  const headline=element('h3','', 'Grupo '+group+' · '+result.played+' de '+result.expected+' partidos registrados');root.append(headline);
- const wrap=element('div','table-wrap'),table=element('table');
+ const wrap=element('div','table-wrap ranking-table-wrap'),table=element('table');
  const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
  const body=element('tbody');
  result.rows.forEach((p,i)=>{
@@ -140,6 +199,24 @@ function renderSelected(){
   body.append(tr);
  });
  table.append(body);wrap.append(table);root.append(wrap);
+  const cards=element('div','mobile-rankings');
+  cards.setAttribute('aria-label','Clasificación adaptada para móvil');
+  result.rows.forEach((p,i)=>{
+    const movement=i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'';
+    const card=element('article','mobile-player '+movement);
+    const heading=element('div','mobile-player-top');
+    heading.append(element('div','mobile-pos',i+1));
+    const player=element('div','mobile-player-name',p.name),details=element('details','explain'),summary=element('summary','','ⓘ');
+    summary.setAttribute('aria-label','Explicar la posición de '+p.name);
+    details.append(summary,element('p','',criterionText(p,result)));player.append(details);heading.append(player);card.append(heading);
+    const stats=element('div','mobile-stats');
+    [['Ganados',p.pg],['Jugados',p.pj],['Perdidos',p.pp]].forEach(([label,value])=>{
+      const stat=element('div','mobile-stat');stat.append(element('strong','',value),element('span','',label));stats.append(stat);
+    });
+    card.append(stats,element('div','mobile-detail','Sets '+p.sf+' / '+p.sc+' · Dif. '+(p.sf-p.sc)+' · Puntos '+p.pf+' / '+p.pc+' · Dif. '+(p.pf-p.pc)+' · PTS* '+p.pts));
+    cards.append(card);
+  });
+  root.append(cards);
  root.append(element('p','muted','*PTS indica 3 puntos informativos por victoria; el orden oficial se decide por partidos ganados y los desempates. Los números iniciales no son una clasificación oficial.'));
  if(result.warnings.length)root.append(element('p','message','Revisión pendiente: '+result.warnings.join(' · ')));
  if(!result.complete)root.append(element('p','message','Clasificación provisional. No están registrados todos los encuentros o hay empates sin resolver.'));
@@ -148,7 +225,7 @@ function renderSelected(){
 }
 function renderResultsTable(root,list){
  if(!list.length){root.append(element('p','muted','Aún no hay resultados registrados.'));return}
- const wrap=element('div','table-wrap'),table=element('table'),thead=element('thead'),tbody=element('tbody');
+ const wrap=element('div','table-wrap results-table'),table=element('table'),thead=element('thead'),tbody=element('tbody');
  thead.innerHTML='<tr><th>Fecha</th><th>Modalidad</th><th>Grupo</th><th>Enfrentamiento</th><th>Marcadores</th></tr>';table.append(thead);
  list.forEach(r=>{const tr=element('tr');const type=data.doublesResults.includes(r)?'Dobles':'Individual';[r.date,type,r.groupLabel,r.player1+' contra '+r.player2,r.sets.map(s=>s.join('–')).join(' · ')].forEach(v=>tr.append(element('td','',v)));tbody.append(tr)});
  table.append(tbody);wrap.append(table);root.append(wrap);
