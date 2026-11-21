@@ -40,14 +40,14 @@ jobs:
         id: snapshot
         continue-on-error: true
         env:
-          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_D1_READ_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           python3 scripts/build-lab-snapshot.py
           node --check lab-static/dist/lab-results.js
       - name: Avisar si falta permiso de lectura en D1
         if: steps.snapshot.outcome == 'failure'
         run: |
-          echo "::warning::No se pudo obtener la copia de resultados. Configurar un token con permiso D1 Read en GitHub Secrets para completar el laboratorio. La web se publicará sin marcadores."
+          echo "::warning::No se pudo obtener la copia de resultados. Añadir el secreto CLOUDFLARE_D1_READ_TOKEN con permiso D1 Read en GitHub Actions para completar el laboratorio. La web se publicará sin marcadores."
           echo "Copia de resultados no disponible: se utiliza el archivo vacío y no se inventan marcadores." >> "$GITHUB_STEP_SUMMARY"
       - name: Publicar vista estatica en rama preview de Cloudflare
         uses: cloudflare/wrangler-action@v4
