@@ -211,6 +211,27 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
  .nav button[aria-current="page"] .nav-caption{font-weight:900}
 }
 @media(prefers-reduced-motion:reduce){.nav button,.nav-icon{transition:none!important}}
+
+/* Laboratorio CPZ · descuentos de reserva, usables en móvil */
+.discount-section{margin:20px 0 22px;padding:18px;background:linear-gradient(140deg,#f0f8ff,#f8fcff);border:1px solid #d4e8f9;border-radius:17px}
+.discount-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.discount-title h3{margin:5px 0 0;font-size:19px;color:#093c69}
+.discount-kicker{font-size:10px;font-weight:900;letter-spacing:1.2px;color:#0c87ce}
+.discount-period{border-radius:999px;background:#dff0ff;border:1px solid #b9ddfb;color:#0e669b;font-size:11px;font-weight:800;padding:7px 10px}
+.discount-section>.muted{margin:11px 0 16px}
+.discount-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.discount-card{min-width:0;border-radius:15px;border:1px solid #c8e0f5;background:#fff;padding:16px;box-shadow:0 5px 18px #144f7810}
+.discount-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.discount-kind{display:flex;align-items:center;gap:7px;color:#154973;font-size:13px;font-weight:900}
+.discount-kind svg{width:21px;height:21px;color:#087bc5}
+.discount-tag{font-size:10px;color:#628aa5;background:#edf6fd;border-radius:999px;padding:5px 8px;font-weight:700}
+.discount-code{overflow-wrap:anywhere;letter-spacing:.7px;margin:17px 0 13px;padding:13px 10px;text-align:center;border:1px dashed #9cccef;border-radius:11px;background:#edf8ff;color:#074878;font-size:clamp(13px,2.1vw,17px);font-weight:950}
+.discount-copy{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;border:0;border-radius:11px;padding:11px 13px;background:linear-gradient(110deg,#0772bf,#0c92dc);color:#fff;font-weight:850;font-size:13px;box-shadow:0 6px 14px #0879c032}
+.discount-copy svg{width:18px;height:18px;flex-shrink:0}
+.discount-copy:active{transform:scale(.98)}
+.discount-copy:focus-visible{outline:3px solid #ffbe5b;outline-offset:3px}
+.discount-status{margin:13px 0 0;color:#557b98;font-size:11px;line-height:1.6}
+@media(max-width:700px){.discount-section{padding:14px 12px;border-radius:15px}.discount-title h3{font-size:18px}.discount-grid{grid-template-columns:1fr;gap:12px}.discount-card{padding:15px}.discount-code{font-size:18px;letter-spacing:1px}.discount-copy{min-height:52px;font-size:14px}.discount-kind{font-size:14px}}
 </style>
 </head><body>
 <header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">✦ LABORATORIO</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
@@ -228,6 +249,26 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 <div id="bookingPanel" class="card hidden">
  <h2>Reserva de pistas</h2>
  <p class="muted">Las reservas y los pagos se gestionan directamente a través de Taykus, la plataforma de reservas del Club Pickleball Zaragoza. Este ranking no cobra ni gestiona los pagos.</p>
+ <section class="discount-section" aria-labelledby="discountTitle">
+  <div class="discount-title">
+   <div><span class="discount-kicker">PROMOCIONES DEL RANKING</span><h3 id="discountTitle">Códigos de descuento</h3></div>
+   <span class="discount-period">Noviembre 2026</span>
+  </div>
+  <p class="muted">Elige el código correspondiente a tu modalidad, cópialo y utilízalo en Taykus durante la reserva, si la promoción sigue disponible.</p>
+  <div class="discount-grid">
+   <article class="discount-card">
+    <div class="discount-card-top"><span class="discount-kind"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20v-1a7 7 0 0 1 14 0v1"/></svg> Individual</span><span class="discount-tag">Ranking CPZ</span></div>
+    <div class="discount-code" id="discountIndividual">RANKINGINDNOV26</div>
+    <button type="button" class="discount-copy" data-discount-code="RANKINGINDNOV26" aria-label="Copiar código de descuento individual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copiar código</span></button>
+   </article>
+   <article class="discount-card">
+    <div class="discount-card-top"><span class="discount-kind"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="3.4"/><path d="M4 20v-1a6 6 0 0 1 12 0v1"/><path d="M17 5a3.4 3.4 0 0 1 0 6.4M20 20v-1a5 5 0 0 0-3-4.6"/></svg> Dobles</span><span class="discount-tag">Ranking CPZ</span></div>
+    <div class="discount-code" id="discountDoubles">RANKINGDOBNOV26</div>
+    <button type="button" class="discount-copy" data-discount-code="RANKINGDOBNOV26" aria-label="Copiar código de descuento dobles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copiar código</span></button>
+   </article>
+  </div>
+  <p id="discountStatus" class="discount-status" role="status" aria-live="polite">Los descuentos están sujetos a las condiciones y vigencia que indique Taykus.</p>
+ </section>
  <div class="rules" style="margin-top:20px">
   <h3 style="margin-top:0">Cómo reservar</h3>
   <p>Entra en la plataforma de reservas del club, consulta la disponibilidad, elige el tipo de reserva y completa el proceso con las condiciones indicadas allí.</p>
@@ -401,6 +442,27 @@ async function refreshRankings(initial=false){
   else {button.textContent='Error al actualizar';alert('No se ha podido reiniciar la vista: '+error.message)}
  }finally{button.disabled=false}
 }
+
+async function copyDiscountCode(code){
+ const status=$('discountStatus');
+ try{
+   if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(code)}
+   else{
+     const field=document.createElement('textarea');
+     field.value=code;field.setAttribute('readonly','');
+     field.style.cssText='position:fixed;top:0;left:-9999px;opacity:0';
+     document.body.append(field);field.select();
+     const copied=document.execCommand('copy');field.remove();
+     if(!copied)throw Error('copy unavailable');
+   }
+   status.textContent='Código copiado: '+code+'. Pégalo en Taykus al reservar.';
+ }catch(error){
+   status.textContent='No se ha podido copiar automáticamente. Mantén pulsado el código para seleccionarlo y copiarlo.';
+ }
+}
+document.querySelectorAll('[data-discount-code]').forEach(button=>{
+ button.addEventListener('click',()=>copyDiscountCode(button.dataset.discountCode));
+});
 $('refreshRankings').addEventListener('click',()=>refreshRankings(false));
 refreshRankings(true);
 })();
