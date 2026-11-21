@@ -274,6 +274,10 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 .match-card.match-selected{outline:2px solid #0e86cc;scroll-margin-top:16px;box-shadow:0 4px 18px #087ed126}
 @media(max-width:700px){.cpz-share{display:grid;grid-template-columns:1fr 1fr;gap:7px}.cpz-share-note{grid-column:1/-1}.cpz-share-btn{font-size:11px;padding:10px 8px}.cpz-podium{gap:6px}.cpz-podium-name{font-size:11px}.cpz-podium-wins{font-size:10px}.cpz-podium-circle{width:40px;height:40px}.mobile-expanded-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.match-card .cpz-share{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.cpz-share-btn{transition:none!important}}
+/* No atribuir medallas cuando aún no se han disputado partidos. */
+.cpz-podium-empty{opacity:.7;margin:15px 0 0}
+.cpz-podium-empty .cpz-podium-name{font-weight:650;color:#5c7c96}
+.cpz-podium-empty .cpz-podium-step{filter:saturate(.25);opacity:.85}
 </style>
 </head><body>
 <header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">✦ LABORATORIO</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
@@ -446,8 +450,15 @@ function renderSelected(){
  }else{
   const pending=element('div','cpz-podium-pending');
   pending.append(element('strong','','Podio pendiente de resultados'),
-   element('p','','Se mostrará al registrar partidos. El orden de nombres que ves ahora es el listado inicial, no una clasificación conseguida.'));
-  root.append(pending);
+   element('p','','Este podio visual se completará cuando existan partidos. El listado de nombres no representa victorias ni posiciones ganadas.'));
+  const ghost=element('div','cpz-podium cpz-podium-empty');
+  for(const [rank,styleName] of [[2,'second'],[1,'first'],[3,'third']]){
+   const slot=element('div','cpz-podium-person '+styleName);
+   slot.append(element('div','cpz-podium-circle','–'),element('div','cpz-podium-name','Sin resultados'),
+      element('div','cpz-podium-wins','Pendiente'),element('div','cpz-podium-step',rank));
+   ghost.append(slot);
+  }
+  pending.append(ghost);root.append(pending);
  }
 
  const wrap=element('div','table-wrap ranking-table-wrap'),table=element('table');
