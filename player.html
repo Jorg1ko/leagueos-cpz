@@ -232,6 +232,48 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 .discount-copy:focus-visible{outline:3px solid #ffbe5b;outline-offset:3px}
 .discount-status{margin:13px 0 0;color:#557b98;font-size:11px;line-height:1.6}
 @media(max-width:700px){.discount-section{padding:14px 12px;border-radius:15px}.discount-title h3{font-size:18px}.discount-grid{grid-template-columns:1fr;gap:12px}.discount-card{padding:15px}.discount-code{font-size:18px;letter-spacing:1px}.discount-copy{min-height:52px;font-size:14px}.discount-kind{font-size:14px}}
+
+/* LABORATORIO CPZ — podio deportivo, estadísticas y enlaces compartibles */
+.cpz-share{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:15px 0 18px}
+.cpz-share-btn{border:0;min-height:44px;border-radius:12px;padding:11px 14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#0a835b;color:white;font-weight:850;font-size:12px;box-shadow:0 4px 14px #0a835b2a;cursor:pointer}
+.cpz-share-btn.secondary{background:#eaf4ff;color:#0b568c;box-shadow:none;border:1px solid #c5dff3}
+.cpz-share-btn svg{width:18px;height:18px;flex:none}
+.cpz-share-btn:focus-visible{outline:3px solid #ffc75b;outline-offset:3px}
+.cpz-share-note{font-size:11px;color:#547b95;line-height:1.5;min-width:100%;margin:0}
+.cpz-podium-title{font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:#377ba9;margin:0 0 13px}
+.cpz-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;align-items:end;margin:17px 0 20px}
+.cpz-podium-person{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;min-width:0;gap:6px}
+.cpz-podium-circle{display:grid;place-items:center;border-radius:50%;width:43px;height:43px;font-size:17px;font-weight:900;box-shadow:0 4px 10px #12385e18}
+.cpz-podium-person.first .cpz-podium-circle{background:#fff0b7;color:#88600c}
+.cpz-podium-person.second .cpz-podium-circle{background:#ecf2fa;color:#577087}
+.cpz-podium-person.third .cpz-podium-circle{background:#f7e8dc;color:#8e5932}
+.cpz-podium-name{font-size:12px;font-weight:850;line-height:1.35;color:#123959;overflow-wrap:anywhere;max-width:100%;min-height:33px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.cpz-podium-wins{color:#557b95;font-size:11px}
+.cpz-podium-step{width:100%;display:grid;place-items:center;border-radius:12px 12px 7px 7px;font-size:21px;font-weight:950}
+.cpz-podium-person.first .cpz-podium-step{height:67px;background:linear-gradient(#ffe2a1,#ffd374);color:#875b00}
+.cpz-podium-person.second .cpz-podium-step{height:49px;background:linear-gradient(#eaf2fa,#dce9f6);color:#587087}
+.cpz-podium-person.third .cpz-podium-step{height:37px;background:linear-gradient(#efd3bd,#e5bfa0);color:#80523b}
+.cpz-podium-pending{padding:16px 14px;border-radius:15px;border:1px dashed #b7d8ed;background:linear-gradient(120deg,#f4faff,#eaf5ff);margin:15px 0 17px}
+.cpz-podium-pending strong{display:block;color:#0d5688;font-size:14px;margin:0 0 4px}
+.cpz-podium-pending p{font-size:12px;color:#5a7b93;line-height:1.5;margin:0}
+.mobile-match-progress{margin-top:12px}
+.mobile-match-progress-text{display:flex;justify-content:space-between;gap:7px;font-size:10px;color:#5c7c96;font-weight:750;margin-bottom:6px}
+.mobile-match-progress-track{background:#e6f1fa;height:6px;border-radius:30px;overflow:hidden}
+.mobile-match-progress-track span{display:block;background:linear-gradient(90deg,#59c3f7,#0875cb);height:100%;border-radius:30px}
+.mobile-expanded{margin-top:11px;border-top:1px solid #e2ebf4;padding-top:10px}
+.mobile-expanded summary{cursor:pointer;font-size:11px;font-weight:850;color:#126ba5;padding:5px 0;list-style:none}
+.mobile-expanded summary::after{content:'⌄';float:right;font-size:16px;line-height:10px}
+.mobile-expanded[open] summary::after{content:'⌃'}
+.mobile-expanded summary::-webkit-details-marker{display:none}
+.mobile-expanded-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}
+.mobile-expanded-grid div{border-radius:9px;background:#f1f7fc;padding:9px 8px;min-width:0}
+.mobile-expanded-grid b{font-size:13px;color:#0c456e;display:block}
+.mobile-expanded-grid span{font-size:10px;color:#678296;display:block;margin-top:3px}
+.match-card .cpz-share{margin:12px 0 0}
+.match-card .cpz-share-btn{min-height:39px;padding:9px 11px}
+.match-card.match-selected{outline:2px solid #0e86cc;scroll-margin-top:16px;box-shadow:0 4px 18px #087ed126}
+@media(max-width:700px){.cpz-share{display:grid;grid-template-columns:1fr 1fr;gap:7px}.cpz-share-note{grid-column:1/-1}.cpz-share-btn{font-size:11px;padding:10px 8px}.cpz-podium{gap:6px}.cpz-podium-name{font-size:11px}.cpz-podium-wins{font-size:10px}.cpz-podium-circle{width:40px;height:40px}.mobile-expanded-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.match-card .cpz-share{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.cpz-share-btn{transition:none!important}}
 </style>
 </head><body>
 <header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">✦ LABORATORIO</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
@@ -313,6 +355,45 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 const $=id=>document.getElementById(id);
 let data=null,page='individual';
 const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');
+
+const initialLink=new URL(window.location.href).searchParams;
+const shareIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3 10 14"/><path d="m21 3-7 18-4-7-7-4z"/></svg>';
+const copyIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>';
+function publicLink(view,group,mode,match){
+ const url=new URL(window.location.pathname,window.location.origin);
+ url.searchParams.set('view',view);
+ if(group)url.searchParams.set('group',group);
+ if(mode)url.searchParams.set('mode',mode);
+ if(match){
+  url.searchParams.set('date',match.date);
+  url.searchParams.set('player1',match.player1);
+  url.searchParams.set('player2',match.player2);
+ }
+ return url.toString();
+}
+function shareControls(view,group,mode,match){
+ const bar=element('div','cpz-share'),url=publicLink(view,group,mode,match);
+ const label=match?'Resultado '+match.player1+' contra '+match.player2:(view==='individual'?'Ranking individual':view==='doubles'?'Ranking dobles':'Resultados')+' · Grupo '+group;
+ const whatsapp=element('button','cpz-share-btn');
+ whatsapp.type='button';whatsapp.setAttribute('aria-label','Compartir por WhatsApp: '+label);
+ whatsapp.innerHTML=shareIcon+'<span>WhatsApp</span>';
+ whatsapp.addEventListener('click',()=>window.open('https://wa.me/?text='+encodeURIComponent(label+' · CPZ\n'+url),'_blank','noopener,noreferrer'));
+ const copy=element('button','cpz-share-btn secondary');
+ copy.type='button';copy.setAttribute('aria-label','Copiar enlace: '+label);copy.innerHTML=copyIcon+'<span>Copiar enlace</span>';
+ copy.addEventListener('click',async()=>{
+  try{
+   if(!navigator.clipboard||!window.isSecureContext)throw Error('No clipboard');
+   await navigator.clipboard.writeText(url);copy.querySelector('span').textContent='¡Copiado!';
+  }catch{window.prompt('Copia este enlace para compartir:',url)}
+ });
+ bar.append(whatsapp,copy);return bar;
+}
+function linkedMatch(row,type){
+ return initialLink.get('view')==='results'&&initialLink.get('mode')===type&&
+ initialLink.get('group')===row.groupLabel&&initialLink.get('date')===row.date&&
+ initialLink.get('player1')===row.player1&&initialLink.get('player2')===row.player2;
+}
+
 function option(select,value,label){const o=document.createElement('option');o.value=value;o.textContent=label;select.append(o)}
 function element(tag,className,text){const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=String(text);return e}
 function records(type,group){const list=type==='individual'?data.individualResults:data.doublesResults;return list.filter(r=>!group||r.groupLabel===group)}
@@ -346,6 +427,29 @@ function renderSelected(){
  const progress=element('span','progress-label',result.played+' / '+result.expected+' partidos');
  heading.append(headline,progress);root.append(heading);
  const track=element('div','rank-track'),bar=element('span');bar.style.width=Math.round(result.expected?result.played/result.expected*100:0)+'%';track.append(bar);root.append(track);
+
+ root.append(shareControls(type,group));
+ if(result.played>0){
+  root.append(element('p','cpz-podium-title',result.complete?'Podio del grupo':'Podio provisional · faltan encuentros'));
+  const podium=element('section','cpz-podium');
+  podium.setAttribute('aria-label','Tres primeras posiciones '+(result.complete?'':'provisionales'));
+  for(const [place,klass] of [[1,'second'],[0,'first'],[2,'third']]){
+   const p=result.rows[place];if(!p)continue;
+   const tile=element('div','cpz-podium-person '+klass);
+   tile.append(element('div','cpz-podium-circle',place===0?'★':String(place+1)),
+    element('div','cpz-podium-name',p.name),
+    element('div','cpz-podium-wins',p.pg+' '+(p.pg===1?'victoria':'victorias')),
+    element('div','cpz-podium-step',String(place+1)));
+   podium.append(tile);
+  }
+  root.append(podium);
+ }else{
+  const pending=element('div','cpz-podium-pending');
+  pending.append(element('strong','','Podio pendiente de resultados'),
+   element('p','','Se mostrará al registrar partidos. El orden de nombres que ves ahora es el listado inicial, no una clasificación conseguida.'));
+  root.append(pending);
+ }
+
  const wrap=element('div','table-wrap ranking-table-wrap'),table=element('table');
  const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
  const body=element('tbody');
@@ -363,20 +467,34 @@ function renderSelected(){
   const cards=element('div','mobile-rankings');
   cards.setAttribute('aria-label','Clasificación adaptada para móvil');
   result.rows.forEach((p,i)=>{
-    const movement=i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'';
+    const gamesPlayed=result.played>0;
+    const movement=gamesPlayed&&i===0&&group!=='A1'?'up':gamesPlayed&&i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'';
     const card=element('article','mobile-player '+movement);
     const heading=element('div','mobile-player-top');
     heading.append(element('div','mobile-pos',i+1));
     const player=element('div','mobile-player-name',p.name),details=element('details','explain'),summary=element('summary','','ⓘ');
     summary.setAttribute('aria-label','Explicar la posición de '+p.name);
-    details.append(summary,element('p','',criterionText(p,result)));player.append(details);heading.append(player);card.append(heading);
+    details.append(summary,element('p','',criterionText(p,result)));player.append(details);
+    if(gamesPlayed&&i===0&&group!=='A1')player.append(element('span','mobile-medal','▲ Zona posible de ascenso'));
+    else if(gamesPlayed&&i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2'))player.append(element('span','mobile-medal down','▼ Zona posible de descenso'));
+    heading.append(player);card.append(heading);
     const stats=element('div','mobile-stats');
     [['Ganados',p.pg],['Jugados',p.pj],['Perdidos',p.pp]].forEach(([label,value])=>{
       const stat=element('div','mobile-stat');stat.append(element('strong','',value),element('span','',label));stats.append(stat);
     });
-    card.append(stats,element('div','mobile-detail','Sets '+p.sf+' / '+p.sc+' · Dif. '+(p.sf-p.sc)+' · Puntos '+p.pf+' / '+p.pc+' · Dif. '+(p.pf-p.pc)+' · PTS* '+p.pts));
-    if(i===0&&group!=='A1'){const medal=element('span','mobile-medal','▲ Zona de ascenso');player.append(medal)}
-    else if(i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')){const medal=element('span','mobile-medal down','▼ Zona de descenso');player.append(medal)}
+    card.append(stats);
+    const expected=Math.max(0,people.length-1);
+    const progress=element('div','mobile-match-progress'),progressText=element('div','mobile-match-progress-text');
+    progressText.append(element('span','','Partidos completados'),element('span','',p.pj+' de '+expected));
+    const progressTrack=element('div','mobile-match-progress-track'),fill=element('span');
+    fill.style.width=(expected?Math.min(100,p.pj/expected*100):0)+'%';progressTrack.append(fill);progress.append(progressText,progressTrack);card.append(progress);
+    const expanded=element('details','mobile-expanded'),expandTitle=element('summary','','Ver estadísticas completas');
+    const grid=element('div','mobile-expanded-grid');
+    [['Sets a favor',p.sf],['Sets en contra',p.sc],['Diferencia de sets',p.sf-p.sc],
+      ['Puntos a favor',p.pf],['Puntos en contra',p.pc],['Diferencia de puntos',p.pf-p.pc],['PTS informativos',p.pts]].forEach(([label,value])=>{
+      const stat=element('div','');stat.append(element('b','',value),element('span','',label));grid.append(stat);
+    });
+    expanded.append(expandTitle,grid);card.append(expanded);
     cards.append(card);
   });
   root.append(cards);
@@ -391,7 +509,9 @@ function renderResultsTable(root,list){
  const cards=element('div','mobile-results');
  for(const r of list){
    const pair1=r.sets.filter(x=>x[0]>x[1]).length,pair2=r.sets.length-pair1;
-   const card=element('article','match-card');
+   const matching=linkedMatch(r,data.doublesResults.includes(r)?'doubles':'individual');
+   const card=element('article','match-card'+(matching?' match-selected':''));
+   if(matching){card.id='partido-compartido';card.setAttribute('tabindex','-1')}
    const meta=element('div','match-meta'),day=element('span','',r.date+' · '+r.groupLabel);
    const type=element('span','match-type',data.doublesResults.includes(r)?'Dobles':'Individual');
    meta.append(day,type);card.append(meta);
@@ -401,7 +521,9 @@ function renderResultsTable(root,list){
      const sets=element('div','match-sets'+(won?' winner':''));
      r.sets.forEach(score=>sets.append(element('b','',score[side])));row.append(sets);
    }
-   card.append(first,second);cards.append(card);
+   card.append(first,second);
+   card.append(shareControls('results',r.groupLabel,data.doublesResults.includes(r)?'doubles':'individual',r));
+   cards.append(card);
  }
  root.append(cards);
 }
@@ -413,6 +535,10 @@ function renderAll(){
  select.value=valid.has(previous)?previous:'all';
  const list=[...(type==='doubles'?[]:data.individualResults),...(type==='individual'?[]:data.doublesResults)].filter(r=>select.value==='all'||r.groupLabel===select.value).sort((a,b)=>b.date.localeCompare(a.date));
  const root=$('allResults');root.replaceChildren();renderResultsTable(root,list);
+ if(initialLink.get('view')==='results'&&initialLink.has('date')){
+  const selected=root.querySelector('#partido-compartido');
+  if(selected)requestAnimationFrame(()=>selected.scrollIntoView({block:'center'}));
+ }
 }
 function switchPage(next){
  page=next;document.querySelectorAll('[data-page]').forEach(b=>{if(b.dataset.page===next)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
@@ -435,7 +561,22 @@ async function refreshRankings(initial=false){
   const updated=window.CPZ_LAB_DATA;
   if(!updated)throw Error('No se han podido cargar los datos de demostración.');
   data=updated;$('loading').hidden=true;$('app').hidden=false;
-  switchPage(initial?'individual':page);
+  if(initial){
+   const view=initialLink.get('view');
+   if(view==='individual'||view==='doubles'){
+    switchPage(view);
+    const group=initialLink.get('group'),groups=view==='individual'?data.individualGroups:data.doublesGroups;
+    if(group&&Object.prototype.hasOwnProperty.call(groups,group)){
+     $('category').value=group[0];renderRank();$('group').value=group;renderSelected();
+    }
+   }else if(view==='results'){
+    const mode=initialLink.get('mode');
+    if(['individual','doubles','all'].includes(mode))$('resultType').value=mode;
+    switchPage('results');
+    const group=initialLink.get('group');
+    if(group&&[...$('resultGroup').options].some(o=>o.value===group)){$('resultGroup').value=group;renderAll()}
+   }else switchPage('individual');
+  }else switchPage(page);
   button.textContent='Reiniciar vista';
  }catch(error){
   if(initial)$('loading').textContent='No se puede cargar el laboratorio: '+error.message;
