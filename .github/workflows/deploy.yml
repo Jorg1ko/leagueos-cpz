@@ -2,7 +2,7 @@ name: Publicar LeagueOS en Cloudflare Pages
 
 on:
   push:
-    branches: [main, experimental/laboratorio-cpz]
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -12,7 +12,7 @@ permissions:
   deployments: write
 
 concurrency:
-  group: leagueos-pages-${{ github.ref_name }}
+  group: leagueos-pages-production
   cancel-in-progress: true
 
 jobs:
@@ -80,38 +80,3 @@ jobs:
           accountId: 91f1c143e0758ef69970b4d75629f605
           command: pages deploy dist --project-name=leagueos-cpz --branch=main
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
-  laboratorio_web:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/experimental/laboratorio-cpz'
-    needs: comprobar
-    name: Publicar laboratorio web sin acceso a producción
-    runs-on: ubuntu-latest
-    steps:
-      - name: Descargar rama experimental
-        uses: actions/checkout@v4
-      - name: Preparar web estática y validar que no incluya funciones
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p lab-static/dist
-          cp player.html lab-static/dist/index.html
-          cp ranking-engine.js lab-static/dist/ranking-engine.js
-          cp lab-data.js lab-static/dist/lab-data.js
-          test ! -e lab-static/functions
-          test ! -e lab-static/dist/functions
-          node --check lab-static/dist/ranking-engine.js
-          node --check lab-static/dist/lab-data.js
-          node - <<'NODE'
-          const fs=require('fs'),vm=require('vm');
-          const html=fs.readFileSync('lab-static/dist/index.html','utf8');
-          const scripts=/<script\b[^>]*>([\s\S]*?)<\/script>/gi;
-          let m;while((m=scripts.exec(html)))if(m[1].trim())new vm.Script(m[1],{filename:'player.html'});
-          if(!html.includes('window.CPZ_LAB_DATA')||html.includes("fetch('/api/shared/data'"))throw Error('La vista no está aislada de producción');
-          NODE
-      - name: Subir laboratorio a Cloudflare Pages (rama preview)
-        uses: cloudflare/wrangler-action@v4
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: 91f1c143e0758ef69970b4d75629f605
-          workingDirectory: lab-static
-          command: pages deploy dist --project-name=leagueos-cpz --branch=lab-mobile
