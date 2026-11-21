@@ -1,0 +1,43 @@
+name: Laboratorio CPZ movil (solo vista publica)
+on:
+  push:
+    branches:
+      - experimental/laboratorio-cpz
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cpz-laboratorio-static
+  cancel-in-progress: true
+jobs:
+  laboratorio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preparar vista de pruebas aislada
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p lab-static/dist
+          cp player.html lab-static/dist/index.html
+          cp ranking-engine.js lab-static/dist/ranking-engine.js
+          cp lab-data.js lab-static/dist/lab-data.js
+          test ! -e lab-static/functions
+          node --check lab-static/dist/lab-data.js
+          node --check lab-static/dist/ranking-engine.js
+          node tests/ranking-engine.test.cjs
+          node - <<'NODE'
+          const fs=require('fs'),vm=require('vm');
+          const html=fs.readFileSync('lab-static/dist/index.html','utf8');
+          const script=/<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+          let match;while((match=script.exec(html)))if(match[1].trim())new vm.Script(match[1]);
+          if(!html.includes('window.CPZ_LAB_DATA')||!html.includes('Versión de pruebas'))throw Error('No es la version aislada');
+          if(html.includes("fetch('/api/shared/data'"))throw Error('API de produccion detectada');
+          NODE
+      - name: Publicar vista estatica en rama preview de Cloudflare
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 91f1c143e0758ef69970b4d75629f605
+          workingDirectory: lab-static
+          command: pages deploy dist --project-name=leagueos-cpz --branch=lab-mobile
