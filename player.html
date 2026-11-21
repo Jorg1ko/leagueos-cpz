@@ -96,9 +96,67 @@ tbody tr:nth-child(even){background:#f7fafc}
   .btn{min-height:44px;display:inline-flex!important;align-items:center;justify-content:center;text-align:center}
 }
 @media(min-width:701px){.nav .mobile-nav{display:none}}
+
+/* CPZ LAB 2 — rediseño visual mobile-first */
+:root{--cpz-navy:#062d56;--cpz-blue:#0877ce;--cpz-sky:#0ca5e9;--cpz-ink:#0a2749;--cpz-muted:#58738e}
+body{background:linear-gradient(145deg,#eef7ff 0%,#f7faff 45%,#edf5fe 100%);color:var(--cpz-ink)}
+.top{background:linear-gradient(125deg,#052b53 0%,#074d8b 55%,#0988d2 100%);box-shadow:0 14px 35px #062d5622}
+.top-inner{max-width:1240px}.top h1{letter-spacing:-.7px;font-weight:950}.top p{color:#ceeaff}
+.brand{background:#fff;border:2px solid #ffffffa6;box-shadow:0 8px 25px #041f3b4b}
+.lab-marker{background:#dff4ff;border:1px solid #97d9fd;color:#075c98;font-weight:900}
+.card{border-color:#dce9f6;box-shadow:0 8px 24px #0b3e6710}
+h2,h3{color:#0b3157;letter-spacing:-.35px}
+.nav button[aria-current="page"]{background:#e0f2ff;color:#006ab8;border-color:#aed8fb}
+.nav button{transition:background .2s,color .2s}
+.filters select{border:1.5px solid #c5ddef;box-shadow:0 3px 9px #0e54810b}
+.mobile-player{border-color:#dce8f4;box-shadow:0 4px 16px #11385f0c;transition:transform .12s}
+.mobile-player.up{background:linear-gradient(115deg,#f1ffea,#fff 55%);border-left:5px solid #67c855}
+.mobile-player.down{background:linear-gradient(115deg,#fff1f1,#fff 58%);border-left:5px solid #f17d7b}
+.mobile-player.up .mobile-pos{background:#d9facd;color:#276b23}
+.mobile-player.down .mobile-pos{background:#ffdfdf;color:#a33232}
+.mobile-pos{border-radius:12px}
+.mobile-stats .mobile-stat:first-child{background:#e2f9e7}.mobile-stats .mobile-stat:last-child{background:#ffedf0}
+.mobile-stat strong{color:#0d385d;font-weight:900}.mobile-stat span{font-weight:700}
+.explain summary{border:0;background:#e6f4ff;color:#0a6cb7}
+.message{border-radius:12px}
+@media(max-width:700px){
+ body{background:#edf5fd}
+ .top{padding:16px 16px 18px;border-radius:0 0 23px 23px}
+ .top-inner{grid-template-columns:48px minmax(0,1fr) 46px;gap:11px}
+ .brand{height:48px;width:48px;border-radius:13px}
+ .top h1{font-size:19px;line-height:1.15;white-space:nowrap}
+ .top p{font-size:10px}
+ .top #refreshRankings{width:44px;min-width:44px;border-radius:13px;background:#ffffff25;border:1px solid #ffffff48;color:#fff;box-shadow:none}
+ .lab-marker{margin-top:7px;letter-spacing:.03em}
+ .shell{padding:14px 12px 20px}
+ .card{padding:19px 14px;border-radius:19px}
+ .card h2{font-size:21px}
+ .nav{padding:7px 5px calc(7px + env(safe-area-inset-bottom,0px));border-color:#d5e6f3}
+ .nav button{font-size:10px;font-weight:850;min-height:58px;color:#5a7691}
+ .nav button[aria-current="page"]{background:#dff1ff}
+ .nav .mobile-nav span{font-size:22px!important}
+ .filters{margin:17px 0;gap:11px}
+ .filters label{font-size:11px;color:#365f83}
+ .filters select{border-radius:12px;background:#fff;min-height:46px;font-weight:700}
+ .mobile-rankings{gap:11px;margin:13px 0 19px}
+ .mobile-player{padding:13px 12px;border-radius:16px}
+ .mobile-player-name{font-size:15px;color:#092e52}
+ .mobile-pos{font-size:23px;width:44px;height:44px}
+ .mobile-stats{gap:8px;margin-top:13px}
+ .mobile-stat{padding:10px 5px;border-radius:10px}
+ .mobile-stat strong{font-size:20px}
+ .mobile-detail{font-size:11px;line-height:1.7}
+ .results-table td:nth-child(4){font-size:14px}
+ .results-table tr{border-radius:15px;padding:13px;box-shadow:0 3px 12px #0d45730d}
+ .results-table td:nth-child(5){background:#e8f5ff;border-radius:8px;display:inline-block;padding:8px 10px;margin-top:4px}
+ .rules{border-radius:13px}
+ #bookingPanel .rules{background:linear-gradient(130deg,#082f5a,#057fc5);color:#fff;border:0;padding:23px}
+ #bookingPanel .rules h3,#bookingPanel .rules p{color:#fff}
+ #bookingPanel .rules a.btn{background:#a2f258;color:#10395c;border:0;font-weight:900;width:100%;min-height:52px;box-shadow:0 8px 18px #03294d40}
+}
 </style>
 </head><body>
-<header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">Versión de pruebas</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
+<header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">✦ LABORATORIO</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
 <main class="shell"><div class="message" style="margin:0 0 14px;background:#eaf5ff;border-color:#b9ddfa;color:#155981"><strong>LABORATORIO SIN CONTRASEÑA.</strong> Se utilizan los grupos y jugadores del club, pero no se consultan resultados reales. Las clasificaciones muestran el orden inicial y no son posiciones deportivas confirmadas.</div>
  <nav class="nav" aria-label="Secciones de consulta"><button type="button" data-page="individual" aria-current="page"><span class="desktop-nav">Ranking individual</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">▤</span>Individual</span></button><button type="button" data-page="doubles"><span class="desktop-nav">Ranking dobles</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">▦</span>Dobles</span></button><button type="button" data-page="results"><span class="desktop-nav">Todos los resultados</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">≡</span>Resultados</span></button><button type="button" data-page="booking"><span class="desktop-nav">Reservas</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">⌁</span>Reservas</span></button><button type="button" data-page="rules"><span class="desktop-nav">Normas y reglas oficiales</span><span class="mobile-nav" aria-hidden="true"><span style="display:block;font-size:20px;margin-bottom:2px">ⓘ</span>Reglas</span></button></nav>
  <section id="loading" class="card" role="status">Cargando laboratorio…</section>
