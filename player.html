@@ -284,6 +284,7 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 .club-return a:hover{background:#d5ecfc}
 @media(max-width:700px){.club-return{margin:9px auto -6px;padding:0 12px;font-size:10px}.club-return a{padding:9px 10px}}
 </style>
+<link rel="stylesheet" href="./league-lab.css">
 </head><body>
 <header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="./lab-assets/escudo-cpz.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">✦ LABORATORIO</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
 <div class="club-return"><a href="./" aria-label="Volver al inicio del Club Pickleball Zaragoza">← Inicio del club</a><span>Liga CPZ</span></div>
@@ -309,13 +310,15 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
   <div class="discount-grid">
    <article class="discount-card">
     <div class="discount-card-top"><span class="discount-kind"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20v-1a7 7 0 0 1 14 0v1"/></svg> Individual</span><span class="discount-tag">Ranking CPZ</span></div>
-    <div class="discount-code" id="discountIndividual">RANKINGINDNOV26</div>
+    <div class="discount-code" id="discountIndividual">RANKINGINDNOV26</div><div class="discount-validity">Código de noviembre de 2026 · sujeto a vigencia.</div>
     <button type="button" class="discount-copy" data-discount-code="RANKINGINDNOV26" aria-label="Copiar código de descuento individual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copiar código</span></button>
+    <a class="discount-book" href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Reservar en Taykus ↗</a>
    </article>
    <article class="discount-card">
     <div class="discount-card-top"><span class="discount-kind"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="3.4"/><path d="M4 20v-1a6 6 0 0 1 12 0v1"/><path d="M17 5a3.4 3.4 0 0 1 0 6.4M20 20v-1a5 5 0 0 0-3-4.6"/></svg> Dobles</span><span class="discount-tag">Ranking CPZ</span></div>
-    <div class="discount-code" id="discountDoubles">RANKINGDOBNOV26</div>
+    <div class="discount-code" id="discountDoubles">RANKINGDOBNOV26</div><div class="discount-validity">Código de noviembre de 2026 · sujeto a vigencia.</div>
     <button type="button" class="discount-copy" data-discount-code="RANKINGDOBNOV26" aria-label="Copiar código de descuento dobles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copiar código</span></button>
+    <a class="discount-book" href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Reservar en Taykus ↗</a>
    </article>
   </div>
   <p id="discountStatus" class="discount-status" role="status" aria-live="polite">Los descuentos están sujetos a las condiciones y vigencia que indique Taykus.</p>
@@ -419,6 +422,12 @@ function renderRank(){
  grp.value=labels.includes(priorGroup)?priorGroup:labels[0];
  renderSelected();
 }
+function movementZone(type,group,index,count,played){
+ if(!played)return '';
+ if(index===0&&group!=='A1')return 'up';
+ if(index===count-1&&group!==(type==='individual'?'B5':'C2'))return 'down';
+ return '';
+}
 function renderSelected(){
  const group=$('group').value,type=page,people=names(type,group),result=CPZRanking.rankCompetition(people,records(type,group));
  const root=$('ranking');root.replaceChildren();
@@ -432,8 +441,10 @@ function renderSelected(){
  const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
  const body=element('tbody');
  result.rows.forEach((p,i)=>{
-  const tr=element('tr',i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'');
-  const pos=element('td','pos',i+1);tr.append(pos);
+  const movement=movementZone(type,group,i,result.rows.length,result.played>0);
+  const tr=element('tr',movement);
+  const marker=movement==='up'?'▲ ':movement==='down'?'▼ ':'';
+  const pos=element('td','pos',marker+(i+1));tr.append(pos);
   const name=element('td','',p.name),details=element('details','explain'),summary=element('summary','', 'ⓘ');
   summary.setAttribute('aria-label','Explicar la posición de '+p.name);
   summary.setAttribute('title','Ver explicación de la posición');
@@ -446,17 +457,17 @@ function renderSelected(){
  cards.setAttribute('role','table');
  cards.setAttribute('aria-label','Clasificación completa del grupo '+group);
  const labels=element('div','standings-head');
- [['Pos.','Posición'],['Jugador / pareja','Jugador o pareja'],['PJ','Partidos jugados'],['PG','Partidos ganados'],['PP','Partidos perdidos']].forEach(([short,long])=>{
+ [['Pos.','Posición'],['Jugador / pareja','Jugador o pareja'],['PJ','Partidos jugados'],['G','Partidos ganados'],['P','Partidos perdidos']].forEach(([short,long])=>{
   const cell=element('span','',short);cell.setAttribute('title',long);labels.append(cell);
  });
  cards.append(labels);
  result.rows.forEach((p,i)=>{
-  const gamesPlayed=result.played>0;
-  const movement=gamesPlayed&&i===0&&group!=='A1'?'up':gamesPlayed&&i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'';
+  const movement=movementZone(type,group,i,result.rows.length,result.played>0);
   const card=element('div','standing-row '+movement);
   card.setAttribute('role','row');
   const line=element('div','standing-row-main');
-  line.append(element('span','standing-pos',i+1),element('span','standing-name',p.name),
+  const marker=movement==='up'?'▲ ':movement==='down'?'▼ ':'';
+  line.append(element('span','standing-pos',marker+(i+1)),element('span','standing-name',p.name),
               element('span','standing-cell',p.pj),element('span','standing-cell wins',p.pg),element('span','standing-cell losses',p.pp));
   card.append(line);
   const more=element('div','standing-meta');
@@ -469,13 +480,32 @@ function renderSelected(){
   stat('Sets',p.sf+'–'+p.sc+' ('+signed(p.sf-p.sc)+')');
   stat('Puntos',p.pf+'–'+p.pc+' ('+signed(p.pf-p.pc)+')');
   stat('PTS',p.pts);
+  const details=element('details','standing-explain');
+  const summary=element('summary','','ⓘ');
+  summary.setAttribute('aria-label','Explicar posición de '+p.name);
+  summary.setAttribute('title','Explicar esta posición');
+  details.append(summary,element('p','',criterionText(p,result)));
+  more.append(details);
   card.append(more);cards.append(card);
  });
  root.append(cards);
- root.append(element('p','standing-key','PJ: jugados · PG: ganados · PP: perdidos · Entre paréntesis: diferencia de sets o puntos.'));
+ root.append(element('p','standing-key','PJ: jugados · G: ganados · P: perdidos. ▲ Posible ascenso · ▼ Posible descenso. Franjas provisionales y según grupo.'));
  root.append(element('p','muted','*PTS indica 3 puntos informativos por victoria; el orden oficial se decide por partidos ganados y los desempates. Los números iniciales no son una clasificación oficial.'));
  if(result.warnings.length)root.append(element('p','message','Revisión pendiente: '+result.warnings.join(' · ')));
- if(!result.complete)root.append(element('p','message','Clasificación provisional. No están registrados todos los encuentros o hay empates sin resolver.'));
+ const snapshotAvailable=window.CPZ_LAB_RESULTS?.available;
+ const missing=snapshotAvailable?CPZLabFeatures.pendingMatches(people,records(type,group)).pending.length:null;
+ const status=element('div','ranking-status');
+ status.setAttribute('role','status');
+ if(!snapshotAvailable){
+  status.textContent='Clasificación provisional: no hay copia de resultados disponible para este laboratorio.';
+ }else if(missing>0){
+  status.textContent='Clasificación provisional · Faltan '+missing+' de '+result.expected+' partidos en este grupo.';
+ }else if(result.warnings.length){
+  status.textContent='Clasificación provisional · No faltan cruces, pero quedan desempates por resolver.';
+ }else{
+  status.textContent='Grupo completo · 0 partidos pendientes.';
+ }
+ root.append(status);
  renderPending(root,type,group,people);
  root.append(element('h3','', 'Resultados del grupo'));
  renderResultsTable(root,records(type,group));
@@ -494,28 +524,23 @@ function renderResultsTable(root,list){
    const type=element('span','match-type',data.doublesResults.includes(r)?'Dobles':'Individual');
    meta.append(day,type);card.append(meta);
    const scoreSummary=element('div','match-score-summary');
-   scoreSummary.append(element('strong','match-global','Sets '+pair1+'–'+pair2),element('span','', 'Ganador: '+(pair1>pair2?r.player1:r.player2)));
+   scoreSummary.append(element('strong','match-global','Sets '+pair1+'–'+pair2));
    card.append(scoreSummary);
-   const headings=element('div','match-set-headings');headings.setAttribute('aria-label','Orden de los sets');
-   r.sets.forEach((score,index)=>headings.append(element('b','', 'S'+(index+1))));
-   card.append(headings);
-   const first=element('div','match-player'),second=element('div','match-player');
-   for(const [row,side,playerName,winsMatch] of [[first,0,r.player1,pair1>pair2],[second,1,r.player2,pair2>pair1]]){
-     if(winsMatch)row.classList.add('is-match-winner');
-     const heading=element('span','match-name',playerName);
-     if(winsMatch)heading.append(element('span','match-winner',' · Ganador'));
-     row.append(heading);
-     const sets=element('div','match-sets');
-     r.sets.forEach(score=>{
-       const won=winnerForSet(score,side);
-       const value=element('b',won?'won-set':'lost-set',score[side]);
-       value.setAttribute('aria-label',won?'Set ganado: '+score[side]+' a '+score[1-side]:'Set perdido: '+score[side]+' a '+score[1-side]);
-       value.setAttribute('title',won?'Set ganado':'Set perdido');
-       sets.append(value);
-     });
-     row.append(sets);
-   }
-   card.append(first,second);
+   const opponents=element('div','match-opponents');
+   opponents.append(element('span','match-team',r.player1),element('span','match-versus','vs'),element('span','match-team',r.player2));
+   card.append(opponents);
+   const sets=element('ol','match-set-lines');
+   r.sets.forEach((score,index)=>{
+     const side=winnerForSet(score,0)?0:1;
+     const winner=side===0?r.player1:r.player2;
+     const line=element('li','match-set-line');
+     line.setAttribute('aria-label','Set '+(index+1)+': '+winner+' gana '+score[side]+' a '+score[1-side]);
+     line.append(element('span','match-set-num','S'+(index+1)),
+       element('strong','match-set-score',score[side]+'–'+score[1-side]),
+       element('strong','match-set-winner',winner));
+     sets.append(line);
+   });
+   card.append(sets);
    cards.append(card);
  }
  root.append(cards);
