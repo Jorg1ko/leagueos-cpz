@@ -37,7 +37,7 @@ assert.equal(searchParticipants(data,'a').length,0,'Avoid noisy one-character se
 assert.equal(searchParticipants(data,'inexistente').length,0);
 
 const html=fs.readFileSync('player.html','utf8');
-for(const value of ['mobile-standings','standing-row-main','standing-meta','renderPending(root,type,group,people)','match-score-summary','match-set-headings',"'Sets '+pair1+'–'+pair2"])
+for(const value of ['mobile-standings','standing-row-main','standing-meta','renderPending(root,type,group,people)','match-score-summary','match-set-lines',"'Sets '+pair1+'–'+pair2"])
  assert(html.includes(value), 'Missing UI: '+value);
 for(const value of ['id="playerSearch"','data-page="results"','id="resultsPanel"','Ver estadísticas completas','mobile-expanded','renderAll()','function renderPlayerSearch()'])
  assert(!html.includes(value), 'Obsolete or expandable UI found: '+value);
