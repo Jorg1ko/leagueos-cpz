@@ -8,7 +8,7 @@ import {onRequest as individualAPI} from '../functions/api/results.js';
 import {onRequest as doublesAPI} from '../functions/api/doubles-results.js';
 import {NOVEMBER_ROSTER,NOVEMBER_DOUBLES} from '../rosters.js';
 
-globalThis.crypto=webcrypto;
+assert(globalThis.crypto?.subtle,'Node 22 debe proporcionar Web Crypto');
 const secret='LOCAL-TEST-ONLY-NEVER-A-REAL-SECRET';
 const db=new DatabaseSync(':memory:');
 db.exec(`
