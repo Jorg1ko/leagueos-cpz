@@ -15,7 +15,9 @@ No fusionar con `main` ni ejecutar `provision-d1.yml`.
 
 ## Esquema y comprobaciones previas (solo lectura)
 
-Las dos tablas constan en el código, pero **antes de ejecutar cualquier migración** hay que verificar el esquema realmente presente en la base `leagueos-cpz-db`. Consultas SQL de inspección, sin modificaciones:
+**Inspección real de solo lectura completada el 22 de noviembre de 2026:** se consultó `sqlite_schema` y `COUNT(*)` mediante cuatro sentencias `SELECT` utilizando el permiso D1 Read. La tabla `cpz_match_results` tenía **30 filas** y `cpz_doubles_results` **11 filas**. Los campos y restricciones UNIQUE observados coinciden con las definiciones existentes; `deleted_at` no estaba presente en ninguna de ellas. Los índices observados son `sqlite_autoindex_cpz_match_results_1` (UNIQUE por `match_key`) y `sqlite_autoindex_cpz_doubles_results_1` (UNIQUE por `group_label,pair_one,pair_two`). Evidencia: ejecución de GitHub Actions [inspección D1 de solo lectura](https://github.com/Jorg1ko/leagueos-cpz/actions/runs/44983630076).
+
+**Antes de ejecutar la migración**, volver a contrastar esquema y recuentos por si han cambiado desde esta inspección. Consultas SQL recomendadas, sin modificaciones:
 
 ```sql
 PRAGMA table_info(cpz_match_results);
