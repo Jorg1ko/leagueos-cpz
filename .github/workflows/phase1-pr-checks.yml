@@ -57,6 +57,26 @@ jobs:
           assert 'secrets.CLOUDFLARE_D1_BACKUP_TOKEN' in flow
           print('Workflow de backup bloqueado hasta autorización y cifrado antes de subir')
           PY
+      - name: Cifrado y recuperación de ejemplo OFFLINE con claves efímeras
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v age >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y age
+          fi
+          work="$(mktemp -d)"
+          trap 'rm -rf "$work"' EXIT
+          chmod 700 "$work"
+          age-keygen -o "$work/key.txt" >/dev/null 2>&1
+          age-keygen -y "$work/key.txt" > "$work/public.txt"
+          # Solo un esquema de test vacío: no contiene jugadores ni partidos.
+          printf 'CREATE TABLE cpz_match_results (id INTEGER PRIMARY KEY);\\nCREATE TABLE cpz_doubles_results (id INTEGER PRIMARY KEY);\\n' > "$work/schema.sql"
+          age -r "$(cat "$work/public.txt")" -o "$work/schema.sql.age" "$work/schema.sql"
+          test -s "$work/schema.sql.age"
+          age -d -i "$work/key.txt" -o "$work/roundtrip.sql" "$work/schema.sql.age"
+          cmp "$work/schema.sql" "$work/roundtrip.sql"
+          echo "Cifrado age, descifrado y comparación exacta: OK (solo esquema local)"
       - name: Comprobar JS incrustado y migración inofensiva
         shell: bash
         run: |
