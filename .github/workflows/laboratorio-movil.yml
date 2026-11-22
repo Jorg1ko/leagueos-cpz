@@ -36,6 +36,7 @@ jobs:
           if(!html.includes('window.CPZ_LAB_DATA')||!html.includes('LABORATORIO'))throw Error('No es la version aislada');
           if(html.includes("fetch('/api/shared/data'"))throw Error('API de produccion detectada');
           NODE
+      # Revalidar lectura D1 del laboratorio tras configurar token de solo lectura.
       - name: Obtener copia de resultados oficiales con consultas SELECT
         id: snapshot
         continue-on-error: true
