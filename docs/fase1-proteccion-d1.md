@@ -55,6 +55,9 @@ Workflow `.github/workflows/d1-backup-cifrada.yml`:
 - utiliza **únicamente** el secreto específico `CLOUDFLARE_D1_BACKUP_TOKEN`, nunca el de Pages ni el de lectura del laboratorio;
 - exporta un SQL completo, comprueba que no esté vacío y que contiene las tablas de resultados; si falla, **no sube ninguna copia**;
 - **cifra el contenido con age antes de subirlo** a GitHub (repositorio público); la clave privada nunca entra en GitHub;
+- antes de cifrar, el SQL se carga en **SQLite temporal en memoria** para comprobar que es reconstruible, contiene ambas tablas y supera `PRAGMA quick_check`; los recuentos se muestran sin exponer datos personales;
+- el archivo temporal sin cifrar se mantiene con permisos restringidos fuera del workspace del repositorio y se elimina al terminar el paso o ante un error de cifrado;
+- CI verifica **sin red ni credenciales** el rechazo de archivos vacíos, incompletos y corruptos, y un ciclo age de cifrado y descifrado con claves desechables; este test **no prueba aún la restauración real** de una copia del club;
 - guarda artefactos `.sql.age` con `retention-days:14`. Para una ejecución diaria se conservan normalmente las copias de los últimos 14 días. Una ejecución manual crea una copia adicional; la retención por días no garantiza un recuento exacto de 14 artefactos;
 - no realiza consultas SQL de escritura ni modificaciones explícitas de filas. **Advertencia:** la exportación D1 requiere permiso D1 Write y puede bloquear temporalmente consultas, aunque solo genere una copia.
 
