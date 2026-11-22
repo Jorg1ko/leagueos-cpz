@@ -167,3 +167,90 @@ input:disabled{background:#e5edf3;color:#7e95a7}
  .site-footer{padding:18px 12px 30px;font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* Portada fotográfica · imágenes reales publicadas por Club Pickleball Zaragoza.
+   Las fotos son decorativas y los fondos degradados actúan como respaldo. */
+.hero{
+ min-height:325px;
+ padding:48px 44px;
+ background-color:#063e67;
+ background-image:linear-gradient(100deg,rgba(3,27,51,.96) 0%,rgba(4,35,66,.87) 38%,rgba(4,37,66,.43) 75%,rgba(3,33,57,.26) 100%),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/POCO-SOBRE-NOSOTROS-1536x864.jpg");
+ background-position:center,center 48%;
+ background-size:cover;
+ border:1px solid #ffffff35;
+ box-shadow:0 20px 48px #0d395333;
+}
+.hero:after{opacity:.35}
+.hero-content{max-width:610px}
+.hero h1{text-shadow:0 3px 16px #0005}
+.hero p{color:#eff8ff;text-shadow:0 2px 7px #0923377a}
+.hero-badges span{background:#ffffff1f;border:1px solid #ffffff50;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.hero-art{display:none}
+.service-card{overflow:hidden}
+.service-card.league-card{
+ background-color:#07365b;
+ background-image:linear-gradient(155deg,rgba(4,30,54,.80),rgba(4,31,57,.94) 73%),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/JUEGA-PARTIDOS-scaled-e1764497382127-768x768.jpg");
+ background-position:center,center 36%;
+ background-size:cover;
+ border-color:#ffffff29;
+ box-shadow:0 10px 25px #063e5c20;
+}
+.service-card.league-card .service-top,.service-card.league-card h3,.service-card.league-card p,.service-card.league-card .service-meta,.service-card.league-card .card-link{position:relative}
+.service-card.league-card .service-icon{background:#b7f47dde;color:#103e59;backdrop-filter:blur(5px)}
+.service-card.league-card .card-link{background:#b8f37e;color:#063e51}
+.service-card:not(.league-card){padding:0}
+.service-card:not(.league-card) .service-top{
+ min-height:142px;
+ padding:16px 18px;
+ align-items:flex-start;
+ background-color:#d4e8f3;
+ background-position:center;
+ background-size:cover;
+}
+.service-card.drop-card:nth-child(2) .service-top{
+ background-image:linear-gradient(180deg,rgba(3,29,57,.36),rgba(3,29,57,.03) 60%,rgba(3,29,57,.12)),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/ALQUILER-DE-PISTAS-1-scaled-e1764497323284-768x768.jpg");
+ background-position:center,center 46%;
+}
+.service-card.drop-card:nth-child(3) .service-top{
+ background-image:linear-gradient(180deg,rgba(3,29,57,.36),rgba(3,29,57,.03) 60%,rgba(3,29,57,.12)),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/CLASES-PERSONALIZADAS-scaled-e1764497349238-768x768.jpg");
+ background-position:center,center 38%;
+}
+.service-card:not(.league-card) .service-icon{
+ background:#ffffffeb;
+ color:#075987;
+ border:1px solid #fff9;
+ backdrop-filter:blur(5px);
+ box-shadow:0 5px 18px #00253d29;
+}
+.service-card:not(.league-card) .card-tag{
+ background:#eff9ffed;
+ color:#07557e;
+ border:1px solid #ffffffb5;
+ box-shadow:0 3px 14px #062b4e25;
+ backdrop-filter:blur(5px);
+}
+.service-card:not(.league-card) h3{margin:18px 19px 6px}
+.service-card:not(.league-card)>p{margin-left:19px;margin-right:19px}
+.service-card:not(.league-card) .activity-date{
+ margin:15px 19px 0;
+ background:#eaf7ff;
+ border:1px solid #d5ebfa;
+}
+.service-card:not(.league-card) .card-link{width:calc(100% - 38px);margin:19px 19px 19px}
+.service-card:not(.league-card) .card-link:hover{background:#d3ecff}
+@media(max-width:700px){
+ .hero{min-height:229px;padding:25px 21px;background-position:center,63% 50%;
+ background-image:linear-gradient(92deg,rgba(3,24,47,.94) 0%,rgba(4,34,62,.84) 50%,rgba(4,31,53,.35) 100%),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/POCO-SOBRE-NOSOTROS-1536x864.jpg")}
+ .hero h1{max-width:280px;text-shadow:0 3px 12px #0008}
+ .hero p{max-width:295px;color:#f5fbff}
+ .service-card:not(.league-card) .service-top{min-height:127px;padding:14px 16px}
+ .service-card:not(.league-card) h3{margin:15px 17px 5px}
+ .service-card:not(.league-card)>p{margin-left:17px;margin-right:17px}
+ .service-card:not(.league-card) .activity-date{margin:12px 17px 0}
+ .service-card:not(.league-card) .card-link{width:calc(100% - 34px);margin:15px 17px 17px}
+ .service-card.league-card{min-height:246px;background-position:center,center 45%}
+}
+@media(prefers-reduced-transparency:reduce){
+ .hero-badges span,.service-card:not(.league-card) .service-icon,.service-card:not(.league-card) .card-tag{backdrop-filter:none;-webkit-backdrop-filter:none}
+}
