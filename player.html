@@ -252,6 +252,41 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 .mobile-expanded-grid span{font-size:10px;color:#678296;display:block;margin-top:3px}
 @media(max-width:700px){.mobile-expanded-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* CPZ Laboratorio: buscador, enfrentamientos pendientes y marcador por sets. */
+.player-search{margin:17px 0 20px;padding:15px;border:1px solid #c9e5f6;border-radius:15px;background:linear-gradient(130deg,#edf8ff,#f8fbff)}
+.player-search>label{display:block;font-size:12px;font-weight:900;color:#194d74;margin-bottom:9px}
+.player-search-field{display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid #a9d4f0;border-radius:11px;padding:0 12px;min-height:48px}
+.player-search-field svg{width:19px;height:19px;stroke:#3e86b7;flex-shrink:0}
+.player-search-field input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#0c3457;font:inherit;font-size:16px;padding:12px 0}
+.player-search-field:focus-within{outline:2px solid #0c83d0;outline-offset:2px}
+.player-search-hint{font-size:11px;color:#68849b;margin:8px 0 0}
+.player-search-results:not(:empty){margin-top:10px;background:#fff;border:1px solid #d5e7f4;border-radius:12px;overflow:hidden}
+.player-search-choice{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:13px 11px;border:0;border-bottom:1px solid #e5eff6;background:#fff;color:#123e60;text-align:left;min-height:53px}
+.player-search-choice:last-child{border-bottom:0}
+.player-search-choice:focus-visible,.player-search-choice:hover{background:#eaf6ff;outline:0}
+.player-search-name{font-size:12px;line-height:1.35;font-weight:850;overflow-wrap:anywhere;min-width:0}
+.player-search-meta{font-size:10px;color:#0872b6;background:#ebf7ff;border-radius:7px;padding:6px 8px;flex-shrink:0;font-weight:800}
+.player-search-empty{padding:12px 13px;color:#63829a;font-size:12px}
+.found-player{outline:2px solid #0b86cf;outline-offset:1px;box-shadow:0 5px 20px #0987ce24!important;scroll-margin-top:25px}
+.focus-info{display:flex;align-items:center;gap:9px;justify-content:space-between;flex-wrap:wrap;background:#e9f7ff;border:1px solid #a7d8f6;border-radius:11px;padding:10px 12px;margin:13px 0 4px;font-size:12px;font-weight:800;color:#145d8e}
+.focus-clear{padding:8px 10px;border:1px solid #add8f1;border-radius:8px;background:#fff;color:#0c689f;font-size:11px;font-weight:800;min-height:36px}
+.pending-panel{margin:20px 0;padding:15px;border:1px solid #cfe5f6;background:linear-gradient(140deg,#f3faff,#fff);border-radius:15px}
+.pending-panel h3{margin:0;font-size:16px;color:#0a4c7c}
+.pending-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.pending-count{color:#0c689e;background:#deeffc;border-radius:999px;font-size:11px;font-weight:850;padding:6px 10px}
+.pending-desc{font-size:11px;color:#68869a;line-height:1.5;margin:10px 0}
+.pending-list{list-style:none;padding:0;margin:11px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px}
+.pending-pair{border:1px solid #d9e9f3;border-radius:11px;background:#fff;padding:11px;font-size:12px;font-weight:750;color:#194864;display:grid;gap:4px;overflow-wrap:anywhere}
+.pending-pair .versus{font-size:10px;color:#7995aa;font-weight:950;letter-spacing:1px}
+.pending-pair.focused-pair{border-color:#35a2e2;background:#ebf8ff}
+.pending-done{margin:10px 0 0;font-size:12px;font-weight:750;color:#277b47}
+.match-score-summary{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 7px;flex-wrap:wrap;color:#49728e;font-size:11px}
+.match-global{background:#e8f4ff;color:#075d97;border:1px solid #c7e4f7;font-size:12px;font-weight:950;padding:5px 9px;border-radius:9px;white-space:nowrap}
+.match-set-headings{display:flex;justify-content:flex-end;gap:4px;padding:0 0 3px}
+.match-set-headings b{min-width:27px;text-align:center;padding:3px 4px;color:#69879b;font-size:9px;font-weight:850}
+.match-player.is-match-winner>.match-name{color:#126a42}
+@media(max-width:700px){.player-search{padding:12px}.pending-panel{padding:13px}.pending-list{grid-template-columns:1fr}.match-score-summary{font-size:10px}.match-global{font-size:11px}}
 </style>
 </head><body>
 <header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">✦ LABORATORIO</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
@@ -260,6 +295,14 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
  <section id="loading" class="card" role="status">Cargando laboratorio…</section>
  <section id="app" hidden>
  <div id="overview" class="card"><h2 id="sectionTitle">Ranking individual CPZ</h2><p class="muted" id="sectionSubtitle">Consulta cualquier categoría y grupo. Las posiciones se actualizan cuando se registran resultados.</p>
+  <div class="player-search">
+   <label for="playerSearch">Buscar jugador o integrante de una pareja</label>
+   <div class="player-search-field"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="7.1"/><path d="m16.2 16.2 5 5"/></svg>
+    <input id="playerSearch" type="search" placeholder="Escribe un nombre…" autocomplete="off" spellcheck="false" aria-controls="playerSearchResults" />
+   </div>
+   <p class="player-search-hint">Busca en individual y dobles. Elige un jugador para abrir su grupo, clasificación y partidos.</p>
+   <div id="playerSearchResults" class="player-search-results" role="region" aria-label="Jugadores encontrados" aria-live="polite"></div>
+  </div>
   <details class="rules"><summary>¿Cómo se decide el orden de clasificación?</summary><p>Primero se compara quién ha ganado más partidos. Si dos participantes tienen las mismas victorias, queda por delante quien ganó su partido entre ellos. Si empatan tres, se comparan solo los partidos jugados entre esos tres: diferencia de sets, después diferencia de puntos y, por último, puntos a favor. Si todavía hay un empate sin resolver o faltan partidos, la posición es provisional y la organización debe confirmarla. Las franjas verde y roja muestran las plazas de ascenso y descenso, no resultados definitivos.</p></details>
   <div class="filters"><label>Categoría<select id="category"></select></label><label>Grupo<select id="group"></select></label></div>
   <div id="ranking"></div>
@@ -327,18 +370,71 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 </main>
 <script src="./ranking-engine.js"></script>
 <script src="./lab-data.js"></script>
+<script src="./lab-features.js"></script>
 <script src="./lab-results.js"></script>
 <script>
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
-let data=null,page='individual';
+let data=null,page='individual',focusParticipant=null;
 const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');
 
 function option(select,value,label){const o=document.createElement('option');o.value=value;o.textContent=label;select.append(o)}
 function element(tag,className,text){const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=String(text);return e}
 function records(type,group){const list=type==='individual'?data.individualResults:data.doublesResults;return list.filter(r=>!group||r.groupLabel===group)}
 function names(type,group){const roster=(type==='individual'?data.individualGroups:data.doublesGroups)[group]||[];return roster.map(p=>Array.isArray(p)?p.join(' / '):p)}
+
+function activeFocus(type,group){
+ return focusParticipant&&focusParticipant.type===type&&focusParticipant.group===group?focusParticipant.name:null;
+}
+function renderPlayerSearch(){
+ const root=$('playerSearchResults');root.replaceChildren();
+ const query=$('playerSearch').value.trim();
+ if(norm(query).length<2)return;
+ const found=CPZLabFeatures.searchParticipants(data,query);
+ if(!found.length){root.append(element('div','player-search-empty','No se han encontrado jugadores o parejas con ese nombre.'));return}
+ found.forEach(hit=>{
+  const button=element('button','player-search-choice');button.type='button';
+  button.append(element('span','player-search-name',hit.name),element('span','player-search-meta',(hit.mode==='individual'?'Individual':'Dobles')+' · '+hit.group));
+  button.addEventListener('click',()=>{
+   focusParticipant={type:hit.mode,group:hit.group,name:hit.name};
+   switchPage(hit.mode);
+   $('category').value=hit.group[0];renderRank();
+   $('group').value=hit.group;renderSelected();
+   root.replaceChildren();$('playerSearch').value='';
+   const chosen=$('ranking').querySelector('.found-player');
+   if(chosen)requestAnimationFrame(()=>chosen.scrollIntoView({behavior:'smooth',block:'center'}));
+  });
+  root.append(button);
+ });
+}
+function renderPending(root,type,group,people){
+ const panel=element('section','pending-panel');
+ const head=element('div','pending-head'),title=element('h3','', 'Partidos pendientes');
+ head.append(title);
+ panel.append(head);
+ if(!window.CPZ_LAB_RESULTS?.available){
+  panel.append(element('p','pending-desc','No es posible identificar los pendientes sin una copia de los resultados oficiales.'));
+  root.append(panel);return;
+ }
+ const pending=CPZLabFeatures.pendingMatches(people,records(type,group));
+ head.append(element('span','pending-count',pending.pending.length+' de '+pending.expected+' cruces por jugar'));
+ panel.append(element('p','pending-desc','Cruces sin resultado registrado en la copia oficial del laboratorio. No implica que tengan fecha u horario asignado.'));
+ if(!pending.pending.length){
+  panel.append(element('p','pending-done','Todos los enfrentamientos de este grupo tienen un resultado registrado.'));
+ }else{
+  const list=element('ul','pending-list'),focus=activeFocus(type,group);
+  for(const game of pending.pending){
+   const highlighted=focus&&(norm(game.player1)===norm(focus)||norm(game.player2)===norm(focus));
+   const item=element('li','pending-pair'+(highlighted?' focused-pair':''));
+   item.append(element('span','',game.player1),element('span','versus','VS'),element('span','',game.player2));
+   list.append(item);
+  }
+  panel.append(list);
+ }
+ root.append(panel);
+}
+
 function criterionText(p,groupInfo){
  const label=p.name;
  if(!p.pj)return label+' todavía no tiene partidos registrados. La posición refleja solamente el orden inicial del listado y no una clasificación ganada.';
@@ -363,6 +459,7 @@ function renderRank(){
 function renderSelected(){
  const group=$('group').value,type=page,people=names(type,group),result=CPZRanking.rankCompetition(people,records(type,group));
  const root=$('ranking');root.replaceChildren();
+ const currentFocus=activeFocus(type,group);
  const heading=element('div','rank-heading');
  const headline=element('h3','', 'Grupo '+group);
  const progress=element('span','progress-label',result.played+' / '+result.expected+' partidos');
@@ -373,7 +470,8 @@ function renderSelected(){
  const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
  const body=element('tbody');
  result.rows.forEach((p,i)=>{
-  const tr=element('tr',i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'');
+  const highlighted=currentFocus&&norm(p.name)===norm(currentFocus);
+  const tr=element('tr',(i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'')+(highlighted?' found-player':''));
   const pos=element('td','pos',i+1);tr.append(pos);
   const name=element('td','',p.name),details=element('details','explain'),summary=element('summary','', 'ⓘ');
   summary.setAttribute('aria-label','Explicar la posición de '+p.name);
@@ -388,7 +486,7 @@ function renderSelected(){
   result.rows.forEach((p,i)=>{
     const gamesPlayed=result.played>0;
     const movement=gamesPlayed&&i===0&&group!=='A1'?'up':gamesPlayed&&i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'';
-    const card=element('article','mobile-player '+movement);
+    const card=element('article','mobile-player '+movement+(currentFocus&&norm(p.name)===norm(currentFocus)?' found-player':''));
     const heading=element('div','mobile-player-top');
     heading.append(element('div','mobile-pos',i+1));
     const player=element('div','mobile-player-name',p.name),details=element('details','explain'),summary=element('summary','','ⓘ');
@@ -420,8 +518,21 @@ function renderSelected(){
  root.append(element('p','muted','*PTS indica 3 puntos informativos por victoria; el orden oficial se decide por partidos ganados y los desempates. Los números iniciales no son una clasificación oficial.'));
  if(result.warnings.length)root.append(element('p','message','Revisión pendiente: '+result.warnings.join(' · ')));
  if(!result.complete)root.append(element('p','message','Clasificación provisional. No están registrados todos los encuentros o hay empates sin resolver.'));
- const matchTitle=element('h3','', 'Resultados del grupo');root.append(matchTitle);
- const scores=records(type,group);renderResultsTable(root,scores);
+ renderPending(root,type,group,people);
+ const scores=records(type,group);
+ if(currentFocus){
+  const info=element('div','focus-info');
+  const filtered=scores.filter(r=>norm(r.player1)===norm(currentFocus)||norm(r.player2)===norm(currentFocus));
+  info.append(element('span','',currentFocus+' · '+filtered.length+' partidos registrados'));
+  const clear=element('button','focus-clear','Mostrar todo el grupo');clear.type='button';
+  clear.addEventListener('click',()=>{focusParticipant=null;renderSelected()});
+  info.append(clear);root.append(info);
+  root.append(element('h3','', 'Resultados de '+currentFocus));
+  renderResultsTable(root,filtered);
+ }else{
+  root.append(element('h3','', 'Resultados del grupo'));
+  renderResultsTable(root,scores);
+ }
 }
 function winnerForSet(score,side){
  return Number(score[side])>Number(score[1-side]);
@@ -436,8 +547,15 @@ function renderResultsTable(root,list){
    const meta=element('div','match-meta'),day=element('span','',r.date+' · '+r.groupLabel);
    const type=element('span','match-type',data.doublesResults.includes(r)?'Dobles':'Individual');
    meta.append(day,type);card.append(meta);
+   const scoreSummary=element('div','match-score-summary');
+   scoreSummary.append(element('strong','match-global','Sets '+pair1+'–'+pair2),element('span','', 'Ganador: '+(pair1>pair2?r.player1:r.player2)));
+   card.append(scoreSummary);
+   const headings=element('div','match-set-headings');headings.setAttribute('aria-label','Orden de los sets');
+   r.sets.forEach((score,index)=>headings.append(element('b','', 'S'+(index+1))));
+   card.append(headings);
    const first=element('div','match-player'),second=element('div','match-player');
    for(const [row,side,playerName,winsMatch] of [[first,0,r.player1,pair1>pair2],[second,1,r.player2,pair2>pair1]]){
+     if(winsMatch)row.classList.add('is-match-winner');
      const heading=element('span','match-name',playerName);
      if(winsMatch)heading.append(element('span','match-winner',' · Ganador'));
      row.append(heading);
@@ -464,7 +582,11 @@ function renderAll(){
  [...valid].sort().forEach(g=>option(select,g,'Grupo '+g));
  select.value=valid.has(previous)?previous:'all';
  const list=[...(type==='doubles'?[]:data.individualResults),...(type==='individual'?[]:data.doublesResults)].filter(r=>select.value==='all'||r.groupLabel===select.value).sort((a,b)=>b.date.localeCompare(a.date));
- const root=$('allResults');root.replaceChildren();renderResultsTable(root,list);
+ const root=$('allResults');root.replaceChildren();
+ if(select.value!=='all'&&(type==='individual'||type==='doubles')){
+  renderPending(root,type,select.value,names(type,select.value));
+ }
+ renderResultsTable(root,list);
 }
 function switchPage(next){
  page=next;document.querySelectorAll('[data-page]').forEach(b=>{if(b.dataset.page===next)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
@@ -476,8 +598,9 @@ function switchPage(next){
  if(next==='results')renderAll();
  else if(ranking){$('sectionTitle').textContent=next==='individual'?'Ranking individual CPZ':'Ranking dobles CPZ';$('sectionSubtitle').textContent='Selecciona una categoría y un grupo para ver la clasificación, los resultados y el motivo de cada posición.';renderRank()}
 }
-$('category').addEventListener('change',()=>{$('group').value='';renderRank()});
-$('group').addEventListener('change',renderSelected);
+$('playerSearch').addEventListener('input',renderPlayerSearch);
+$('category').addEventListener('change',()=>{focusParticipant=null;$('group').value='';renderRank()});
+$('group').addEventListener('change',()=>{focusParticipant=null;renderSelected()});
 $('resultType').addEventListener('change',renderAll);$('resultGroup').addEventListener('change',renderAll);
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.page)));
 $('logout').hidden=true;
