@@ -14,6 +14,7 @@ import urllib.error
 import urllib.request
 
 ACCOUNT = "91f1c143e0758ef69970b4d75629f605"
+# Identificador cotejado con el flujo de recuperación D1 del repositorio oficial.
 DB = "34356bf4-507b-4cc8-8de0-aca736e23cf9"
 ENDPOINT = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/d1/database/{DB}/query"
 OUTPUT = pathlib.Path("lab-static/dist/lab-results.js")
