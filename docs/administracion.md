@@ -39,3 +39,15 @@ Con ambas variables configuradas y el despliegue completado, `/api/session` debe
 https://leagueos-cpz.pages.dev
 
 Nota: esta demo aún muestra jugadores de prueba. No introducir datos personales reales hasta completar el despliegue de producción y los controles de privacidad.
+
+
+## Papelera y recuperación (fase 1 pendiente de revisión)
+
+Se ha preparado un PR separado que sustituye el borrado físico de partidos individuales y dobles por marcado reversible (`deleted_at`) y añade auditoría de creación, edición, borrado y restauración. **Este comportamiento solo estará disponible tras migración autorizada y despliegue compatible.** No dar por supuesto que ya está activo en producción.
+
+Tras su aprobación, para recuperar un partido enviado a la papelera:
+1. Entrar como administrador y abrir la sección **Resultados** o **Dobles**.
+2. Buscar el cruce en la **Papelera** y pulsar **Restaurar**.
+3. Verificar que reaparece en resultados activos y que la clasificación se recalcula. La API registra la restauración en el historial.
+
+Si no aparece, no repetir altas ni ejecutar manualmente SQL sobre la base real: revisar primero el historial y la copia cifrada, previa autorización. Guía íntegra de preparación, controles y marcha atrás: `docs/fase1-proteccion-d1.md`.
