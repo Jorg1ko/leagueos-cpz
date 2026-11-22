@@ -1,0 +1,55 @@
+name: Importar fotos oficiales al laboratorio (una vez)
+on:
+  push:
+    branches:
+      - experimental/laboratorio-cpz
+    paths:
+      - .github/workflows/importar-fotos-lab.yml
+permissions:
+  contents: write
+jobs:
+  guardar_imagenes:
+    if: github.ref == 'refs/heads/experimental/laboratorio-cpz'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experimental/laboratorio-cpz
+      - name: Descargar fotos publicas del club solo al laboratorio
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p lab-assets
+          base="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11"
+          curl --fail --show-error --location --retry 3 --max-time 50 --user-agent "CPZ-Laboratorio/1.0" "$base/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview-300x279.webp" --output lab-assets/escudo-cpz.webp
+          curl --fail --show-error --location --retry 3 --max-time 50 --user-agent "CPZ-Laboratorio/1.0" "$base/POCO-SOBRE-NOSOTROS-1024x576.jpg" --output lab-assets/pistas-cpz.jpg
+          curl --fail --show-error --location --retry 3 --max-time 50 --user-agent "CPZ-Laboratorio/1.0" "$base/JUEGA-PARTIDOS-scaled-e1764497382127-768x768.jpg" --output lab-assets/partidos-cpz.jpg
+          curl --fail --show-error --location --retry 3 --max-time 50 --user-agent "CPZ-Laboratorio/1.0" "$base/ALQUILER-DE-PISTAS-1-scaled-e1764497323284-768x768.jpg" --output lab-assets/alquiler-cpz.jpg
+          curl --fail --show-error --location --retry 3 --max-time 50 --user-agent "CPZ-Laboratorio/1.0" "$base/CLASES-PERSONALIZADAS-scaled-e1764497349238-768x768.jpg" --output lab-assets/clases-cpz.jpg
+          file --mime-type lab-assets/*
+          python3 - <<'PY'
+          from pathlib import Path
+          files=list(Path("lab-assets").glob("*"))
+          if len(files)!=5:raise SystemExit("No se han descargado las cinco imagenes")
+          for path in files:
+              blob=path.read_bytes()
+              if not (2000<len(blob)<4_000_000):raise SystemExit("Imagen inesperada: "+str(path))
+              if path.suffix=='.jpg' and not blob.startswith(b'\xff\xd8\xff'):
+                  raise SystemExit("JPG incorrecto: "+str(path))
+              if path.suffix=='.webp' and not (blob[:4]==b'RIFF' and blob[8:12]==b'WEBP'):
+                  raise SystemExit("WebP incorrecto: "+str(path))
+          PY
+      - name: Guardar imagenes en la rama aislada
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/experimental/laboratorio-cpz"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- lab-assets/escudo-cpz.webp lab-assets/pistas-cpz.jpg lab-assets/partidos-cpz.jpg lab-assets/alquiler-cpz.jpg lab-assets/clases-cpz.jpg
+          if git diff --cached --quiet; then
+            echo "Las imagenes ya estan guardadas en la rama experimental."
+            exit 0
+          fi
+          git commit -m "assets(lab): save official CPZ photographs locally"
+          git push origin HEAD:experimental/laboratorio-cpz
