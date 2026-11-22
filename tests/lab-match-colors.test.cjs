@@ -6,7 +6,9 @@ const vm = require('node:vm');
 const html = fs.readFileSync('player.html', 'utf8');
 assert(!/cpz-podium|Podio del grupo|Podio provisional|Podio pendiente/.test(html), 'Se ha reintroducido el podio.');
 assert(!html.includes('.match-sets.winner b'), 'No se debe pintar toda una fila según el ganador del partido.');
-assert(html.includes("won?'won-set':'lost-set'"), 'El color debe calcularse para cada set y cada jugador.');
+assert(html.includes("const side=winnerForSet(score,0)?0:1"), 'El ganador se determina individualmente para cada set.');
+assert(html.includes("element('strong','match-set-winner',winner)"), 'El ganador de cada set debe destacar en negrita.');
+assert(html.includes("element('li','match-set-line')"), 'Cada set debe ocupar su propia línea.');
 
 const source = html.match(/function winnerForSet\(score,side\)\{[\s\S]*?\n\}/);
 assert(source, 'Falta la función real para comparar el marcador de cada set.');
@@ -24,6 +26,6 @@ for (const score of matchScores) {
 assert.equal(wins(matchScores[0], 0), true);
 assert.equal(wins(matchScores[0], 1), false);
 assert.equal(wins(matchScores[1], 0), false);
-assert.equal(wins(matchScores[1], 1), true, 'El jugador que pierde el partido también debe poder tener sets en verde.');
+assert.equal(wins(matchScores[1], 1), true, 'El perdedor del partido también puede ganar un set.');
 assert.equal(wins(matchScores[2], 0), true);
-console.log('OK: sin podios; cada set solo pone verde al jugador que ganó ese set.');
+console.log('OK: sin podios; ganador de cada set correcto y en negrita, sin colores de victoria.');
