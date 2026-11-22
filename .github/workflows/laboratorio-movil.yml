@@ -22,19 +22,23 @@ jobs:
           cp player.html lab-static/dist/index.html
           cp ranking-engine.js lab-static/dist/ranking-engine.js
           cp lab-data.js lab-static/dist/lab-data.js
+          cp lab-features.js lab-static/dist/lab-features.js
           cp lab-results.js lab-static/dist/lab-results.js
           test ! -e lab-static/functions
           node --check lab-static/dist/lab-data.js
+          node --check lab-static/dist/lab-features.js
           node --check lab-static/dist/lab-results.js
           node --check lab-static/dist/ranking-engine.js
           node tests/ranking-engine.test.cjs
           node tests/lab-match-colors.test.cjs
+          node tests/lab-features.test.cjs
           node - <<'NODE'
           const fs=require('fs'),vm=require('vm');
           const html=fs.readFileSync('lab-static/dist/index.html','utf8');
           const script=/<script\b[^>]*>([\s\S]*?)<\/script>/gi;
           let match;while((match=script.exec(html)))if(match[1].trim())new vm.Script(match[1]);
           if(!html.includes('window.CPZ_LAB_DATA')||!html.includes('LABORATORIO'))throw Error('No es la version aislada');
+          if(!html.includes('./lab-features.js'))throw Error('Falta el buscador y los pendientes');
           if(html.includes("fetch('/api/shared/data'"))throw Error('API de produccion detectada');
           NODE
       # Revalidar lectura D1 del laboratorio tras configurar token de solo lectura.
