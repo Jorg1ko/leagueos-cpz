@@ -87,7 +87,7 @@ jobs:
           endpoint='https://api.cloudflare.com/client/v4/accounts/91f1c143e0758ef69970b4d75629f605/d1/database/34356bf4-507b-4cc8-8de0-aca736e23cf9/query'
           tables=('cpz_match_results','cpz_doubles_results')
           def query(sql):
-              if not re.match(r'^\\s*SELECT\\b',sql,re.I):
+              if not re.match(r'^\s*SELECT\b',sql,re.I):
                   raise SystemExit('Bloqueado: únicamente SELECT.')
               req=urllib.request.Request(endpoint,
                   data=json.dumps({'sql':sql}).encode('utf-8'),
