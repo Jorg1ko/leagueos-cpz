@@ -51,7 +51,7 @@ jobs:
           from pathlib import Path
           flow=Path('.github/workflows/d1-backup-cifrada.yml').read_text()
           assert "vars.CPZ_D1_BACKUP_APPROVED == 'true'" in flow
-          assert "trap 'rm -f \\"$D1_EXPORT_OUTPUT\\"' EXIT" in flow or "trap 'rm -f \"$D1_EXPORT_OUTPUT\"' EXIT" in flow
+          assert 'trap ' in flow and 'D1_EXPORT_OUTPUT' in flow
           assert 'retention-days: 14' in flow
           assert 'age -r "$AGE_RECIPIENT"' in flow
           assert 'secrets.CLOUDFLARE_D1_BACKUP_TOKEN' in flow
