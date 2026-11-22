@@ -1,4 +1,5 @@
 import {NOVEMBER_ROSTER} from '../../rosters.js';
+import {previousResult,auditAfter} from '../result-audit.js';
 // Importación controlada de resultados del ranking CPZ 2026/27.
 // Únicamente admin; Excel se analiza localmente, el servidor valida y guarda filas en D1.
 const COOKIE='__Host-leagueos_admin',AGE=8*60*60,te=new TextEncoder();
@@ -50,9 +51,9 @@ function parseSets(value){
   if(wins1!==2&&wins2!==2)return null;
   return {sets,winner:wins1===2?1:2};
 }
-async function read(db){
-  const rows=await db.prepare("SELECT r.id,r.played_at AS date,r.round_label AS round,r.group_label AS groupLabel,a.player_name AS player1,b.player_name AS player2,r.sets_json AS setsJson,r.winner_id AS winnerId,r.player_one_id AS player1Id,r.player_two_id AS player2Id,r.source_file AS sourceFile,r.imported_at AS importedAt FROM cpz_match_results r LEFT JOIN cpz_player_accounts a ON a.id=r.player_one_id LEFT JOIN cpz_player_accounts b ON b.id=r.player_two_id ORDER BY r.played_at DESC,r.id DESC LIMIT 2500").all();
-  return {ok:true,results:(rows.results||[]).map(x=>({id:x.id,date:x.date,round:x.round,groupLabel:x.groupLabel,player1:x.player1||'Jugador eliminado',player2:x.player2||'Jugador eliminado',sets:JSON.parse(x.setsJson),winner:x.winnerId===x.player1Id?(x.player1||'Jugador eliminado'):(x.player2||'Jugador eliminado'),sourceFile:x.sourceFile,importedAt:x.importedAt})),total:rows.results?.length||0};
+async function read(db,trashed=false){
+  const rows=await db.prepare("SELECT r.id,r.played_at AS date,r.round_label AS round,r.group_label AS groupLabel,a.player_name AS player1,b.player_name AS player2,r.sets_json AS setsJson,r.winner_id AS winnerId,r.player_one_id AS player1Id,r.player_two_id AS player2Id,r.source_file AS sourceFile,r.imported_at AS importedAt,r.deleted_at AS deletedAt FROM cpz_match_results r LEFT JOIN cpz_player_accounts a ON a.id=r.player_one_id LEFT JOIN cpz_player_accounts b ON b.id=r.player_two_id WHERE r.deleted_at IS "+(trashed?'NOT NULL':'NULL')+" ORDER BY r.played_at DESC,r.id DESC LIMIT 2500").all();
+  return {ok:true,results:(rows.results||[]).map(x=>({id:x.id,date:x.date,round:x.round,groupLabel:x.groupLabel,player1:x.player1||'Jugador eliminado',player2:x.player2||'Jugador eliminado',sets:JSON.parse(x.setsJson),winner:x.winnerId===x.player1Id?(x.player1||'Jugador eliminado'):(x.player2||'Jugador eliminado'),sourceFile:x.sourceFile,importedAt:x.importedAt,...(trashed?{deletedAt:x.deletedAt}:{})})),total:rows.results?.length||0};
 }
 export async function onRequest({request,env}){
   try{
@@ -60,7 +61,7 @@ export async function onRequest({request,env}){
     if(!['GET','POST'].includes(request.method))return fail('Método no permitido.',405);
     if(request.method==='POST'&&!sameOrigin(request))return fail('Origen o formato incorrecto.',403);
     await create(env.LEAGUE_DB);
-    if(request.method==='GET')return respond(await read(env.LEAGUE_DB));
+    if(request.method==='GET')return respond(await read(env.LEAGUE_DB,new URL(request.url).searchParams.get('trash')==='1'));
     const raw=await request.text();
     if(raw.length>130000)return fail('Importación demasiado grande (máximo 200 partidos).',413);
     const body=JSON.parse(raw);
@@ -90,24 +91,45 @@ export async function onRequest({request,env}){
       if(!parsed)return fail('Introduce 2 o 3 sets válidos: 11 puntos como mínimo, diferencia de 2 y victoria en 2 sets.');
       const ids=[one,two].sort((x,y)=>x-y);
       const key=date+'|'+normal(round)+'|'+ids[0]+'-'+ids[1];
-      const duplicate=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_match_results WHERE match_key=?').bind(key).first();
-      if(duplicate&&duplicate.id!==id)return fail('Ese partido ya tiene un resultado. Utiliza Editar.',409);
+      const duplicate=await previousResult(env.LEAGUE_DB,'individual','match_key',key);
+      if(duplicate&&(duplicate.id!==id||duplicate.deleted_at!==null))
+        return fail('Ese cruce existe (o está en la papelera). Restaura el original antes de registrar otro.',409);
       const winner=parsed.winner===1?one:two;
+      const nextSets=JSON.stringify(parsed.sets);
       if(id!==null){
-        const existing=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_match_results WHERE id=?').bind(id).first();
-        if(!existing)return fail('Resultado no encontrado.',404);
-        await env.LEAGUE_DB.prepare("UPDATE cpz_match_results SET match_key=?,played_at=?,round_label=?,group_label=?,player_one_id=?,player_two_id=?,sets_json=?,winner_id=?,source_file='manual',imported_at=CURRENT_TIMESTAMP WHERE id=?")
-          .bind(key,date,round,group,one,two,JSON.stringify(parsed.sets),winner,id).run();
+        const existing=await previousResult(env.LEAGUE_DB,'individual','id',id);
+        if(!existing||existing.deleted_at!==null)return fail('Resultado no encontrado entre los activos.',404);
+        // Modificación e historial forman una sola transacción.
+        await env.LEAGUE_DB.batch([
+          env.LEAGUE_DB.prepare("UPDATE cpz_match_results SET match_key=?,played_at=?,round_label=?,group_label=?,player_one_id=?,player_two_id=?,sets_json=?,winner_id=?,source_file='manual',imported_at=CURRENT_TIMESTAMP WHERE id=? AND deleted_at IS NULL")
+            .bind(key,date,round,group,one,two,nextSets,winner,id),
+          auditAfter(env.LEAGUE_DB,'individual','edit',existing,'id',id,' AND deleted_at IS NULL')
+        ]);
       }else{
-        await env.LEAGUE_DB.prepare("INSERT INTO cpz_match_results(match_key,played_at,round_label,group_label,player_one_id,player_two_id,sets_json,winner_id,source_file) VALUES(?,?,?,?,?,?,?,?,'manual')")
-          .bind(key,date,round,group,one,two,JSON.stringify(parsed.sets),winner).run();
+        await env.LEAGUE_DB.batch([
+          env.LEAGUE_DB.prepare("INSERT INTO cpz_match_results(match_key,played_at,round_label,group_label,player_one_id,player_two_id,sets_json,winner_id,source_file) VALUES(?,?,?,?,?,?,?,?,'manual')")
+            .bind(key,date,round,group,one,two,nextSets,winner),
+          auditAfter(env.LEAGUE_DB,'individual','create',null,'match_key',key,' AND deleted_at IS NULL')
+        ]);
       }
       return respond(await read(env.LEAGUE_DB));
     }
-    if(body?.action==='delete'){
+    if(body?.action==='delete'||body?.action==='restore'){
       const id=Number(body.id);
       if(!Number.isSafeInteger(id)||id<=0)return fail('ID inválido.');
-      await env.LEAGUE_DB.prepare('DELETE FROM cpz_match_results WHERE id=?').bind(id).run();
+      const existing=await previousResult(env.LEAGUE_DB,'individual','id',id);
+      const deleting=body.action==='delete';
+      if(!existing||(deleting?existing.deleted_at!==null:existing.deleted_at===null))
+        return fail('Resultado no encontrado en la lista correspondiente.',404);
+      await env.LEAGUE_DB.batch([
+        env.LEAGUE_DB.prepare(
+          deleting
+          ?'UPDATE cpz_match_results SET deleted_at=CURRENT_TIMESTAMP WHERE id=? AND deleted_at IS NULL'
+          :'UPDATE cpz_match_results SET deleted_at=NULL WHERE id=? AND deleted_at IS NOT NULL'
+        ).bind(id),
+        auditAfter(env.LEAGUE_DB,'individual',body.action,existing,'id',id,
+          deleting?' AND deleted_at IS NOT NULL':' AND deleted_at IS NULL')
+      ]);
       return respond(await read(env.LEAGUE_DB));
     }
     if(body?.action!=='import'||!Array.isArray(body.rows)||body.rows.length<1||body.rows.length>200||body.confirm!==true)
@@ -134,19 +156,29 @@ export async function onRequest({request,env}){
       items.push({key,date,round,group,id1:first.id,id2:second.id,sets:sets.sets,winner:sets.winner===1?first.id:second.id});
     }
     if(issues.length)return fail('Hay errores en el archivo. No se ha guardado ningún partido.',422,issues.slice(0,35));
-    if(body.replaceExisting!==true){
-      for(const item of items){
-        const existing=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_match_results WHERE match_key=?').bind(item.key).first();
-        if(existing)return fail('Hay partidos que ya existen. Activa «Actualizar partidos existentes» solo si quieres sobrescribirlos.',409);
-      }
+    // Auditar también cada fila de los Excel (altas y ediciones).
+    // No se permite sobrescribir silenciosamente un resultado enviado a la papelera.
+    const previous=new Map();
+    for(const item of items){
+      const existing=await previousResult(env.LEAGUE_DB,'individual','match_key',item.key);
+      if(existing?.deleted_at!==null&&existing?.deleted_at!==undefined)
+        return fail('Hay un resultado del archivo en la papelera. Restáuralo antes de importar.',409);
+      if(existing&&body.replaceExisting!==true)
+        return fail('Hay partidos que ya existen. Activa «Actualizar partidos existentes» solo si quieres sobrescribirlos.',409);
+      previous.set(item.key,existing);
     }
     const file=typeof body.fileName==='string'?body.fileName.slice(0,120):'';
-    const stmts=items.map(x=>env.LEAGUE_DB.prepare(
-      body.replaceExisting===true
-        ?"INSERT INTO cpz_match_results (match_key,played_at,round_label,group_label,player_one_id,player_two_id,sets_json,winner_id,source_file) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(match_key) DO UPDATE SET played_at=excluded.played_at,round_label=excluded.round_label,group_label=excluded.group_label,player_one_id=excluded.player_one_id,player_two_id=excluded.player_two_id,sets_json=excluded.sets_json,winner_id=excluded.winner_id,source_file=excluded.source_file,imported_at=CURRENT_TIMESTAMP"
-        :"INSERT INTO cpz_match_results (match_key,played_at,round_label,group_label,player_one_id,player_two_id,sets_json,winner_id,source_file) VALUES(?,?,?,?,?,?,?,?,?)"
-    ).bind(x.key,x.date,x.round,x.group,x.id1,x.id2,JSON.stringify(x.sets),x.winner,file));
-    // D1 batch es transaccional: ningún resultado se guarda si alguna fila falla.
+    const stmts=[];
+    for(const x of items){
+      stmts.push(env.LEAGUE_DB.prepare(
+        body.replaceExisting===true
+          ?"INSERT INTO cpz_match_results (match_key,played_at,round_label,group_label,player_one_id,player_two_id,sets_json,winner_id,source_file) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(match_key) DO UPDATE SET played_at=excluded.played_at,round_label=excluded.round_label,group_label=excluded.group_label,player_one_id=excluded.player_one_id,player_two_id=excluded.player_two_id,sets_json=excluded.sets_json,winner_id=excluded.winner_id,source_file=excluded.source_file,imported_at=CURRENT_TIMESTAMP WHERE cpz_match_results.deleted_at IS NULL"
+          :"INSERT INTO cpz_match_results (match_key,played_at,round_label,group_label,player_one_id,player_two_id,sets_json,winner_id,source_file) VALUES(?,?,?,?,?,?,?,?,?)"
+      ).bind(x.key,x.date,x.round,x.group,x.id1,x.id2,JSON.stringify(x.sets),x.winner,file));
+      const before=previous.get(x.key);
+      stmts.push(auditAfter(env.LEAGUE_DB,'individual',before?'edit':'create',before,'match_key',x.key,' AND deleted_at IS NULL'));
+    }
+    // D1 batch es transaccional: los resultados y su historial se guardan juntos.
     await env.LEAGUE_DB.batch(stmts);
     const data=await read(env.LEAGUE_DB);
     return respond({...data,imported:items.length});
