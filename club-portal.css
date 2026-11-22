@@ -305,3 +305,14 @@ input:disabled{background:#e5edf3;color:#7e95a7}
  .feedback{color:#a4e3be}
  .feedback.is-error{color:#f8b6b0}
 }
+
+/* Un solo azul de marca; feedback también legible sin códigos verde/rojo. */
+.back-link{min-height:44px;display:inline-flex;align-items:center}
+.feedback{color:#196b9c}
+.feedback.is-error{color:#7b612e}
+.remove-person{min-height:44px;background:#e7f2fa;color:#145a8c;border-color:#b9d8eb}
+@media(prefers-color-scheme:dark){
+ .feedback{color:#aedafa}
+ .feedback.is-error{color:#f0d69a}
+ .remove-person{background:#284761;color:#d7edff;border-color:#466e8b}
+}
