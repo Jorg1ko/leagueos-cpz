@@ -180,7 +180,10 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 .match-player span:first-child{min-width:0;overflow-wrap:anywhere}
 .match-sets{display:flex;gap:4px;flex-shrink:0}
 .match-sets b{background:#eff3f8;min-width:27px;text-align:center;padding:6px 4px;border-radius:7px;color:#365674}
-.match-sets.winner b{background:#d7f7cf;color:#1c772b}
+.match-sets b.won-set{background:#d7f7cf;color:#166a24;font-weight:950;box-shadow:inset 0 0 0 1px #9be2a1}
+.match-sets b.lost-set{background:#eff3f8;color:#526c83}
+.match-winner{display:inline-flex;margin-left:6px;color:#1c7730;font-weight:900;font-size:10px;white-space:nowrap}
+.match-set-note{font-size:11px;color:#648298;margin-top:12px;line-height:1.45}
 @media(min-width:701px){.mobile-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.match-card{margin:0}}
 @media(max-width:700px){
  .top{background:linear-gradient(118deg,#062c52 0%,#075392 61%,#078fda)}
@@ -234,22 +237,6 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 @media(max-width:700px){.discount-section{padding:14px 12px;border-radius:15px}.discount-title h3{font-size:18px}.discount-grid{grid-template-columns:1fr;gap:12px}.discount-card{padding:15px}.discount-code{font-size:18px;letter-spacing:1px}.discount-copy{min-height:52px;font-size:14px}.discount-kind{font-size:14px}}
 
 /* LABORATORIO CPZ — podio deportivo, estadísticas y enlaces compartibles */
-.cpz-podium-title{font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:#377ba9;margin:0 0 13px}
-.cpz-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;align-items:end;margin:17px 0 20px}
-.cpz-podium-person{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;min-width:0;gap:6px}
-.cpz-podium-circle{display:grid;place-items:center;border-radius:50%;width:43px;height:43px;font-size:17px;font-weight:900;box-shadow:0 4px 10px #12385e18}
-.cpz-podium-person.first .cpz-podium-circle{background:#fff0b7;color:#88600c}
-.cpz-podium-person.second .cpz-podium-circle{background:#ecf2fa;color:#577087}
-.cpz-podium-person.third .cpz-podium-circle{background:#f7e8dc;color:#8e5932}
-.cpz-podium-name{font-size:12px;font-weight:850;line-height:1.35;color:#123959;overflow-wrap:anywhere;max-width:100%;min-height:33px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
-.cpz-podium-wins{color:#557b95;font-size:11px}
-.cpz-podium-step{width:100%;display:grid;place-items:center;border-radius:12px 12px 7px 7px;font-size:21px;font-weight:950}
-.cpz-podium-person.first .cpz-podium-step{height:67px;background:linear-gradient(#ffe2a1,#ffd374);color:#875b00}
-.cpz-podium-person.second .cpz-podium-step{height:49px;background:linear-gradient(#eaf2fa,#dce9f6);color:#587087}
-.cpz-podium-person.third .cpz-podium-step{height:37px;background:linear-gradient(#efd3bd,#e5bfa0);color:#80523b}
-.cpz-podium-pending{padding:16px 14px;border-radius:15px;border:1px dashed #b7d8ed;background:linear-gradient(120deg,#f4faff,#eaf5ff);margin:15px 0 17px}
-.cpz-podium-pending strong{display:block;color:#0d5688;font-size:14px;margin:0 0 4px}
-.cpz-podium-pending p{font-size:12px;color:#5a7b93;line-height:1.5;margin:0}
 .mobile-match-progress{margin-top:12px}
 .mobile-match-progress-text{display:flex;justify-content:space-between;gap:7px;font-size:10px;color:#5c7c96;font-weight:750;margin-bottom:6px}
 .mobile-match-progress-track{background:#e6f1fa;height:6px;border-radius:30px;overflow:hidden}
@@ -263,12 +250,8 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 .mobile-expanded-grid div{border-radius:9px;background:#f1f7fc;padding:9px 8px;min-width:0}
 .mobile-expanded-grid b{font-size:13px;color:#0c456e;display:block}
 .mobile-expanded-grid span{font-size:10px;color:#678296;display:block;margin-top:3px}
-@media(max-width:700px){.cpz-podium{gap:6px}.cpz-podium-name{font-size:11px}.cpz-podium-wins{font-size:10px}.cpz-podium-circle{width:40px;height:40px}.mobile-expanded-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.mobile-expanded-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
-/* No atribuir medallas cuando aún no se han disputado partidos. */
-.cpz-podium-empty{opacity:.7;margin:15px 0 0}
-.cpz-podium-empty .cpz-podium-name{font-weight:650;color:#5c7c96}
-.cpz-podium-empty .cpz-podium-step{filter:saturate(.25);opacity:.85}
 </style>
 </head><body>
 <header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">✦ LABORATORIO</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
@@ -386,34 +369,6 @@ function renderSelected(){
  heading.append(headline,progress);root.append(heading);
  const track=element('div','rank-track'),bar=element('span');bar.style.width=Math.round(result.expected?result.played/result.expected*100:0)+'%';track.append(bar);root.append(track);
 
- if(result.played>0){
-  root.append(element('p','cpz-podium-title',result.complete?'Podio del grupo':'Podio provisional · faltan encuentros'));
-  const podium=element('section','cpz-podium');
-  podium.setAttribute('aria-label','Tres primeras posiciones '+(result.complete?'':'provisionales'));
-  for(const [place,klass] of [[1,'second'],[0,'first'],[2,'third']]){
-   const p=result.rows[place];if(!p)continue;
-   const tile=element('div','cpz-podium-person '+klass);
-   tile.append(element('div','cpz-podium-circle',place===0?'★':String(place+1)),
-    element('div','cpz-podium-name',p.name),
-    element('div','cpz-podium-wins',p.pg+' '+(p.pg===1?'victoria':'victorias')),
-    element('div','cpz-podium-step',String(place+1)));
-   podium.append(tile);
-  }
-  root.append(podium);
- }else{
-  const pending=element('div','cpz-podium-pending');
-  pending.append(element('strong','','Podio pendiente de resultados'),
-   element('p','','Este podio visual se completará cuando existan partidos. El listado de nombres no representa victorias ni posiciones ganadas.'));
-  const ghost=element('div','cpz-podium cpz-podium-empty');
-  for(const [rank,styleName] of [[2,'second'],[1,'first'],[3,'third']]){
-   const slot=element('div','cpz-podium-person '+styleName);
-   slot.append(element('div','cpz-podium-circle','–'),element('div','cpz-podium-name','Sin resultados'),
-      element('div','cpz-podium-wins','Pendiente'),element('div','cpz-podium-step',rank));
-   ghost.append(slot);
-  }
-  pending.append(ghost);root.append(pending);
- }
-
  const wrap=element('div','table-wrap ranking-table-wrap'),table=element('table');
  const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
  const body=element('tbody');
@@ -468,22 +423,36 @@ function renderSelected(){
  const matchTitle=element('h3','', 'Resultados del grupo');root.append(matchTitle);
  const scores=records(type,group);renderResultsTable(root,scores);
 }
+function winnerForSet(score,side){
+ return Number(score[side])>Number(score[1-side]);
+}
 function renderResultsTable(root,list){
  if(!list.length){root.append(element('p','muted',window.CPZ_LAB_RESULTS?.available?'No hay resultados registrados en esta selección.':'La copia de resultados reales todavía no está disponible en el laboratorio.'));return}
  const cards=element('div','mobile-results');
  for(const r of list){
-   const pair1=r.sets.filter(x=>x[0]>x[1]).length,pair2=r.sets.length-pair1;
+   const pair1=r.sets.filter(score=>winnerForSet(score,0)).length;
+   const pair2=r.sets.filter(score=>winnerForSet(score,1)).length;
    const card=element('article','match-card');
    const meta=element('div','match-meta'),day=element('span','',r.date+' · '+r.groupLabel);
    const type=element('span','match-type',data.doublesResults.includes(r)?'Dobles':'Individual');
    meta.append(day,type);card.append(meta);
    const first=element('div','match-player'),second=element('div','match-player');
-   first.append(element('span','',r.player1));second.append(element('span','',r.player2));
-   for(const [row,side,won] of [[first,0,pair1>pair2],[second,1,pair2>pair1]]){
-     const sets=element('div','match-sets'+(won?' winner':''));
-     r.sets.forEach(score=>sets.append(element('b','',score[side])));row.append(sets);
+   for(const [row,side,playerName,winsMatch] of [[first,0,r.player1,pair1>pair2],[second,1,r.player2,pair2>pair1]]){
+     const heading=element('span','match-name',playerName);
+     if(winsMatch)heading.append(element('span','match-winner',' · Ganador'));
+     row.append(heading);
+     const sets=element('div','match-sets');
+     r.sets.forEach(score=>{
+       const won=winnerForSet(score,side);
+       const value=element('b',won?'won-set':'lost-set',score[side]);
+       value.setAttribute('aria-label',won?'Set ganado: '+score[side]+' a '+score[1-side]:'Set perdido: '+score[side]+' a '+score[1-side]);
+       value.setAttribute('title',won?'Set ganado':'Set perdido');
+       sets.append(value);
+     });
+     row.append(sets);
    }
    card.append(first,second);
+   card.append(element('div','match-set-note','Verde: ganador de cada set · Gris: set perdido'));
    cards.append(card);
  }
  root.append(cards);
