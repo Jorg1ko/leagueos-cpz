@@ -1,0 +1,50 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+
+const html=fs.readFileSync('player.html','utf8');
+const css=fs.readFileSync('league-lab.css','utf8');
+const portalCss=fs.readFileSync('club-portal.css','utf8');
+const workflow=fs.readFileSync('.github/workflows/laboratorio-movil.yml','utf8');
+const python=fs.readFileSync('scripts/build-lab-snapshot.py','utf8');
+
+const f=html.match(/function movementZone\(type,group,index,count,played\)\{[\s\S]*?\n\}/);
+assert(f,'No se encuentra la regla de ascensos y descensos');
+const ctx=vm.createContext({});
+vm.runInContext(f[0]+'\nthis.movementZone=movementZone;',ctx);
+const zone=ctx.movementZone;
+assert.equal(zone('individual','A1',0,4,true),'','A1 nunca asciende');
+assert.equal(zone('doubles','A1',0,4,true),'','A1 en dobles nunca asciende');
+assert.equal(zone('individual','B1',0,4,true),'up');
+assert.equal(zone('individual','B5',3,4,true),'','B5 no desciende');
+assert.equal(zone('doubles','C2',2,3,true),'','C2 no desciende');
+assert.equal(zone('doubles','C1',2,3,true),'down');
+assert.equal(zone('individual','B1',3,4,true),'down');
+assert.equal(zone('individual','B1',0,4,false),'','No hay zona competitiva sin partidos');
+assert.equal(zone('individual','B1',3,4,false),'','No hay descenso sin partidos');
+assert(html.includes("'▲ '")&&html.includes("'▼ '"),'Marcadores de zona accesibles');
+assert(html.includes("element('details','standing-explain')"),'Falta botón informativo');
+assert(html.includes("summary.setAttribute('aria-label','Explicar posición de '+p.name)"),'El botón informativo debe ser accesible');
+assert(!html.includes('Estado</th>'),'No recuperar columna Estado');
+assert(css.includes('.standing-explain summary{')&&css.includes('width:44px;height:44px'),'Botón informativo demasiado pequeño');
+assert(css.includes('prefers-color-scheme:dark')&&portalCss.includes('prefers-color-scheme:dark'),'Falta modo oscuro');
+assert(css.includes('.mobile-standings{max-width:100%;overflow:hidden}'),'La clasificación debe caber en el móvil');
+assert(html.includes("element('li','match-set-line')"),'Cada set en línea separada');
+assert(html.includes("element('strong','match-set-winner',winner)"),'Ganador de set en negrita');
+assert(html.includes("Faltan '+missing+' de '+result.expected"),'Aviso debe incluir partidos pendientes');
+assert.equal((html.match(/class="discount-book"/g)||[]).length,2,'Dos accesos a reservas');
+for(const code of ['RANKINGINDNOV26','RANKINGDOBNOV26'])assert(html.includes(code),'Falta cupón '+code);
+assert(!html.includes('bookingtypes?'),'No se deben generar URL con cupones precargados');
+assert(workflow.includes('CF_TOKEN: ${{ secrets.CLOUDFLARE_D1_READ_TOKEN }}'),'La consulta debe usar D1 Read');
+assert(!workflow.includes('secrets.CLOUDFLARE_D1_READ_TOKEN ||'),'Prohibido fallback al token de despliegue');
+assert(workflow.includes('if [ -z "$CF_TOKEN" ]; then'),'Debe publicar sin marcadores cuando falte token');
+assert(workflow.includes('continue-on-error: true'),'Debe publicar si la consulta D1 falla');
+const sqlBlocks=[...python.matchAll(/(?:INDIVIDUAL|DOUBLES)_SQL\s*=\s*"""([\s\S]*?)"""/g)].map(m=>m[1]);
+assert.equal(sqlBlocks.length,2,'Deben usarse las dos consultas seleccionadas');
+for(const sql of sqlBlocks){
+ assert(/^\s*SELECT\b/i.test(sql),'Solo SELECT permitido');
+ assert(!/\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|REPLACE|CREATE)\b/i.test(sql),'Consulta contiene SQL no permitido');
+}
+assert(html.includes('./lab-assets/escudo-cpz.webp'),'Escudo de la liga debe ser local');
+console.log('OK: zonas extremas, accesibilidad, móvil, reservas, modo oscuro, SELECT D1 y fallback sin datos');
