@@ -21,9 +21,11 @@ jobs:
           mkdir -p lab-static/dist
           cp club-portal.html lab-static/dist/index.html
           cp club-portal.css lab-static/dist/club-portal.css
+          cp -R lab-assets lab-static/dist/lab-assets
           cp club-portal.js lab-static/dist/club-portal.js
           cp club-portal-model.js lab-static/dist/club-portal-model.js
           cp player.html lab-static/dist/liga.html
+          cp league-lab.css lab-static/dist/league-lab.css
           cp ranking-engine.js lab-static/dist/ranking-engine.js
           cp lab-data.js lab-static/dist/lab-data.js
           cp lab-features.js lab-static/dist/lab-features.js
@@ -35,15 +37,37 @@ jobs:
           node --check lab-static/dist/lab-features.js
           node --check lab-static/dist/lab-results.js
           node --check lab-static/dist/ranking-engine.js
-          node tests/ranking-engine.test.cjs
-          node tests/lab-match-colors.test.cjs
-          node tests/lab-features.test.cjs
-          node tests/lab-club-portal.test.cjs
+          # Ejecutar todos los tests existentes, sin excepciones.
+          for test in tests/*.cjs tests/*.mjs tests/*.js; do
+            if [ -f "$test" ]; then
+              echo "Prueba: $test"
+              node "$test"
+            fi
+          done
+          # Comprobar la sintaxis de todos los JS de origen y de los scripts Python.
+          for file in ./*.js; do
+            [ -f "$file" ] || continue
+            node --check "$file"
+          done
+          python3 - <<'PY'
+          import ast,pathlib
+          scripts=sorted(pathlib.Path('scripts').glob('*.py'))
+          for path in scripts:
+              ast.parse(path.read_text(encoding='utf-8'),filename=str(path))
+          print('Sintaxis Python comprobada:',len(scripts),'scripts')
+          PY
+          test -s lab-static/dist/lab-assets/escudo-cpz.webp
+          test -s lab-static/dist/lab-assets/pistas-cpz.jpg
+          test -s lab-static/dist/lab-assets/partidos-cpz.jpg
+          test -s lab-static/dist/lab-assets/alquiler-cpz.jpg
+          test -s lab-static/dist/lab-assets/clases-cpz.jpg
           node - <<'NODE'
           const fs=require('fs'),vm=require('vm');
           const portal=fs.readFileSync('lab-static/dist/index.html','utf8');
           if(!portal.includes('id="homeScreen"')||!portal.includes('./liga.html'))throw Error('Falta la nueva portada del club');
           if(!fs.existsSync('lab-static/dist/club-portal.js'))throw Error('Falta la aplicación del club');
+          if(!fs.existsSync('lab-static/dist/league-lab.css'))throw Error('Falta el estilo móvil de la liga');
+          if(!portal.includes('./lab-assets/escudo-cpz.webp'))throw Error('La portada debe usar un escudo local');
           const html=fs.readFileSync('lab-static/dist/liga.html','utf8');
           const script=/<script\b[^>]*>([\s\S]*?)<\/script>/gi;
           let match;while((match=script.exec(html)))if(match[1].trim())new vm.Script(match[1]);
@@ -52,19 +76,20 @@ jobs:
           if(html.includes('data-page="results"')||html.includes('id="playerSearch"'))throw Error('El laboratorio aún incluye pestañas obsoletas');
           if(html.includes("fetch('/api/shared/data'"))throw Error('API de produccion detectada');
           NODE
-      # Revalidar lectura D1 del laboratorio tras configurar token de solo lectura.
+      # La copia real se obtiene EXCLUSIVAMENTE con el secreto de solo lectura.
+      # Si falta o falla, permanece el archivo lab-results.js vacío de origen.
       - name: Obtener copia de resultados oficiales con consultas SELECT
         id: snapshot
         continue-on-error: true
         env:
-          CF_READ_TOKEN: ${{ secrets.CLOUDFLARE_D1_READ_TOKEN }}
-          CF_TOKEN: ${{ secrets.CLOUDFLARE_D1_READ_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_D1_READ_TOKEN }}
         run: |
-          if [ -n "$CF_READ_TOKEN" ]; then
-            echo "Diagnóstico: el secreto específico CLOUDFLARE_D1_READ_TOKEN está configurado."
-          else
-            echo "::warning::No se detecta CLOUDFLARE_D1_READ_TOKEN en GitHub Actions; se prueba con el token de despliegue existente."
+          if [ -z "$CF_TOKEN" ]; then
+            echo "::warning::CLOUDFLARE_D1_READ_TOKEN no configurado: se publica sin resultados."
+            echo "Snapshot omitido: sin token D1 Read, no se consultan marcadores." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
           fi
+          echo "Diagnóstico: se ha proporcionado el secreto específico D1 Read."
           python3 scripts/build-lab-snapshot.py
           node --check lab-static/dist/lab-results.js
       - name: Avisar si falta permiso de lectura en D1
