@@ -285,6 +285,12 @@
 </div>
 <div class="section-title"><h3>Resultados de dobles guardados</h3><button class="button secondary" type="button" id="doubleRefresh">Actualizar</button></div>
 <div class="table-wrap" id="doubleResultHistory" aria-live="polite"><div class="empty">No hay resultados de dobles.</div></div>
+<section class="card trash-panel" aria-labelledby="doubleTrashTitle" style="margin:16px 0;padding:17px">
+ <div class="section-title"><div><h3 id="doubleTrashTitle">Papelera de dobles</h3><p>Los partidos eliminados pueden restaurarse sin perder datos.</p></div>
+  <button class="button secondary" type="button" id="doubleTrashRefresh">Actualizar papelera</button></div>
+ <div id="doubleTrashList" aria-live="polite" class="table-wrap">Sin resultados borrados.</div>
+ <p class="status" id="doubleTrashStatus" role="status" aria-live="polite"></p>
+</section>
  <div class="notice" style="margin-top:18px"><strong>Normas de noviembre:</strong> los grupos con 4 parejas disputan 3 partidos por pareja; C1 y C2, con 3 parejas, disputan 2 partidos por pareja. La primera pareja asciende al grupo inmediatamente superior y la última desciende al inferior, salvo en los extremos A1 y C2. Fecha límite: <strong>30 de noviembre de 2026</strong>. Los colores señalan plazas de movimiento, no ascensos o descensos ya obtenidos. Desempates: victorias, enfrentamiento directo entre dos y miniclasificación de tres empatados; cuando la norma no resuelve el empate se indica como pendiente.</div>
  <p class="cpz-standings-note">Dato a confirmar con la organización: en B1 figura «Ramón Ruiz de Conejo / Ramón Ruiz de Conejo». Se ha conservado exactamente como en el listado entregado.</p>
 </section>
@@ -299,7 +305,13 @@
  <div class="actions"><button type="submit" class="button" id="manualSave">Guardar resultado</button><button type="button" class="button secondary" id="manualReset">Nuevo / cancelar edición</button></div><p class="status" id="manualStatus" role="status" aria-live="polite"></p>
 </form></div>
 <div class="section-title"><div><h2>Resultados guardados</h2><p id="resultLabel">0 partidos guardados</p></div><button class="button secondary" type="button" id="refreshResults">Actualizar</button></div>
-<div class="table-wrap" id="resultTable"><div class="empty">Cargando resultados…</div></div><div hidden id="legacyExcelControls"><div class="notice warn"><strong>Importante:</strong> primero deben existir las cuentas de los participantes. El Excel no creará jugadores, no inventará partidos y no calculará clasificaciones hasta confirmar el reglamento oficial.</div>
+<div class="table-wrap" id="resultTable"><div class="empty">Cargando resultados…</div></div>
+<section class="card trash-panel" aria-labelledby="individualTrashTitle" style="margin:16px 0;padding:17px">
+ <div class="section-title"><div><h3 id="individualTrashTitle">Papelera de individual</h3><p>Restaurar devuelve el partido a las clasificaciones y al historial de resultados activos.</p></div>
+  <button class="button secondary" type="button" id="individualTrashRefresh">Actualizar papelera</button></div>
+ <div id="individualTrashList" aria-live="polite" class="table-wrap">Sin resultados borrados.</div>
+ <p class="status" id="individualTrashStatus" role="status" aria-live="polite"></p>
+</section><div hidden id="legacyExcelControls"><div class="notice warn"><strong>Importante:</strong> primero deben existir las cuentas de los participantes. El Excel no creará jugadores, no inventará partidos y no calculará clasificaciones hasta confirmar el reglamento oficial.</div>
  <div class="grid2">
   <article class="card"><h3>1. Preparar e importar</h3>
    <div class="actions"><button type="button" class="button secondary" id="downloadTemplate">Descargar plantilla Excel</button></div>
