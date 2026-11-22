@@ -28,6 +28,7 @@ jobs:
           node --check lab-static/dist/lab-results.js
           node --check lab-static/dist/ranking-engine.js
           node tests/ranking-engine.test.cjs
+          node tests/lab-match-colors.test.cjs
           node - <<'NODE'
           const fs=require('fs'),vm=require('vm');
           const html=fs.readFileSync('lab-static/dist/index.html','utf8');
