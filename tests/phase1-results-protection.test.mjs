@@ -160,6 +160,25 @@ assert.equal(rank(roster,[]).played,0,'Al borrar no suma un partido');
 assert.equal(rank(roster,[{player1:match.player1,player2:match.player2,sets:match.sets}]).played,1,'Al restaurar vuelve a sumar');
 assert.equal((await request(individualAPI,'/api/results',{action:'restore',id})).status,404,'No duplicar restauración');
 
+// Importación en lote: cada alta y sobrescritura queda también auditada.
+const importedRow={
+ date:'2026-11-26',round:'Noviembre 2026',groupLabel:'A1',
+ player1:NOVEMBER_ROSTER.A1[2],player2:NOVEMBER_ROSTER.A1[3],sets:[[11,4],[11,7]]
+};
+const bulk=await request(individualAPI,'/api/results',{
+ action:'import',rows:[importedRow],confirm:true,fileName:'local-test.csv',replaceExisting:false
+});
+assert.equal(bulk.status,200,JSON.stringify(bulk.data));
+assert.equal(bulk.data.imported,1);
+assert.equal(audit('individual','create').length,2,'Importar debe generar entrada create');
+const bulkEdit=await request(individualAPI,'/api/results',{
+ action:'import',rows:[{...importedRow,sets:[[11,8],[11,9]]}],
+ confirm:true,fileName:'local-test.csv',replaceExisting:true
+});
+assert.equal(bulkEdit.status,200,JSON.stringify(bulkEdit.data));
+assert.equal(audit('individual','edit').length,2,'Sobrescribir por Excel debe generar entrada edit');
+assert.notEqual(audit('individual','edit')[1].before_json,audit('individual','edit')[1].after_json);
+
 // Dobles: alta, modificación, borrado y restauración.
 const doublesFixture={action:'save',groupLabel:'A1',pair1:0,pair2:1,date:'2026-11-25',round:'Noviembre 2026',sets:[[11,4],[11,6]]};
 assert.equal(NOVEMBER_DOUBLES.A1.length>=2,true);
@@ -188,9 +207,9 @@ assert.equal((await request(doublesAPI,'/api/doubles-results?trash=1')).data.res
 const rollback=fs.readFileSync('migrations/2026-11-22_soft_delete_audit_rollback.sql','utf8');
 assert(!/^\s*(DROP|DELETE)\b/m.test(rollback));
 db.exec(rollback);
-assert.equal(rowCount('cpz_match_results'),1);
+assert.equal(rowCount('cpz_match_results'),2);
 assert.equal(rowCount('cpz_doubles_results'),1);
-assert.equal(rowCount('cpz_result_audit'),8,'La marcha atrás no destruye el historial');
+assert.equal(rowCount('cpz_result_audit'),10,'La marcha atrás no destruye el historial');
 
 // Evitar que se introduzcan operaciones destructivas en el middleware.
 const middleware=fs.readFileSync('functions/_middleware.js','utf8');
