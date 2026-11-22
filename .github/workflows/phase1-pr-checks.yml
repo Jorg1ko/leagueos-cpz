@@ -42,6 +42,21 @@ jobs:
             echo "TEST: $test"
             node "$test"
           done
+      - name: Probar backups D1 en SQLite temporal sin red ni credenciales
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests -p 'test_backup_*.py' -v
+          python3 - <<'PY'
+          from pathlib import Path
+          flow=Path('.github/workflows/d1-backup-cifrada.yml').read_text()
+          assert "vars.CPZ_D1_BACKUP_APPROVED == 'true'" in flow
+          assert "trap 'rm -f \\"$D1_EXPORT_OUTPUT\\"' EXIT" in flow or "trap 'rm -f \"$D1_EXPORT_OUTPUT\"' EXIT" in flow
+          assert 'retention-days: 14' in flow
+          assert 'age -r "$AGE_RECIPIENT"' in flow
+          assert 'secrets.CLOUDFLARE_D1_BACKUP_TOKEN' in flow
+          print('Workflow de backup bloqueado hasta autorización y cifrado antes de subir')
+          PY
       - name: Comprobar JS incrustado y migración inofensiva
         shell: bash
         run: |
