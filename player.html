@@ -55,7 +55,7 @@ tbody tr:nth-child(even){background:#f7fafc}
   .top #logout{grid-column:1/-1;width:auto;justify-self:end;padding:5px 0;background:transparent;border:0;color:#e4f3ff;font-size:11px;min-height:26px}
   .lab-marker{font-size:9px;padding:4px 7px;margin-top:6px}
   .shell{padding:14px 12px 18px}
-  .nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;margin:0;background:#fff;border-top:1px solid #d7e5f0;padding:8px 5px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -5px 22px #0a355018}
+  .nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;margin:0;background:#fff;border-top:1px solid #d7e5f0;padding:8px 5px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -5px 22px #0a355018}
   .nav button{border:0;border-radius:10px;background:transparent;color:#66849c;padding:9px 2px 8px;min-width:0;min-height:52px;font-size:10px;font-weight:750;line-height:1.3}
   .nav button[aria-current="page"]{background:#e7f4ff;color:#086cae}
   .nav .desktop-nav{display:none}
@@ -241,36 +241,7 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 .mobile-match-progress-text{display:flex;justify-content:space-between;gap:7px;font-size:10px;color:#5c7c96;font-weight:750;margin-bottom:6px}
 .mobile-match-progress-track{background:#e6f1fa;height:6px;border-radius:30px;overflow:hidden}
 .mobile-match-progress-track span{display:block;background:linear-gradient(90deg,#59c3f7,#0875cb);height:100%;border-radius:30px}
-.mobile-expanded{margin-top:11px;border-top:1px solid #e2ebf4;padding-top:10px}
-.mobile-expanded summary{cursor:pointer;font-size:11px;font-weight:850;color:#126ba5;padding:5px 0;list-style:none}
-.mobile-expanded summary::after{content:'⌄';float:right;font-size:16px;line-height:10px}
-.mobile-expanded[open] summary::after{content:'⌃'}
-.mobile-expanded summary::-webkit-details-marker{display:none}
-.mobile-expanded-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}
-.mobile-expanded-grid div{border-radius:9px;background:#f1f7fc;padding:9px 8px;min-width:0}
-.mobile-expanded-grid b{font-size:13px;color:#0c456e;display:block}
-.mobile-expanded-grid span{font-size:10px;color:#678296;display:block;margin-top:3px}
-@media(max-width:700px){.mobile-expanded-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-
-
-/* CPZ Laboratorio: buscador, enfrentamientos pendientes y marcador por sets. */
-.player-search{margin:17px 0 20px;padding:15px;border:1px solid #c9e5f6;border-radius:15px;background:linear-gradient(130deg,#edf8ff,#f8fbff)}
-.player-search>label{display:block;font-size:12px;font-weight:900;color:#194d74;margin-bottom:9px}
-.player-search-field{display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid #a9d4f0;border-radius:11px;padding:0 12px;min-height:48px}
-.player-search-field svg{width:19px;height:19px;stroke:#3e86b7;flex-shrink:0}
-.player-search-field input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#0c3457;font:inherit;font-size:16px;padding:12px 0}
-.player-search-field:focus-within{outline:2px solid #0c83d0;outline-offset:2px}
-.player-search-hint{font-size:11px;color:#68849b;margin:8px 0 0}
-.player-search-results:not(:empty){margin-top:10px;background:#fff;border:1px solid #d5e7f4;border-radius:12px;overflow:hidden}
-.player-search-choice{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:13px 11px;border:0;border-bottom:1px solid #e5eff6;background:#fff;color:#123e60;text-align:left;min-height:53px}
-.player-search-choice:last-child{border-bottom:0}
-.player-search-choice:focus-visible,.player-search-choice:hover{background:#eaf6ff;outline:0}
-.player-search-name{font-size:12px;line-height:1.35;font-weight:850;overflow-wrap:anywhere;min-width:0}
-.player-search-meta{font-size:10px;color:#0872b6;background:#ebf7ff;border-radius:7px;padding:6px 8px;flex-shrink:0;font-weight:800}
-.player-search-empty{padding:12px 13px;color:#63829a;font-size:12px}
-.found-player{outline:2px solid #0b86cf;outline-offset:1px;box-shadow:0 5px 20px #0987ce24!important;scroll-margin-top:25px}
-.focus-info{display:flex;align-items:center;gap:9px;justify-content:space-between;flex-wrap:wrap;background:#e9f7ff;border:1px solid #a7d8f6;border-radius:11px;padding:10px 12px;margin:13px 0 4px;font-size:12px;font-weight:800;color:#145d8e}
-.focus-clear{padding:8px 10px;border:1px solid #add8f1;border-radius:8px;background:#fff;color:#0c689f;font-size:11px;font-weight:800;min-height:36px}
+/* CPZ Laboratorio: pendientes y marcador por sets. */
 .pending-panel{margin:20px 0;padding:15px;border:1px solid #cfe5f6;background:linear-gradient(140deg,#f3faff,#fff);border-radius:15px}
 .pending-panel h3{margin:0;font-size:16px;color:#0a4c7c}
 .pending-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
@@ -286,28 +257,40 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 .match-set-headings{display:flex;justify-content:flex-end;gap:4px;padding:0 0 3px}
 .match-set-headings b{min-width:27px;text-align:center;padding:3px 4px;color:#69879b;font-size:9px;font-weight:850}
 .match-player.is-match-winner>.match-name{color:#126a42}
-@media(max-width:700px){.player-search{padding:12px}.pending-panel{padding:13px}.pending-list{grid-template-columns:1fr}.match-score-summary{font-size:10px}.match-global{font-size:11px}}
+@media(max-width:700px){.pending-panel{padding:13px}.pending-list{grid-template-columns:1fr}.match-score-summary{font-size:10px}.match-global{font-size:11px}}
+
+/* Cuadro deportivo: filas compactas y estadísticas visibles. */
+.mobile-standings{display:none}
+@media(max-width:700px){
+ .ranking-table-wrap,.mobile-rankings{display:none!important}
+ .mobile-standings{display:block;margin:10px 0 14px;border:1px solid #d6e6f2;border-radius:12px;overflow:hidden;background:#fff}
+ .standings-head,.standing-row-main{display:grid;grid-template-columns:24px minmax(0,1fr) repeat(3,27px);gap:4px;align-items:center}
+ .standings-head{background:#eaf4fc;padding:9px 8px;color:#557994;font-size:9px;font-weight:900;text-align:center}
+ .standings-head span:nth-child(2){text-align:left}
+ .standing-row{padding:8px 8px 9px;background:#fff;border-top:1px solid #e6eff6}
+ .standing-row.up{box-shadow:inset 3px 0 #3fba65;background:#f7fdf5}
+ .standing-row.down{box-shadow:inset 3px 0 #e67f7f;background:#fffafa}
+ .standing-pos{font-size:15px;font-weight:950;color:#0872b7;text-align:center}
+ .standing-name{min-width:0;overflow-wrap:anywhere;font-size:11.5px;line-height:1.3;font-weight:900;color:#153e5a}
+ .standing-cell{font-size:12px;font-weight:850;color:#244b66;text-align:center;font-variant-numeric:tabular-nums}
+ .standing-cell.wins{color:#147c48}
+ .standing-cell.losses{color:#b14c53}
+ .standing-meta{padding:6px 0 0;margin:4px 0 0 28px;border-top:1px dashed #e3edf5;display:flex;align-items:center;flex-wrap:wrap;gap:5px 13px;color:#536f85;font-size:10px;line-height:1.35;font-variant-numeric:tabular-nums}
+ .standing-meta b{color:#173f5d;font-weight:900}
+ .standing-key{margin:7px 0 12px;font-size:10px;line-height:1.5;color:#69829a}
+}
 </style>
 </head><body>
 <header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><span class="lab-marker">✦ LABORATORIO</span><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Reiniciar vista</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
 <main class="shell"><div id="labDataNotice" class="message" style="margin:0 0 14px;background:#eaf5ff;border-color:#b9ddfa;color:#155981"><strong>LABORATORIO CPZ.</strong> Versión independiente y de solo lectura. Comprobando copia de resultados oficiales…</div>
- <nav class="nav" aria-label="Secciones de consulta"><button type="button" data-page="individual" aria-label="Ranking individual" aria-current="page"><span class="desktop-nav">Ranking individual</span><span class="mobile-nav" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20v-1a7 7 0 0 1 14 0v1"/></svg><span class="nav-caption">Individual</span></span></button><button type="button" data-page="doubles" aria-label="Ranking dobles"><span class="desktop-nav">Ranking dobles</span><span class="mobile-nav" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-1.5a5 5 0 0 0-10 0V20"/><circle cx="11" cy="8" r="3.5"/><path d="M17 4.8a3.5 3.5 0 0 1 0 6.6M20.5 20v-1.5a5 5 0 0 0-2.9-4.5"/></svg><span class="nav-caption">Dobles</span></span></button><button type="button" data-page="results" aria-label="Todos los resultados"><span class="desktop-nav">Todos los resultados</span><span class="mobile-nav" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M7.5 3v4M16.5 3v4M3 10h18M8 14h3M8 17h7"/></svg><span class="nav-caption">Resultados</span></span></button><button type="button" data-page="booking" aria-label="Reservas"><span class="desktop-nav">Reservas</span><span class="mobile-nav" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M7.5 3v4M16.5 3v4M3 10h18"/><path d="m9 16 2 2 4-5"/></svg><span class="nav-caption">Reservas</span></span></button><button type="button" data-page="rules" aria-label="Normas y reglas oficiales"><span class="desktop-nav">Normas y reglas oficiales</span><span class="mobile-nav" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6.5A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22h11a2.5 2.5 0 0 0 2.5-2.5V8z"/><path d="M14 2v6h6M8 13h8M8 17h7"/></svg><span class="nav-caption">Reglas</span></span></button></nav>
+ <nav class="nav" aria-label="Secciones de consulta"><button type="button" data-page="individual" aria-label="Ranking individual" aria-current="page"><span class="desktop-nav">Ranking individual</span><span class="mobile-nav" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20v-1a7 7 0 0 1 14 0v1"/></svg><span class="nav-caption">Individual</span></span></button><button type="button" data-page="doubles" aria-label="Ranking dobles"><span class="desktop-nav">Ranking dobles</span><span class="mobile-nav" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-1.5a5 5 0 0 0-10 0V20"/><circle cx="11" cy="8" r="3.5"/><path d="M17 4.8a3.5 3.5 0 0 1 0 6.6M20.5 20v-1.5a5 5 0 0 0-2.9-4.5"/></svg><span class="nav-caption">Dobles</span></span></button><button type="button" data-page="booking" aria-label="Reservas"><span class="desktop-nav">Reservas</span><span class="mobile-nav" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M7.5 3v4M16.5 3v4M3 10h18"/><path d="m9 16 2 2 4-5"/></svg><span class="nav-caption">Reservas</span></span></button><button type="button" data-page="rules" aria-label="Normas y reglas oficiales"><span class="desktop-nav">Normas y reglas oficiales</span><span class="mobile-nav" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6.5A2.5 2.5 0 0 0 4 4.5v15A2.5 2.5 0 0 0 6.5 22h11a2.5 2.5 0 0 0 2.5-2.5V8z"/><path d="M14 2v6h6M8 13h8M8 17h7"/></svg><span class="nav-caption">Reglas</span></span></button></nav>
  <section id="loading" class="card" role="status">Cargando laboratorio…</section>
  <section id="app" hidden>
  <div id="overview" class="card"><h2 id="sectionTitle">Ranking individual CPZ</h2><p class="muted" id="sectionSubtitle">Consulta cualquier categoría y grupo. Las posiciones se actualizan cuando se registran resultados.</p>
-  <div class="player-search">
-   <label for="playerSearch">Buscar jugador o integrante de una pareja</label>
-   <div class="player-search-field"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="7.1"/><path d="m16.2 16.2 5 5"/></svg>
-    <input id="playerSearch" type="search" placeholder="Escribe un nombre…" autocomplete="off" spellcheck="false" aria-controls="playerSearchResults" />
-   </div>
-   <p class="player-search-hint">Busca en individual y dobles. Elige un jugador para abrir su grupo, clasificación y partidos.</p>
-   <div id="playerSearchResults" class="player-search-results" role="region" aria-label="Jugadores encontrados" aria-live="polite"></div>
-  </div>
   <details class="rules"><summary>¿Cómo se decide el orden de clasificación?</summary><p>Primero se compara quién ha ganado más partidos. Si dos participantes tienen las mismas victorias, queda por delante quien ganó su partido entre ellos. Si empatan tres, se comparan solo los partidos jugados entre esos tres: diferencia de sets, después diferencia de puntos y, por último, puntos a favor. Si todavía hay un empate sin resolver o faltan partidos, la posición es provisional y la organización debe confirmarla. Las franjas verde y roja muestran las plazas de ascenso y descenso, no resultados definitivos.</p></details>
   <div class="filters"><label>Categoría<select id="category"></select></label><label>Grupo<select id="group"></select></label></div>
   <div id="ranking"></div>
  </div>
- <div id="resultsPanel" class="card hidden"><h2>Todos los resultados</h2><p class="muted">Partidos registrados por la organización. No se muestran datos privados de cuentas ni opciones de administración.</p><div class="filters"><label>Modalidad<select id="resultType"><option value="individual">Individual</option><option value="doubles">Dobles</option><option value="all">Ambas modalidades</option></select></label><label>Grupo<select id="resultGroup"><option value="all">Todos los grupos</option></select></label></div><div id="allResults"></div></div>
  </section>
 <div id="bookingPanel" class="card hidden">
  <h2>Reserva de pistas</h2>
@@ -376,7 +359,7 @@ h2,h3{color:#0b3157;letter-spacing:-.35px}
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
-let data=null,page='individual',focusParticipant=null;
+let data=null,page='individual';
 const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');
 
 function option(select,value,label){const o=document.createElement('option');o.value=value;o.textContent=label;select.append(o)}
@@ -384,31 +367,6 @@ function element(tag,className,text){const e=document.createElement(tag);if(clas
 function records(type,group){const list=type==='individual'?data.individualResults:data.doublesResults;return list.filter(r=>!group||r.groupLabel===group)}
 function names(type,group){const roster=(type==='individual'?data.individualGroups:data.doublesGroups)[group]||[];return roster.map(p=>Array.isArray(p)?p.join(' / '):p)}
 
-function activeFocus(type,group){
- return focusParticipant&&focusParticipant.type===type&&focusParticipant.group===group?focusParticipant.name:null;
-}
-function renderPlayerSearch(){
- const root=$('playerSearchResults');root.replaceChildren();
- const query=$('playerSearch').value.trim();
- if(norm(query).length<2)return;
- const found=CPZLabFeatures.searchParticipants(data,query);
- if(!found.length){root.append(element('div','player-search-empty','No se han encontrado jugadores o parejas con ese nombre.'));return}
- found.forEach(hit=>{
-  const button=element('button','player-search-choice');button.type='button';
-  button.append(element('span','player-search-name',hit.name),element('span','player-search-meta',(hit.mode==='individual'?'Individual':'Dobles')+' · '+hit.group));
-  button.addEventListener('click',()=>{
-   focusParticipant={type:hit.mode,group:hit.group,name:hit.name};
-   switchPage(hit.mode);
-   $('category').value=hit.group[0];renderRank();
-   $('group').value=hit.group;renderSelected();
-   root.replaceChildren();$('playerSearch').value='';
-   const mobile=window.matchMedia('(max-width:700px)').matches;
-   const chosen=$('ranking').querySelector(mobile?'.mobile-rankings .found-player':'.ranking-table-wrap .found-player');
-   if(chosen)requestAnimationFrame(()=>chosen.scrollIntoView({behavior:'smooth',block:'center'}));
-  });
-  root.append(button);
- });
-}
 function renderPending(root,type,group,people){
  const panel=element('section','pending-panel');
  const head=element('div','pending-head'),title=element('h3','', 'Partidos pendientes');
@@ -424,10 +382,9 @@ function renderPending(root,type,group,people){
  if(!pending.pending.length){
   panel.append(element('p','pending-done','Todos los enfrentamientos de este grupo tienen un resultado registrado.'));
  }else{
-  const list=element('ul','pending-list'),focus=activeFocus(type,group);
+  const list=element('ul','pending-list');
   for(const game of pending.pending){
-   const highlighted=focus&&(norm(game.player1)===norm(focus)||norm(game.player2)===norm(focus));
-   const item=element('li','pending-pair'+(highlighted?' focused-pair':''));
+   const item=element('li','pending-pair');
    item.append(element('span','',game.player1),element('span','versus','VS'),element('span','',game.player2));
    list.append(item);
   }
@@ -460,7 +417,6 @@ function renderRank(){
 function renderSelected(){
  const group=$('group').value,type=page,people=names(type,group),result=CPZRanking.rankCompetition(people,records(type,group));
  const root=$('ranking');root.replaceChildren();
- const currentFocus=activeFocus(type,group);
  const heading=element('div','rank-heading');
  const headline=element('h3','', 'Grupo '+group);
  const progress=element('span','progress-label',result.played+' / '+result.expected+' partidos');
@@ -471,8 +427,7 @@ function renderSelected(){
  const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
  const body=element('tbody');
  result.rows.forEach((p,i)=>{
-  const highlighted=currentFocus&&norm(p.name)===norm(currentFocus);
-  const tr=element('tr',(i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'')+(highlighted?' found-player':''));
+  const tr=element('tr',i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'');
   const pos=element('td','pos',i+1);tr.append(pos);
   const name=element('td','',p.name),details=element('details','explain'),summary=element('summary','', 'ⓘ');
   summary.setAttribute('aria-label','Explicar la posición de '+p.name);
@@ -482,58 +437,43 @@ function renderSelected(){
   body.append(tr);
  });
  table.append(body);wrap.append(table);root.append(wrap);
-  const cards=element('div','mobile-rankings');
-  cards.setAttribute('aria-label','Clasificación adaptada para móvil');
-  result.rows.forEach((p,i)=>{
-    const gamesPlayed=result.played>0;
-    const movement=gamesPlayed&&i===0&&group!=='A1'?'up':gamesPlayed&&i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'';
-    const card=element('article','mobile-player '+movement+(currentFocus&&norm(p.name)===norm(currentFocus)?' found-player':''));
-    const heading=element('div','mobile-player-top');
-    heading.append(element('div','mobile-pos',i+1));
-    const player=element('div','mobile-player-name',p.name),details=element('details','explain'),summary=element('summary','','ⓘ');
-    summary.setAttribute('aria-label','Explicar la posición de '+p.name);
-    details.append(summary,element('p','',criterionText(p,result)));player.append(details);
-    if(gamesPlayed&&i===0&&group!=='A1')player.append(element('span','mobile-medal','▲ Zona posible de ascenso'));
-    else if(gamesPlayed&&i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2'))player.append(element('span','mobile-medal down','▼ Zona posible de descenso'));
-    heading.append(player);card.append(heading);
-    const stats=element('div','mobile-stats');
-    [['Ganados',p.pg],['Jugados',p.pj],['Perdidos',p.pp]].forEach(([label,value])=>{
-      const stat=element('div','mobile-stat');stat.append(element('strong','',value),element('span','',label));stats.append(stat);
-    });
-    card.append(stats);
-    const expected=Math.max(0,people.length-1);
-    const progress=element('div','mobile-match-progress'),progressText=element('div','mobile-match-progress-text');
-    progressText.append(element('span','','Partidos completados'),element('span','',p.pj+' de '+expected));
-    const progressTrack=element('div','mobile-match-progress-track'),fill=element('span');
-    fill.style.width=(expected?Math.min(100,p.pj/expected*100):0)+'%';progressTrack.append(fill);progress.append(progressText,progressTrack);card.append(progress);
-    const expanded=element('details','mobile-expanded'),expandTitle=element('summary','','Ver estadísticas completas');
-    const grid=element('div','mobile-expanded-grid');
-    [['Sets a favor',p.sf],['Sets en contra',p.sc],['Diferencia de sets',p.sf-p.sc],
-      ['Puntos a favor',p.pf],['Puntos en contra',p.pc],['Diferencia de puntos',p.pf-p.pc],['PTS informativos',p.pts]].forEach(([label,value])=>{
-      const stat=element('div','');stat.append(element('b','',value),element('span','',label));grid.append(stat);
-    });
-    expanded.append(expandTitle,grid);card.append(expanded);
-    cards.append(card);
-  });
-  root.append(cards);
+ const cards=element('div','mobile-standings');
+ cards.setAttribute('role','table');
+ cards.setAttribute('aria-label','Clasificación completa del grupo '+group);
+ const labels=element('div','standings-head');
+ [['Pos.','Posición'],['Jugador / pareja','Jugador o pareja'],['PJ','Partidos jugados'],['PG','Partidos ganados'],['PP','Partidos perdidos']].forEach(([short,long])=>{
+  const cell=element('span','',short);cell.setAttribute('title',long);labels.append(cell);
+ });
+ cards.append(labels);
+ result.rows.forEach((p,i)=>{
+  const gamesPlayed=result.played>0;
+  const movement=gamesPlayed&&i===0&&group!=='A1'?'up':gamesPlayed&&i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'';
+  const card=element('div','standing-row '+movement);
+  card.setAttribute('role','row');
+  const line=element('div','standing-row-main');
+  line.append(element('span','standing-pos',i+1),element('span','standing-name',p.name),
+              element('span','standing-cell',p.pj),element('span','standing-cell wins',p.pg),element('span','standing-cell losses',p.pp));
+  card.append(line);
+  const more=element('div','standing-meta');
+  const stat=(title,value)=>{
+   const item=element('span');
+   item.append(element('b','',title+' '),document.createTextNode(String(value)));
+   more.append(item);
+  };
+  const signed=n=>n>0?'+'+n:String(n);
+  stat('Sets',p.sf+'–'+p.sc+' ('+signed(p.sf-p.sc)+')');
+  stat('Puntos',p.pf+'–'+p.pc+' ('+signed(p.pf-p.pc)+')');
+  stat('PTS',p.pts);
+  card.append(more);cards.append(card);
+ });
+ root.append(cards);
+ root.append(element('p','standing-key','PJ: jugados · PG: ganados · PP: perdidos · Entre paréntesis: diferencia de sets o puntos.'));
  root.append(element('p','muted','*PTS indica 3 puntos informativos por victoria; el orden oficial se decide por partidos ganados y los desempates. Los números iniciales no son una clasificación oficial.'));
  if(result.warnings.length)root.append(element('p','message','Revisión pendiente: '+result.warnings.join(' · ')));
  if(!result.complete)root.append(element('p','message','Clasificación provisional. No están registrados todos los encuentros o hay empates sin resolver.'));
  renderPending(root,type,group,people);
- const scores=records(type,group);
- if(currentFocus){
-  const info=element('div','focus-info');
-  const filtered=scores.filter(r=>norm(r.player1)===norm(currentFocus)||norm(r.player2)===norm(currentFocus));
-  info.append(element('span','',currentFocus+' · '+filtered.length+' partidos registrados'));
-  const clear=element('button','focus-clear','Mostrar todo el grupo');clear.type='button';
-  clear.addEventListener('click',()=>{focusParticipant=null;renderSelected()});
-  info.append(clear);root.append(info);
-  root.append(element('h3','', 'Resultados de '+currentFocus));
-  renderResultsTable(root,filtered);
- }else{
-  root.append(element('h3','', 'Resultados del grupo'));
-  renderResultsTable(root,scores);
- }
+ root.append(element('h3','', 'Resultados del grupo'));
+ renderResultsTable(root,records(type,group));
 }
 function winnerForSet(score,side){
  return Number(score[side])>Number(score[1-side]);
@@ -575,33 +515,16 @@ function renderResultsTable(root,list){
  }
  root.append(cards);
 }
-function renderAll(){
- const type=$('resultType').value,select=$('resultGroup'),previous=select.value;
- select.replaceChildren();option(select,'all','Todos los grupos');
- const valid=type==='all'?new Set([...Object.keys(data.individualGroups),...Object.keys(data.doublesGroups)]):new Set(Object.keys(type==='individual'?data.individualGroups:data.doublesGroups));
- [...valid].sort().forEach(g=>option(select,g,'Grupo '+g));
- select.value=valid.has(previous)?previous:'all';
- const list=[...(type==='doubles'?[]:data.individualResults),...(type==='individual'?[]:data.doublesResults)].filter(r=>select.value==='all'||r.groupLabel===select.value).sort((a,b)=>b.date.localeCompare(a.date));
- const root=$('allResults');root.replaceChildren();
- if(select.value!=='all'&&(type==='individual'||type==='doubles')){
-  renderPending(root,type,select.value,names(type,select.value));
- }
- renderResultsTable(root,list);
-}
 function switchPage(next){
  page=next;document.querySelectorAll('[data-page]').forEach(b=>{if(b.dataset.page===next)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
  const ranking=next==='individual'||next==='doubles';
  $('overview').classList.toggle('hidden',!ranking);
- $('resultsPanel').classList.toggle('hidden',next!=='results');
  $('bookingPanel').classList.toggle('hidden',next!=='booking');
  $('rulesPanel').classList.toggle('hidden',next!=='rules');
- if(next==='results')renderAll();
- else if(ranking){$('sectionTitle').textContent=next==='individual'?'Ranking individual CPZ':'Ranking dobles CPZ';$('sectionSubtitle').textContent='Selecciona una categoría y un grupo para ver la clasificación, los resultados y el motivo de cada posición.';renderRank()}
+ if(ranking){$('sectionTitle').textContent=next==='individual'?'Ranking individual CPZ':'Ranking dobles CPZ';$('sectionSubtitle').textContent='Selecciona una categoría y un grupo para ver la clasificación, los resultados y el motivo de cada posición.';renderRank()}
 }
-$('playerSearch').addEventListener('input',renderPlayerSearch);
-$('category').addEventListener('change',()=>{focusParticipant=null;$('group').value='';renderRank()});
-$('group').addEventListener('change',()=>{focusParticipant=null;renderSelected()});
-$('resultType').addEventListener('change',renderAll);$('resultGroup').addEventListener('change',renderAll);
+$('category').addEventListener('change',()=>{$('group').value='';renderRank()});
+$('group').addEventListener('change',renderSelected);
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.page)));
 $('logout').hidden=true;
 async function refreshRankings(initial=false){
