@@ -175,7 +175,7 @@ input:disabled{background:#e5edf3;color:#7e95a7}
  min-height:325px;
  padding:48px 44px;
  background-color:#063e67;
- background-image:linear-gradient(100deg,rgba(3,27,51,.96) 0%,rgba(4,35,66,.87) 38%,rgba(4,37,66,.43) 75%,rgba(3,33,57,.26) 100%),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/POCO-SOBRE-NOSOTROS-1536x864.jpg");
+ background-image:linear-gradient(100deg,rgba(3,27,51,.96) 0%,rgba(4,35,66,.87) 38%,rgba(4,37,66,.43) 75%,rgba(3,33,57,.26) 100%),url("./lab-assets/pistas-cpz.jpg");
  background-position:center,center 48%;
  background-size:cover;
  border:1px solid #ffffff35;
@@ -190,7 +190,7 @@ input:disabled{background:#e5edf3;color:#7e95a7}
 .service-card{overflow:hidden}
 .service-card.league-card{
  background-color:#07365b;
- background-image:linear-gradient(155deg,rgba(4,30,54,.80),rgba(4,31,57,.94) 73%),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/JUEGA-PARTIDOS-scaled-e1764497382127-768x768.jpg");
+ background-image:linear-gradient(155deg,rgba(4,30,54,.80),rgba(4,31,57,.94) 73%),url("./lab-assets/partidos-cpz.jpg");
  background-position:center,center 36%;
  background-size:cover;
  border-color:#ffffff29;
@@ -209,11 +209,11 @@ input:disabled{background:#e5edf3;color:#7e95a7}
  background-size:cover;
 }
 .service-card.drop-card:nth-child(2) .service-top{
- background-image:linear-gradient(180deg,rgba(3,29,57,.36),rgba(3,29,57,.03) 60%,rgba(3,29,57,.12)),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/ALQUILER-DE-PISTAS-1-scaled-e1764497323284-768x768.jpg");
+ background-image:linear-gradient(180deg,rgba(3,29,57,.36),rgba(3,29,57,.03) 60%,rgba(3,29,57,.12)),url("./lab-assets/alquiler-cpz.jpg");
  background-position:center,center 46%;
 }
 .service-card.drop-card:nth-child(3) .service-top{
- background-image:linear-gradient(180deg,rgba(3,29,57,.36),rgba(3,29,57,.03) 60%,rgba(3,29,57,.12)),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/CLASES-PERSONALIZADAS-scaled-e1764497349238-768x768.jpg");
+ background-image:linear-gradient(180deg,rgba(3,29,57,.36),rgba(3,29,57,.03) 60%,rgba(3,29,57,.12)),url("./lab-assets/clases-cpz.jpg");
  background-position:center,center 38%;
 }
 .service-card:not(.league-card) .service-icon{
@@ -241,7 +241,7 @@ input:disabled{background:#e5edf3;color:#7e95a7}
 .service-card:not(.league-card) .card-link:hover{background:#d3ecff}
 @media(max-width:700px){
  .hero{min-height:229px;padding:25px 21px;background-position:center,63% 50%;
- background-image:linear-gradient(92deg,rgba(3,24,47,.94) 0%,rgba(4,34,62,.84) 50%,rgba(4,31,53,.35) 100%),url("https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/POCO-SOBRE-NOSOTROS-1536x864.jpg")}
+ background-image:linear-gradient(92deg,rgba(3,24,47,.94) 0%,rgba(4,34,62,.84) 50%,rgba(4,31,53,.35) 100%),url("./lab-assets/pistas-cpz.jpg")}
  .hero h1{max-width:280px;text-shadow:0 3px 12px #0008}
  .hero p{max-width:295px;color:#f5fbff}
  .service-card:not(.league-card) .service-top{min-height:127px;padding:14px 16px}
@@ -253,4 +253,55 @@ input:disabled{background:#e5edf3;color:#7e95a7}
 }
 @media(prefers-reduced-transparency:reduce){
  .hero-badges span,.service-card:not(.league-card) .service-icon,.service-card:not(.league-card) .card-tag{backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+
+/* Mantenimiento: imágenes locales con encuadre estable y fondos de reserva. */
+.hero{height:336px;min-height:0;background-color:#103c62;background-size:cover}
+.service-card.league-card{min-height:320px;background-color:#103c62;background-size:cover}
+.service-card:not(.league-card) .service-top{height:145px;min-height:0;background-color:#b6cede;background-size:cover}
+.service-card .card-link,.back-link,.remove-person{min-height:44px}
+.pulse{background:#72cbff;box-shadow:0 0 0 4px #72cbff30}
+.league-icon,.service-card.league-card .service-icon{background:#d8effe;color:#075985}
+.league-card .card-link,.service-card.league-card .card-link{background:#d7efff;color:#063f69}
+.green-tag{background:#dff1ff;color:#0e5784;border-color:#ffffff3d}
+@media(max-width:700px){
+ .hero{height:244px;min-height:0}
+ .service-card.league-card{min-height:265px}
+ .service-card:not(.league-card) .service-top{height:129px;min-height:0}
+}
+@media(prefers-color-scheme:dark){
+ :root{color-scheme:dark;--bg:#0d1b2a;--ink:#e7f3fd;--muted:#9db6c8;--line:#29465c}
+ body{background:#0e1b29;color:#e7f3fd}
+ .demo-banner{background:#3e321b;border-color:#776035;color:#ffdfa0}
+ .hero{background-color:#123452}
+ .section-heading h2,.area-hero h1,.panel-heading h2,.attendee-heading h3{color:#f0f7ff}
+ .section-counter{color:#c4dbeb;background:#223a50}
+ .service-card:not(.league-card),.area-hero,.module-panel{background:#152a3d;border-color:#2d4b62;color:#e7f3fd;box-shadow:0 5px 16px #0003}
+ .service-card:not(.league-card) h3,.signup-form>label{color:#f2f9ff}
+ .service-card:not(.league-card) p,.area-hero p,.panel-heading p,.micro-note,.signup-form>p:not(.feedback){color:#abc2d2}
+ .service-card:not(.league-card) .activity-date{color:#bfddf3;background:#243f53;border-color:#38566b}
+ .service-card:not(.league-card) .card-link,.role-button.is-active{background:#244a68;color:#e4f4ff}
+ .service-icon{background:#264b69;color:#bddff8}
+ .role-switch{background:#1b344a}
+ .role-button{color:#b1cad9}
+ .role-button.is-active{border-color:#3b6582;box-shadow:none}
+ .demo-suffix{background:#36516a;color:#e6f2fb}
+ .feature-strip{background:#18374e;border-color:#315c78}
+ .feature-strip strong{color:#e0f4ff}
+ .feature-strip p{color:#a9c7da}
+ .password-preview,.attendee-row,.attendee-empty{background:#1c3449;border-color:#35516a;color:#d9ecfa}
+ .password-preview label,.signup-form label,.admin-form label{color:#d8efff}
+ .preview-features span,.not-active{color:#bcd3e3}
+ .preview-features span{background:#203a50;border-color:#35566e}
+ .session-summary{background:linear-gradient(135deg,#103352,#174f77)}
+ .count-pill{color:#eaf6ff}
+ input{background:#142b3e;border-color:#426179;color:#f1f9ff}
+ input:disabled{background:#1a2c3e;color:#99b0c1}
+ .attendee-section{border-color:#34526b}
+ .attendee-heading>span,.attendee-number{background:#264e6c;color:#d7efff}
+ .remove-person{background:#382c36;color:#ffceca;border-color:#6e4852}
+ .security-note{background:#3b321e;border-color:#75613f;color:#f6dfa7}
+ .site-footer{color:#94adc0}
+ .feedback{color:#a4e3be}
+ .feedback.is-error{color:#f8b6b0}
 }
