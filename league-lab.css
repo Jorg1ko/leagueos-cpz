@@ -1,0 +1,134 @@
+/* CPZ · Ajustes de legibilidad y accesibilidad para la vista del jugador.
+   Solo en el laboratorio. Colores rojo/verde reservados a posibles movimientos de grupo. */
+:root{--cpz-brand:#076eae;--cpz-brand-soft:#e7f4fc;--cpz-text:#173d5a;--cpz-secondary:#617f94}
+
+/* Layout estable: posición y nombre en primer plano; los datos, secundarios. */
+.ranking-table-wrap td:not(:nth-child(2)):not(.pos){color:#61798b;font-size:12px}
+.ranking-table-wrap td.pos{font-size:15px;white-space:nowrap}
+.ranking-table-wrap td:nth-child(2){font-weight:800;color:#133c5c}
+.ranking-table-wrap tr.up{background:#eff9f1;box-shadow:inset 4px 0 #429d64}
+.ranking-table-wrap tr.down{background:#fff2f2;box-shadow:inset 4px 0 #cf6771}
+.ranking-table-wrap tr.up td.pos{color:#24794b}
+.ranking-table-wrap tr.down td.pos{color:#a33d4b}
+.explain summary{width:44px;min-width:44px;height:44px;min-height:44px;font-size:15px}
+.explain summary:focus-visible,.standing-explain summary:focus-visible{outline:3px solid #2f98d2;outline-offset:2px}
+.standings-head,.standing-row-main{grid-template-columns:30px minmax(0,1fr) repeat(3,27px)}
+.standing-row{padding:6px 8px;background:#fff}
+.standing-pos{font-size:17px;color:#076ba8}
+.standing-name{font-size:12.5px;line-height:1.38;font-weight:900}
+.standing-cell{font-size:11px!important;color:#647f92!important;font-weight:700}
+.standing-meta{margin-left:34px;gap:4px 12px;color:#6b879b;font-size:10px;min-width:0}
+.standing-meta b{color:#456a83}
+.standing-cell.wins,.standing-cell.losses{color:#647f92!important}
+.standing-row.up{background:#f0f8f1!important;box-shadow:inset 4px 0 #459a67}
+.standing-row.down{background:#fff1f1!important;box-shadow:inset 4px 0 #ca6774}
+.standing-row.up .standing-pos{color:#277a48}
+.standing-row.down .standing-pos{color:#a4414e}
+.standing-key{padding:5px 0;font-size:10px;color:#647d90}
+.standing-explain{position:relative;margin-left:auto;min-width:44px;flex-shrink:0}
+.standing-explain summary{display:grid;place-items:center;list-style:none;cursor:pointer;width:44px;height:44px;min-height:44px;border-radius:10px;color:#13689b;font-size:14px;font-weight:850;background:#eaf6fe}
+.standing-explain summary::-webkit-details-marker{display:none}
+.standing-explain[open]{flex-basis:100%;margin-left:0}
+.standing-explain[open] summary{margin-left:auto}
+.standing-explain p{padding:11px 12px;margin:6px 0 2px;border:1px solid #cbdfee;border-radius:10px;background:#f1f8ff;color:#385c76;font-size:11px;line-height:1.6;font-weight:450}
+.ranking-status{margin:13px 0;padding:12px 14px;border:1px solid #ccdfeb;border-radius:10px;background:#f0f7fc;color:#315d78;font-size:12px;font-weight:700;line-height:1.5}
+.progress-label,.progress-track{color:#527b98}
+
+/* Sets: una sola fila por set, ganador en negrita, sin depender del color. */
+.match-card{box-shadow:0 2px 9px #0b38580d;border-color:#dce8f1}
+.match-score-summary{margin-bottom:8px}
+.match-global{background:#e6f2fa;color:#185e8a;border-color:#c9e4f4}
+.match-opponents{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0 11px;font-size:12px;line-height:1.4;color:#2e5370}
+.match-team{font-weight:750;overflow-wrap:anywhere}
+.match-versus{font-size:10px;font-weight:700;color:#8aa2b3}
+.match-set-lines{list-style:none;padding:0;margin:0;display:grid;gap:5px}
+.match-set-line{display:flex;align-items:center;gap:9px;min-width:0;min-height:32px;padding:6px 9px;border-radius:8px;background:#f3f8fc;color:#456a82;font-size:11px;line-height:1.4}
+.match-set-num{width:20px;flex-shrink:0;font-size:10px;font-weight:900;color:#69849a}
+.match-set-score{min-width:39px;flex-shrink:0;color:#285a7d;font-size:12px;font-variant-numeric:tabular-nums}
+.match-set-winner{min-width:0;color:#0c4269;font-weight:900;overflow-wrap:anywhere}
+.pending-pair{background:#fff;box-shadow:none}
+
+/* Controles y reservas táctiles, opciones independientes sin cupón precargado. */
+.club-return a,.discount-copy,.discount-book,.btn,.nav button{min-height:44px}
+.discount-book{display:flex;justify-content:center;align-items:center;width:100%;min-height:47px;margin-top:9px;padding:11px 12px;border:1px solid #b7d8ed;background:#edf7ff;border-radius:11px;color:#135b86;text-decoration:none;font-weight:850;font-size:12px;text-align:center}
+.discount-book:hover{background:#e1f0fa}
+.discount-validity{font-size:10px;line-height:1.5;color:#6c8598;margin:-5px 0 10px}
+.discount-copy{box-shadow:none;background:#096faf}
+.discount-code{background:#eef7fc;color:#17496d}
+.service-card{box-shadow:0 3px 13px #143c5810}
+@media(max-width:700px){
+ .shell{max-width:100%;overflow-x:clip}
+ .ranking-table-wrap{display:none}
+ .mobile-standings{max-width:100%;overflow:hidden}
+ .nav{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .nav button{min-height:58px;min-width:0}
+ .standing-pos{font-size:16px}
+ .standing-row-main,.standings-head{grid-template-columns:27px minmax(0,1fr) repeat(3,25px);gap:3px}
+ .standing-row{padding:5px 7px}
+ .standing-meta{margin-left:30px}
+ .standing-name{font-size:12px}
+ .discount-grid{grid-template-columns:1fr}
+ .club-return a{min-height:44px}
+}
+
+/* Modo oscuro real: no se alteran colores de ascenso / descenso. */
+@media(prefers-color-scheme:dark){
+ :root{color-scheme:dark;--cpz-text:#e6f3fd;--cpz-secondary:#afc5d7;--cpz-brand-soft:#213d55}
+ html{background:#0d1b29}
+ body{background:#0e1b29;color:#e6f3fd}
+ .shell{background:transparent}
+ .top{background:linear-gradient(120deg,#082944,#0a426b);box-shadow:0 5px 20px #0004}
+ .card,.table-wrap,table,.match-card,.mobile-standings,.standing-row,.discount-card{background:#192d40;border-color:#35516a;color:#e1f0fb;box-shadow:0 3px 13px #0002}
+ h2,h3,#sectionTitle,.rank-heading h3,.mobile-player-name,.match-set-winner{color:#e9f6ff}
+ .muted,.standing-key,.standing-meta,.standing-meta b,.standings-head,.match-opponents,.match-team,.match-versus,.match-meta{color:#adc5d7}
+ .filters label,.rules p,.pending-desc{color:#b4cadb}
+ .filters select,select,.btn{background:#1d374e;color:#e9f7ff;border-color:#466780}
+ .nav{background:#172c3e;border-color:#34506a;box-shadow:0 -4px 18px #0005}
+ .nav button{background:transparent;color:#b7cada}
+ .nav button[aria-current="page"]{background:#234a67;color:#ecf8ff}
+ .lab-marker{background:#20425e;color:#e0f4ff;border-color:#48708c}
+ #labDataNotice{background:#1d3448!important;border-color:#395c78!important;color:#c4e0f1!important}
+ .rank-track{background:#30485c}
+ .rank-track>span{background:#348bc4}
+ .progress-label{background:#25425a;color:#d0e7f6}
+ .rules,.pending-panel,.ranking-status{background:#1b3449;color:#d5e9f7;border-color:#3b5d76}
+ .rules summary,.pending-panel h3{color:#e4f3ff}
+ .pending-count{background:#284b64;color:#cde5f7}
+ .pending-pair{background:#183348;border-color:#3a566e;color:#d7eafb}
+ .pending-pair .versus{color:#afc3d3}
+ .pending-done{color:#add8c1}
+ .table-wrap table{background:#1b3348}
+ th,.standings-head{background:#26465d;color:#cfdfec}
+ td{border-color:#2e4b64}
+ tbody tr:nth-child(even){background:#1a3549}
+ .ranking-table-wrap td:nth-child(2){color:#e4f2fc}
+ .ranking-table-wrap td:not(:nth-child(2)):not(.pos){color:#afc4d3}
+ .standings-head span{color:#c4d8e8}
+ .standing-row{border-color:#304e66}
+ .standing-pos{color:#d0ebff}
+ .standing-name{color:#edf6fd}
+ .standing-cell,.standing-cell.wins,.standing-cell.losses{color:#aec3d4!important}
+ .standing-meta{border-color:#39536b}
+ .standing-meta b{color:#cce0f0}
+ .standing-explain summary,.explain summary{background:#28506d;border-color:#44708c;color:#e8f5fd}
+ .standing-explain p,.explain p{background:#213e54;color:#d9ebf8;border-color:#406079}
+ .standing-row.up,.ranking-table-wrap tr.up{background:#173c33!important;box-shadow:inset 4px 0 #52b87a}
+ .standing-row.down,.ranking-table-wrap tr.down{background:#402b36!important;box-shadow:inset 4px 0 #e38a92}
+ .standing-row.up .standing-pos,.ranking-table-wrap tr.up td.pos{color:#9ee0b2}
+ .standing-row.down .standing-pos,.ranking-table-wrap tr.down td.pos{color:#ffb7bb}
+ .match-card{background:#192f43;border-color:#39556f}
+ .match-type,.match-global{background:#294e69;color:#d9efff;border-color:#416985}
+ .match-set-line{background:#223d53;color:#c2daea}
+ .match-set-num{color:#a9c1d5}
+ .match-set-score,.match-set-winner{color:#e8f6fd}
+ .discount-section{background:#192f42;border-color:#3b5870}
+ .discount-section>.muted{color:#b4cadd}
+ .discount-card{background:#1d364b;border-color:#3f5e77}
+ .discount-kind,.discount-title h3{color:#e4f2fd}
+ .discount-tag,.discount-period{background:#254963;color:#d4ecfc;border-color:#3d6480}
+ .discount-code{background:#152c3f;border-color:#52758b;color:#e4f4fd}
+ .discount-validity,.discount-status{color:#b2cada}
+ .discount-copy{background:#226a9d;color:#fff}
+ .discount-book,.club-return a{background:#274961;border-color:#416782;color:#e6f4ff}
+ .message{background:#382f20;border-color:#725c40;color:#f5dba8}
+}
