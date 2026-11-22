@@ -40,8 +40,14 @@ jobs:
         id: snapshot
         continue-on-error: true
         env:
+          CF_READ_TOKEN: ${{ secrets.CLOUDFLARE_D1_READ_TOKEN }}
           CF_TOKEN: ${{ secrets.CLOUDFLARE_D1_READ_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
         run: |
+          if [ -n "$CF_READ_TOKEN" ]; then
+            echo "Diagnóstico: el secreto específico CLOUDFLARE_D1_READ_TOKEN está configurado."
+          else
+            echo "::warning::No se detecta CLOUDFLARE_D1_READ_TOKEN en GitHub Actions; se prueba con el token de despliegue existente."
+          fi
           python3 scripts/build-lab-snapshot.py
           node --check lab-static/dist/lab-results.js
       - name: Avisar si falta permiso de lectura en D1
