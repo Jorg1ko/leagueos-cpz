@@ -26,14 +26,14 @@ SELECT r.played_at AS date, r.round_label AS round,
 FROM cpz_match_results AS r
 JOIN cpz_player_accounts AS a ON a.id = r.player_one_id
 JOIN cpz_player_accounts AS b ON b.id = r.player_two_id
-WHERE r.played_at >= '2026-11-01' AND r.played_at < '2026-12-01'
+WHERE r.deleted_at IS NULL AND r.played_at >= '2026-11-01' AND r.played_at < '2026-12-01'
 ORDER BY r.played_at DESC LIMIT 300
 """
 DOUBLES_SQL = """
 SELECT group_label AS groupLabel, pair_one AS pair1, pair_two AS pair2,
        played_at AS date, round_label AS round, sets_json AS setsJson
 FROM cpz_doubles_results
-WHERE played_at >= '2026-11-01' AND played_at < '2026-12-01'
+WHERE deleted_at IS NULL AND played_at >= '2026-11-01' AND played_at < '2026-12-01'
 ORDER BY played_at DESC LIMIT 200
 """
 
