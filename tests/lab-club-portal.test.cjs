@@ -57,6 +57,14 @@ assert(!/fetch\(|XMLHttpRequest|\/api\//.test(js),'Drop-in preview must not call
 assert(!js.includes('innerHTML'),'Display user-submitted names via safe textContent, not HTML');
 assert(!htmlHasExternalForms(home),'All signup data should stay on device');
 assert(css.includes('@media(max-width:700px)'),'Mobile first layout required');
+
+const photoNames=['POCO-SOBRE-NOSOTROS-1536x864.jpg','JUEGA-PARTIDOS-scaled-e1764497382127-768x768.jpg','ALQUILER-DE-PISTAS-1-scaled-e1764497323284-768x768.jpg','CLASES-PERSONALIZADAS-scaled-e1764497349238-768x768.jpg'];
+for(const filename of photoNames){
+ assert(css.includes('clubpickleballzaragoza.com/wp-content/uploads/2025/11/'+filename),'Falta la fotografía oficial '+filename);
+}
+assert(css.includes('.hero{')&&css.includes('background-image:linear-gradient('),'El fondo del hero necesita un degradado para mantener legibilidad');
+assert(css.includes('.service-card.drop-card:nth-child(2) .service-top')&&css.includes('.service-card.drop-card:nth-child(3) .service-top'),'Los dos drop-in deben tener fotografías distintas');
+
 new vm.Script(js);
 console.log('OK: portal, liga, martes/jueves, alta manual, administrador de prueba, fechas y persistencia local');
 
