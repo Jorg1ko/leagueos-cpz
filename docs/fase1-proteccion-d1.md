@@ -91,3 +91,14 @@ Fuentes externas: https://developers.cloudflare.com/d1/observability/debug-d1/ y
 - No se realizan escrituras a D1 real.
 - Ningún PR se fusiona si fallan pruebas. El PR de fase 1 **no despliega producción ni el laboratorio** hasta que se integre expresamente a la rama objetivo.
 - NO se realizan cambios de contraseñas, regeneraciones de D1, `DROP` ni ejecución de `provision-d1.yml`.
+
+
+## Intento único de respaldo real — 22 de noviembre de 2026
+
+Con autorización explícita se inició un workflow **temporal** y limitado al PR #34: [ejecución de copia 45064932463](https://github.com/Jorg1ko/leagueos-cpz/actions/runs/45064932463).
+
+**Resultado: NO SE OBTUVO COPIA.** Cloudflare rechazó la petición inicial a su API de exportación con **HTTP 401 Unauthorized**. El workflow terminó antes de descargar o cifrar SQL, y GitHub confirmó **cero artefactos** para esa ejecución. El archivo de workflow que permitía ese intento se eliminó de la rama de fase 1 en el commit `4d69b5eec0c30ad153be71b9b6a8083d5aec800c`, para impedir ejecuciones posteriores. No se ejecutaron migraciones, SQL de escritura ni despliegues. El token no se compartió ni se imprimió en los logs.
+
+**Acción pendiente:** revisar si el secreto `CLOUDFLARE_D1_BACKUP_TOKEN` contiene un token API activo y correcto, con permiso **Account → D1 → Edit (Write)** y acceso a la cuenta de la base. Un HTTP 401 apunta a un problema de autenticación, aunque el alcance exacto debe verificarse; no da derecho a concluir que el token esté simplemente mal copiado.
+
+**Puerta de seguridad:** sigue prohibido aplicar la migración mientras no exista una copia real cifrada, descargable y comprobable. No repetir la exportación ni activar copias programadas sin nueva autorización específica.
