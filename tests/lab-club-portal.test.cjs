@@ -58,10 +58,17 @@ assert(!js.includes('innerHTML'),'Display user-submitted names via safe textCont
 assert(!htmlHasExternalForms(home),'All signup data should stay on device');
 assert(css.includes('@media(max-width:700px)'),'Mobile first layout required');
 
-const photoNames=['POCO-SOBRE-NOSOTROS-1536x864.jpg','JUEGA-PARTIDOS-scaled-e1764497382127-768x768.jpg','ALQUILER-DE-PISTAS-1-scaled-e1764497323284-768x768.jpg','CLASES-PERSONALIZADAS-scaled-e1764497349238-768x768.jpg'];
+const photoNames=['pistas-cpz.jpg','partidos-cpz.jpg','alquiler-cpz.jpg','clases-cpz.jpg','escudo-cpz.webp'];
 for(const filename of photoNames){
- assert(css.includes('clubpickleballzaragoza.com/wp-content/uploads/2025/11/'+filename),'Falta la fotografía oficial '+filename);
+ assert(fs.existsSync('lab-assets/'+filename),'Falta archivo local '+filename);
+ const blob=fs.readFileSync('lab-assets/'+filename);
+ assert(blob.length>2000,'Foto local vacía '+filename);
+ assert(filename.endsWith('.webp')?blob.toString('ascii',0,4)==='RIFF':blob[0]===255&&blob[1]===216,'Archivo de imagen no válido '+filename);
+ if(filename.endsWith('.jpg'))assert(css.includes('./lab-assets/'+filename),'No se utiliza la foto local '+filename);
 }
+assert(home.includes('./lab-assets/escudo-cpz.webp')&&league.includes('./lab-assets/escudo-cpz.webp'),'Escudo local en ambas vistas');
+assert(!css.includes('clubpickleballzaragoza.com/wp-content/uploads/'),'No debe depender de fotos remotas');
+assert(css.includes('prefers-color-scheme:dark'),'Portada sin modo oscuro automático');
 assert(css.includes('.hero{')&&css.includes('background-image:linear-gradient('),'El fondo del hero necesita un degradado para mantener legibilidad');
 assert(css.includes('.service-card.drop-card:nth-child(2) .service-top')&&css.includes('.service-card.drop-card:nth-child(3) .service-top'),'Los dos drop-in deben tener fotografías distintas');
 
