@@ -1,0 +1,65 @@
+name: Validación fase 1 (sin desplegar ni acceder a D1)
+on:
+  pull_request:
+    branches:
+      - experimental/laboratorio-cpz
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node 22 para SQLite temporal en memoria
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Comprobar scripts de aplicación
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --version
+          find functions -type f -name '*.js' -print0 | xargs -0 -n 1 node --check
+          for file in ./*.js; do
+            [ -f "$file" ] || continue
+            node --check "$file"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import ast
+          for path in Path('scripts').glob('*.py'):
+              ast.parse(path.read_text(encoding='utf-8'),filename=str(path))
+              print('Sintaxis OK:',path)
+          PY
+      - name: Ejecutar TODOS los tests sobre datos sintéticos locales
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          for test in tests/*.cjs tests/*.mjs tests/*.js; do
+            echo "TEST: $test"
+            node "$test"
+          done
+      - name: Comprobar JS incrustado y migración inofensiva
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('node:fs'),vm=require('node:vm');
+          for(const path of ['index.html','player.html','club-portal.html','lab-preview.html','legal.html']){
+            const source=fs.readFileSync(path,'utf8');
+            const re=/<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+            let match;while((match=re.exec(source)))if(match[1].trim())new vm.Script(match[1],{filename:path});
+          }
+          console.log('JavaScript inline validado');
+          NODE
+          python3 - <<'PY'
+          from pathlib import Path
+          sql=Path('migrations/2026-11-22_soft_delete_audit.sql').read_text()
+          body='\n'.join(x for x in sql.splitlines() if not x.strip().startswith('--')).upper()
+          assert 'DROP TABLE' not in body and 'DELETE FROM' not in body
+          assert body.count('ADD COLUMN DELETED_AT')==2
+          print('Migración comprobada: solo columnas nuevas y tabla de auditoría')
+          PY
