@@ -37,8 +37,13 @@ assert.equal(searchParticipants(data,'a').length,0,'Avoid noisy one-character se
 assert.equal(searchParticipants(data,'inexistente').length,0);
 
 const html=fs.readFileSync('player.html','utf8');
-for(const value of ['id="playerSearch"','id="playerSearchResults"','renderPending(root,type,group,people)','match-score-summary','match-set-headings',"'Sets '+pair1+'–'+pair2","renderPlayerSearch()"])
+for(const value of ['mobile-standings','standing-row-main','standing-meta','renderPending(root,type,group,people)','match-score-summary','match-set-headings',"'Sets '+pair1+'–'+pair2"])
  assert(html.includes(value), 'Missing UI: '+value);
-assert(!html.includes('https://wa.me/'),'WhatsApp share is not wanted');
+for(const value of ['id="playerSearch"','data-page="results"','id="resultsPanel"','Ver estadísticas completas','mobile-expanded','renderAll()','function renderPlayerSearch()'])
+ assert(!html.includes(value), 'Obsolete or expandable UI found: '+value);
+assert(html.includes("stat('Sets',p.sf+'–'+p.sc"),'Sets must always be visible');
+assert(html.includes("stat('Puntos',p.pf+'–'+p.pc"),'Points must always be visible');
+assert(html.includes("stat('PTS',p.pts)"),'Ranking informational points must remain visible');
+assert(!html.includes('https://wa.me/'),'WhatsApp sharing is not wanted');
 assert(!html.includes('cpz-podium'),'Podium is not wanted');
-console.log('OK: pendientes, búsqueda individual/dobles, marcadores numerados, sin podio ni compartición');
+console.log('OK: pendientes, clasificación compacta siempre visible, resultados integrados, sin búsqueda ni podio');
