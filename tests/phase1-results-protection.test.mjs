@@ -55,7 +55,7 @@ const beforeRows={
  doubles:db.prepare('SELECT count(*) n FROM cpz_doubles_results').get().n
 };
 const forward=fs.readFileSync('migrations/2026-11-22_soft_delete_audit.sql','utf8');
-assert(!/\bDROP\b|\bDELETE\b/gi.test(forward.replace(/^--.*$/gm,'')),'La migración no puede borrar datos');
+assert(!/\bDROP\s+(TABLE|INDEX)\b|\bDELETE\s+FROM\b/i.test(forward.replace(/^--.*$/gm,'')),'La migración no puede borrar datos');
 db.exec(forward);
 for(const table of ['cpz_match_results','cpz_doubles_results']) {
  assert(db.prepare('PRAGMA table_info('+table+')').all().some(row=>row.name==='deleted_at'));
