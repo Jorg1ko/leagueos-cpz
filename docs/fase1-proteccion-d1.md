@@ -102,3 +102,16 @@ Con autorización explícita se inició un workflow **temporal** y limitado al P
 **Acción pendiente:** revisar si el secreto `CLOUDFLARE_D1_BACKUP_TOKEN` contiene un token API activo y correcto, con permiso **Account → D1 → Edit (Write)** y acceso a la cuenta de la base. Un HTTP 401 apunta a un problema de autenticación, aunque el alcance exacto debe verificarse; no da derecho a concluir que el token esté simplemente mal copiado.
 
 **Puerta de seguridad:** sigue prohibido aplicar la migración mientras no exista una copia real cifrada, descargable y comprobable. No repetir la exportación ni activar copias programadas sin nueva autorización específica.
+
+
+### Diagnóstico posterior, sin exportación
+
+Se ejecutó una comprobación temporal, **solo GET**, del secreto configurado en GitHub. Evidencia: [diagnóstico 45065116329](https://github.com/Jorg1ko/leagueos-cpz/actions/runs/45065116329). Resultado:
+
+- `GET /user/tokens/verify`: HTTP 401, error Cloudflare `1000`.
+- `GET /accounts/<cuenta>/tokens/verify`: HTTP 401, error Cloudflare `1000`.
+- `GET /accounts/<cuenta>/d1/database/<base>` (sin SQL): HTTP 401, error Cloudflare `10000`.
+
+Es una **evidencia de problema de autenticación o permisos** del token almacenado; no se puede distinguir todavía si es un valor incorrecto, un token inactivo o un permiso/recurso mal configurado. Nunca se imprimió el token ni se realizó exportación en este diagnóstico. El workflow temporal de diagnóstico fue eliminado en el commit `767a2cb04f3173611b233ba856424bfeede354e8`.
+
+Próximo paso: usuario debe sustituir por su cuenta el valor de GitHub Actions `CLOUDFLARE_D1_BACKUP_TOKEN` por un **token API activo y completo, sin el prefijo `Bearer`**, con permiso **Account / D1 / Edit** para la cuenta donde reside la base. Si no conserva el valor original, generar otro token desde el panel de Cloudflare. **No compartir tokens en la conversación ni en commits.** No repetir la exportación sin nueva autorización explícita.
