@@ -402,7 +402,8 @@ function renderPlayerSearch(){
    $('category').value=hit.group[0];renderRank();
    $('group').value=hit.group;renderSelected();
    root.replaceChildren();$('playerSearch').value='';
-   const chosen=$('ranking').querySelector('.found-player');
+   const mobile=window.matchMedia('(max-width:700px)').matches;
+   const chosen=$('ranking').querySelector(mobile?'.mobile-rankings .found-player':'.ranking-table-wrap .found-player');
    if(chosen)requestAnimationFrame(()=>chosen.scrollIntoView({behavior:'smooth',block:'center'}));
   });
   root.append(button);
