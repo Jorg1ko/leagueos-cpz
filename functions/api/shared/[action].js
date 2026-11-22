@@ -6,9 +6,9 @@ const asJson=async request=>{if((request.headers.get('Content-Type')||'').split(
 const sameOrigin=request=>{const origin=request.headers.get('Origin'),base=new URL(request.url).origin;if(origin)return origin===base;const site=request.headers.get('Sec-Fetch-Site');return site==='same-origin'||(!site&&request.headers.get('Referer')?.startsWith(base+'/'))};
 const normalize=s=>String(s||'').trim().toUpperCase().replace(/^GRUPO\s+/,'');
 async function summary(db){
- const singles=await db.prepare("SELECT r.played_at AS date,r.round_label AS round,r.group_label AS groupLabel,a.player_name AS player1,b.player_name AS player2,r.sets_json AS setsJson FROM cpz_match_results r JOIN cpz_player_accounts a ON a.id=r.player_one_id JOIN cpz_player_accounts b ON b.id=r.player_two_id WHERE r.played_at>='2026-11-01' AND r.played_at<'2026-12-01' ORDER BY r.played_at DESC LIMIT 300").all();
+ const singles=await db.prepare("SELECT r.played_at AS date,r.round_label AS round,r.group_label AS groupLabel,a.player_name AS player1,b.player_name AS player2,r.sets_json AS setsJson FROM cpz_match_results r JOIN cpz_player_accounts a ON a.id=r.player_one_id JOIN cpz_player_accounts b ON b.id=r.player_two_id WHERE r.deleted_at IS NULL AND r.played_at>='2026-11-01' AND r.played_at<'2026-12-01' ORDER BY r.played_at DESC LIMIT 300").all();
  let doubles=[];
- try{const data=await db.prepare("SELECT group_label AS groupLabel,pair_one AS pair1,pair_two AS pair2,played_at AS date,round_label AS round,sets_json AS setsJson FROM cpz_doubles_results WHERE played_at>='2026-11-01' AND played_at<'2026-12-01' ORDER BY played_at DESC LIMIT 200").all();doubles=data.results||[]}catch(err){if(!String(err.message).includes('no such table'))throw err}
+ try{const data=await db.prepare("SELECT group_label AS groupLabel,pair_one AS pair1,pair_two AS pair2,played_at AS date,round_label AS round,sets_json AS setsJson FROM cpz_doubles_results WHERE deleted_at IS NULL AND played_at>='2026-11-01' AND played_at<'2026-12-01' ORDER BY played_at DESC LIMIT 200").all();doubles=data.results||[]}catch(err){if(!String(err.message).includes('no such table'))throw err}
  const individual=(singles.results||[]).flatMap(r=>{
    const group=normalize(r.groupLabel),members=NOVEMBER_ROSTER[group];
    if(!members||!members.includes(r.player1)||!members.includes(r.player2))return [];
