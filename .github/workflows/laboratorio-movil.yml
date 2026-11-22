@@ -19,12 +19,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p lab-static/dist
-          cp player.html lab-static/dist/index.html
+          cp club-portal.html lab-static/dist/index.html
+          cp club-portal.css lab-static/dist/club-portal.css
+          cp club-portal.js lab-static/dist/club-portal.js
+          cp club-portal-model.js lab-static/dist/club-portal-model.js
+          cp player.html lab-static/dist/liga.html
           cp ranking-engine.js lab-static/dist/ranking-engine.js
           cp lab-data.js lab-static/dist/lab-data.js
           cp lab-features.js lab-static/dist/lab-features.js
           cp lab-results.js lab-static/dist/lab-results.js
           test ! -e lab-static/functions
+          node --check lab-static/dist/club-portal.js
+          node --check lab-static/dist/club-portal-model.js
           node --check lab-static/dist/lab-data.js
           node --check lab-static/dist/lab-features.js
           node --check lab-static/dist/lab-results.js
@@ -32,9 +38,13 @@ jobs:
           node tests/ranking-engine.test.cjs
           node tests/lab-match-colors.test.cjs
           node tests/lab-features.test.cjs
+          node tests/lab-club-portal.test.cjs
           node - <<'NODE'
           const fs=require('fs'),vm=require('vm');
-          const html=fs.readFileSync('lab-static/dist/index.html','utf8');
+          const portal=fs.readFileSync('lab-static/dist/index.html','utf8');
+          if(!portal.includes('id="homeScreen"')||!portal.includes('./liga.html'))throw Error('Falta la nueva portada del club');
+          if(!fs.existsSync('lab-static/dist/club-portal.js'))throw Error('Falta la aplicación del club');
+          const html=fs.readFileSync('lab-static/dist/liga.html','utf8');
           const script=/<script\b[^>]*>([\s\S]*?)<\/script>/gi;
           let match;while((match=script.exec(html)))if(match[1].trim())new vm.Script(match[1]);
           if(!html.includes('window.CPZ_LAB_DATA')||!html.includes('LABORATORIO'))throw Error('No es la version aislada');
