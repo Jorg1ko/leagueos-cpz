@@ -115,3 +115,15 @@ Se ejecutó una comprobación temporal, **solo GET**, del secreto configurado en
 Es una **evidencia de problema de autenticación o permisos** del token almacenado; no se puede distinguir todavía si es un valor incorrecto, un token inactivo o un permiso/recurso mal configurado. Nunca se imprimió el token ni se realizó exportación en este diagnóstico. El workflow temporal de diagnóstico fue eliminado en el commit `767a2cb04f3173611b233ba856424bfeede354e8`.
 
 Próximo paso: usuario debe sustituir por su cuenta el valor de GitHub Actions `CLOUDFLARE_D1_BACKUP_TOKEN` por un **token API activo y completo, sin el prefijo `Bearer`**, con permiso **Account / D1 / Edit** para la cuenta donde reside la base. Si no conserva el valor original, generar otro token desde el panel de Cloudflare. **No compartir tokens en la conversación ni en commits.** No repetir la exportación sin nueva autorización explícita.
+
+
+### Token corregido — 23 de noviembre de 2026
+
+Tras la actualización manual del secreto `CLOUDFLARE_D1_BACKUP_TOKEN`, se verificó desde GitHub Actions sin exportar ni escribir en D1: [comprobación 45178003823](https://github.com/Jorg1ko/leagueos-cpz/actions/runs/45178003823).
+
+- `GET /user/tokens/verify`: **HTTP 200, success=true**.
+- `GET /accounts/<cuenta>/d1/database/<base>`: **HTTP 200, success=true**.
+- No se solicitó exportación, no se utilizó SQL y no se almacenaron datos reales.
+- Se retiró el workflow temporal de diagnóstico de la rama de fase 1 en el commit `36b3f273f2a16ec0f51ed57cf9568d6d85d616e8`.
+
+**Importante:** estos resultados prueban la autenticación y el acceso a metadatos D1, pero **no prueban que la exportación completa funcione**. Sigue sin existir una copia real comprobada. La anterior autorización se consumió en el intento fallido: cualquier nuevo intento de exportación necesita aprobación específica del usuario.
