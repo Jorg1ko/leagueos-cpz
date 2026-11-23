@@ -126,4 +126,21 @@ Tras la actualización manual del secreto `CLOUDFLARE_D1_BACKUP_TOKEN`, se verif
 - No se solicitó exportación, no se utilizó SQL y no se almacenaron datos reales.
 - Se retiró el workflow temporal de diagnóstico de la rama de fase 1 en el commit `36b3f273f2a16ec0f51ed57cf9568d6d85d616e8`.
 
-**Importante:** estos resultados prueban la autenticación y el acceso a metadatos D1, pero **no prueban que la exportación completa funcione**. Sigue sin existir una copia real comprobada. La anterior autorización se consumió en el intento fallido: cualquier nuevo intento de exportación necesita aprobación específica del usuario.
+**Importante en ese momento:** estos resultados probaban autenticación y acceso a metadatos, pero aún no la exportación. El nuevo intento autorizado del 23 de noviembre sí se completó y se detalla abajo.
+
+
+## Copia completa cifrada real — 23 de noviembre de 2026
+
+Con autorización expresa y específica del usuario, se ejecutó **una única** exportación completa de `leagueos-cpz-db`. Evidencia: [GitHub Actions 45178391038](https://github.com/Jorg1ko/leagueos-cpz/actions/runs/45178391038), conclusión **success**.
+
+- SQL exportado **36.037 bytes**; importado y comprobado exclusivamente en SQLite efímero en memoria mediante `executescript`, existencia de tablas y `PRAGMA quick_check`.
+- Los datos exportados contienen **36 resultados individuales y 14 de dobles**, **50 resultados en total**. Esta cifra refleja el estado de la base el 23/11; la inspección de solo lectura del 22/11 registró 30 y 11 (41 en total).
+- Fichero cifrado `cpz-d1-export.sql.age` de **36.237 bytes**, comprobado con cabecera `age-encryption.org/v1`.
+- Artefacto GitHub **`cpz-d1-cifrada-45178391038-1`**, ID `14820117947`, ZIP de **36.393 bytes**, conservado hasta **2026-12-07T12:52:39Z** según GitHub. SHA256 del ZIP registrado por GitHub: `88b12e3c52bed6f1f6fd3c5335a52ec8bb8cfc2cc9fe685cd2eadd68ebaf453d`.
+- [Página de ejecución y descarga de artefacto](https://github.com/Jorg1ko/leagueos-cpz/actions/runs/45178391038). El artefacto contiene solo el archivo cifrado.
+- Eliminado inmediatamente el workflow temporal de exportación en el commit `ab7094c8e6a172c139fd5ad219625141e98b866c`. El workflow nocturno sigue **NO ACTIVADO**.
+- **Sin ejecución de migraciones, SQL mutables, despliegues ni cambios en `main`.** El PR #34 continúa en borrador.
+
+**Verificación pendiente para considerar la copia plenamente recuperable:** descargar y guardar el artefacto cifrado fuera de GitHub **antes de su caducidad**, comprobar mediante la clave privada local `cpz-d1-recovery-key.txt` que el archivo `.age` se descifra sin errores, y verificar el SQL resultante en SQLite **local**, nunca contra D1 remota. Esta validación exige intervenir en el equipo del usuario, porque la clave privada no debe salir de él. No pegar el SQL restaurado ni las claves en chats o GitHub.
+
+**Puerta para migración:** aunque ya existe exportación y comprobación local de reconstrucción del SQL dentro del runner, **no ejecutar todavía la migración ni desplegar cambios**. Completar primero la recuperación offline, volver a comprobar el estado del esquema/filas de D1 y obtener autorización independiente para cualquier modificación de producción.
