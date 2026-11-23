@@ -1,0 +1,86 @@
+name: Copia D1 cifrada unica autorizada 2026-11-23
+on:
+  pull_request:
+    types: [synchronize]
+    branches: [experimental/laboratorio-cpz]
+permissions:
+  contents: read
+concurrency:
+  group: cpz-d1-backup-only-20261123
+  cancel-in-progress: false
+jobs:
+  copia:
+    # Solo el PR 34 y la revision exacta autorizada una unica vez.
+    if: github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.event.pull_request.number == 34 && github.event.pull_request.head.ref == 'phase1/proteccion-datos-reversible-20261122' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.ref == 'experimental/laboratorio-cpz'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CF_BACKUP_TOKEN: ${{ secrets.CLOUDFLARE_D1_BACKUP_TOKEN }}
+      AGE_RECIPIENT: ${{ secrets.D1_BACKUP_AGE_RECIPIENT }}
+    steps:
+      - name: Obtener revision exacta sin desplegar
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Comprobar la autorizacion unica
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git log -1 --format=%s)" = 'ops(phase1): authorized single encrypted D1 backup 2026-11-23'
+          echo "Autorizacion para una exportacion D1 verificada. Sin desplegar ni aplicar migraciones."
+      - name: Validar configuración para cifrar antes de descargar
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$CF_BACKUP_TOKEN" ]; then
+            echo "::error::Falta CLOUDFLARE_D1_BACKUP_TOKEN. La base NO se ha consultado."
+            exit 1
+          fi
+          if [ -z "$AGE_RECIPIENT" ]; then
+            echo "::error::Falta D1_BACKUP_AGE_RECIPIENT. No se permite descargar una copia sin cifra."
+            exit 1
+          fi
+          if [[ "$AGE_RECIPIENT" != age1* ]]; then
+            echo "::error::Destinatario de cifrado age no válido."
+            exit 1
+          fi
+      - name: Preparar cifrado age
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y age
+          age --version
+      - name: Exportar, validar localmente, cifrar y destruir el archivo temporal
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          install -d -m 700 "$RUNNER_TEMP/cpz-d1-backup"
+          export D1_EXPORT_OUTPUT="$RUNNER_TEMP/cpz-d1-backup/export.sql"
+          trap 'rm -f "$D1_EXPORT_OUTPUT"' EXIT
+          # Jamás se ejecutan consultas SQL mutables sobre la D1 real.
+          # El SQL exportado se reconstruye solo en SQLite de memoria.
+          python3 scripts/export-d1-backup.py
+          age -r "$AGE_RECIPIENT" -o cpz-d1-export.sql.age "$D1_EXPORT_OUTPUT"
+          test -s cpz-d1-export.sql.age
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('cpz-d1-export.sql.age')
+          if p.stat().st_size<200:
+              raise SystemExit('::error::La copia cifrada está vacía: no se publicará')
+          with p.open('rb') as fh:
+              if fh.read(21)!=b'age-encryption.org/v1':
+                  raise SystemExit('::error::El artefacto no parece cifrado con age')
+          print('Copia cifrada comprobada; tamaño bytes:',p.stat().st_size)
+          PY
+          # La trampa elimina SQL en claro incluso ante error de cifrado.
+      - name: Guardar solo la copia cifrada durante 14 días
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpz-d1-cifrada-${{ github.run_id }}-${{ github.run_attempt }}
+          path: cpz-d1-export.sql.age
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+      - name: Confirmar éxito
+        run: |
+          echo "Copia D1 cifrada y validada, guardada 14 días como artefacto privado en su contenido." >> "$GITHUB_STEP_SUMMARY"
