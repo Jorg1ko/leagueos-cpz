@@ -102,6 +102,11 @@ for(const tag of ['id="homeScreen"','id="areaScreen"','data-go="liga"','data-go=
  assert(home.includes(tag),'Falta función de club: '+tag);
 }
 assert(home.includes('CPZ Open')&&home.includes('CPZ OPEN'),'Nombre oficial del torneo en portada y pantalla TV');
+assert(home.includes('class="cpz-open-cover"')&&home.includes('src="./lab-assets/cpz-open-poster.webp"'),'La portada del torneo debe mostrar el cartel CPZ Open');
+assert(css.includes('.service-card.tournament-card .service-top')&&css.includes('url("./lab-assets/cpz-open-poster.webp")'),'La portada de la actividad debe usar el mismo cartel');
+const posterBytes=fs.readFileSync('lab-assets/cpz-open-poster.webp');
+assert(posterBytes.length>15000&&posterBytes.length<200000,'Portada comprimida y con contenido');
+assert(posterBytes.subarray(0,4).toString('ascii')==='RIFF'&&posterBytes.subarray(8,12).toString('ascii')==='WEBP','La portada debe ser WebP auténtico');
 assert(home.includes('id="traditionalTitle"')&&home.includes('Formato tradicional'),'Formato oficial en el torneo');
 assert(home.includes('Individual')&&home.includes('Dobles'),'Dos modalidades oficiales');
 for(const text of ['4.5 / 5.0','3.5 / 4.0','Suben a <b>5.0</b>','Bajan a <b>4.5</b>','Suben a <b>4.0</b>','Bajan a <b>3.5</b>','A 11 puntos','Un set a 15'])

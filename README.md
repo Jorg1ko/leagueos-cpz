@@ -10,6 +10,10 @@ Este repositorio incluye la web de **RANKINGS CPZ** y una vista independiente de
 
 La portada muestra **Liga CPZ** y **CPZ Open** (nombre oficial indicado por el cartel compartido), previsto para el **12 de diciembre de 2026**, con fotografías locales del club en `lab-assets/`. La fecha indicada en el cartel es **12 DIC**; el año 2026 viene del contexto del torneo en el laboratorio. El formato concreto de la maqueta, los horarios, las inscripciones y los datos de participantes siguen en fase de prueba. Hay navegación de ida y vuelta entre portada y liga, diseño adaptable a móvil y modo oscuro automático.
 
+## Portada del CPZ Open
+
+El laboratorio incluye `lab-assets/cpz-open-poster.webp`, una versión ligera del cartel visual creado a partir de la publicación compartida. Se muestra completo al abrir el torneo y como imagen de cabecera en su tarjeta de la portada; no sustituye el escudo ni las fotos de la liga. El recurso queda en el repositorio experimental y se publica mediante la copia ya existente de `lab-assets` en GitHub Actions.
+
 ## Vista de próximos partidos para televisión
 
 Dentro de la sección **CPZ Open**, antes de la clasificación por grupos, se muestran los **siete partidos de ejemplo de la primera franja 09:00–09:20**, uno por pista. No aparecen como sección independiente en la portada. Los cruces y nombres derivan de `CPZTournamentDemo.firstWave`, la misma fuente que el calendario de los grupos A–G; no se duplican datos ni se inventan nuevos participantes. Pulsar **«Ver en TV»** o cualquiera de las siete tarjetas abre un panel de alto contraste y tipografía grande, optimizado para una televisión. Solicita la Fullscreen API tras el clic; cuando el navegador la impide, mantiene la vista ampliada como superposición. Se cierra con **Salir** o **Escape**. No hay autoavance, inscripción ni consulta de resultados adicionales. El día se muestra como **12 de diciembre de 2026**, de acuerdo con el cartel y el año previsto en el laboratorio; los horarios y enfrentamientos siguen marcados como **ejemplos no confirmados**. Sin cambios en D1 ni en `main`.
