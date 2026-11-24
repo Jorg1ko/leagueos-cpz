@@ -244,7 +244,6 @@ function route(){
 function showHome(){
  $('homeScreen').hidden=false;
  $('areaScreen').hidden=true;
- renderUpcoming();
  document.title='Club Pickleball Zaragoza · Actividades';
 }
 function showArea(){
@@ -257,7 +256,7 @@ function showArea(){
  $('areaEmblem').textContent='🏆';
  $('leaguePlayer').hidden=!league;
  $('tournamentPanel').hidden=league;
- if(!league){renderTournamentGroups();renderTournamentBracket();renderTournamentPlacements();}
+ if(!league){renderUpcoming();renderTournamentGroups();renderTournamentBracket();renderTournamentPlacements();}
  document.title=names[currentArea]+' · Club Pickleball Zaragoza';
 }
 function render(){

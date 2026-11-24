@@ -18,7 +18,7 @@ vm.runInNewContext(bracketCode,scope);
 const demo=scope.CPZTournamentDemo;
 const groups=demo.makeGroups(scope.CPZ_LAB_DATA.individualGroups);
 const firstWave=demo.firstWave(scope.CPZ_LAB_DATA.individualGroups);
-assert.equal(firstWave.length,7,'Una tarjeta por pista en portada y pantalla TV');
+assert.equal(firstWave.length,7,'Una tarjeta por pista dentro del torneo y pantalla TV');
 assert.deepEqual(Array.from(firstWave,m=>m.court),[1,2,3,4,5,6,7],'Pistas 1–7, sin duplicados');
 assert(firstWave.every(m=>m.start==='09:00'&&m.end==='09:20'&&m.number===1),'Solo la primera franja horaria');
 for(const game of firstWave){
@@ -95,6 +95,16 @@ for(const tag of ['id="homeScreen"','id="areaScreen"','data-go="liga"','data-go=
  assert(home.includes(tag),'Falta función de club: '+tag);
 }
 assert(home.includes('Torneo de Héroes de Ebro Viejo'),'Nombre provisional del torneo');
+const homeEnd=home.indexOf('<section id="areaScreen"');
+const tournamentStart=home.indexOf('<div id="tournamentPanel"');
+const upcomingStart=home.indexOf('<section class="upcoming-section"');
+const groupsStart=home.indexOf('<section class="tournament-groups-section"');
+assert(homeEnd>0&&tournamentStart>homeEnd,'Deben mantenerse portada y vista del torneo separadas');
+assert(upcomingStart>tournamentStart&&upcomingStart<groupsStart,'Los próximos partidos deben estar DENTRO del torneo, antes de la clasificación');
+assert(!home.slice(0,homeEnd).includes('id="upcomingMatches"'),'No debe mostrarse la sección de partidos en la portada');
+assert(js.includes('if(!league){renderUpcoming();renderTournamentGroups();'),'Renderizar partidos solo al abrir el torneo');
+assert(!/function showHome\(\)\{[\s\S]*?function showArea\(\)/.exec(js)?.[0]?.includes('renderUpcoming()'),'La portada no debe renderizar los próximos partidos');
+
 for(const anchor of ['id="upcomingMatches"','id="openTvBoard"','id="tvBoard"','id="tvMatches"','id="closeTvBoard"'])
  assert(home.includes(anchor),'Debe haber vista de próximos partidos y modo TV: '+anchor);
 assert(home.includes('09:00–09:20')&&home.includes('Fecha por confirmar')&&home.includes('Horarios de ejemplo'),'La primera franja no debe confundirse con una convocatoria real');
