@@ -163,6 +163,11 @@ assert(css.includes('.service-card.tournament-card .service-top'),'Tarjeta del t
 assert(home.includes('class="league-card-poster"')&&home.includes('src="./lab-assets/liga-cpz-poster.webp"'),'La tarjeta de Liga CPZ debe mostrar su propia portada');
 assert(home.includes('class="league-player-poster"')&&home.includes('id="leaguePlayer"'),'Portada visible también al entrar en Liga CPZ');
 assert(css.includes('.league-card-poster')&&css.includes('.league-player-intro'),'Diseño responsive para ambas vistas de liga');
+assert(css.includes('height:280px;min-height:0;margin:0')&&css.includes('height:235px;border-radius:16px'),'Las tarjetas usan la misma altura de portada que CPZ Open');
+assert(css.includes('object-fit:contain;object-position:center'),'El cartel de liga debe verse completo, sin recortes');
+assert(css.includes('.service-card.league-card .service-top{')&&css.includes('position:absolute;z-index:1'),'La etiqueta de temporada no debe crear otra fila');
+assert(css.includes('.league-player-poster img{display:block;width:100%;height:auto;max-height:none'),'La imagen completa debe respetar su proporción al entrar');
+
 const leaguePoster=fs.readFileSync('lab-assets/liga-cpz-poster.webp');
 assert(leaguePoster.length>15000&&leaguePoster.length<250000,'Portada de liga optimizada');
 assert(leaguePoster.subarray(0,4).toString('ascii')==='RIFF'&&leaguePoster.subarray(8,12).toString('ascii')==='WEBP','Portada de liga WebP auténtica');

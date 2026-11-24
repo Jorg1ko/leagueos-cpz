@@ -12,7 +12,7 @@ La portada muestra **Liga CPZ** y **CPZ Open** (nombre oficial indicado por el c
 
 ## Portada de Liga CPZ
 
-El laboratorio incluye `lab-assets/liga-cpz-poster.webp`, una imagen nueva de la liga con los colores del club, trofeo y pelota de pickleball. Se muestra en la tarjeta de **Liga CPZ** de la portada y dentro de la sección de acceso a clasificaciones y resultados. Se conserva toda la información real de la liga y no se modifican `main`, la D1 de producción ni los resultados.
+El laboratorio incluye `lab-assets/liga-cpz-poster.webp`, una imagen nueva de la liga con los colores del club, trofeo y pelota de pickleball. Se muestra en la tarjeta de **Liga CPZ** de la portada, con la misma altura de imagen que la tarjeta CPZ Open y sin recortar el diseño; la etiqueta de temporada se superpone en la esquina para no añadir una segunda cabecera. Dentro de la sección de acceso a clasificaciones y resultados se muestra con su proporción completa, también en móvil. Se conserva toda la información real de la liga y no se modifican `main`, la D1 de producción ni los resultados.
 
 ## Portada del CPZ Open
 
