@@ -141,7 +141,7 @@ assert(home.includes('tournament-brackets.js')&&workflow.includes('cp tournament
 assert(js.includes("renderTournamentBracket()")&&js.includes("renderTournamentPlacements()"),'Las eliminatorias y posiciones se renderizan');
 assert(js.includes('statsDetails')&&js.includes('renderRanking')&&js.includes('renderFixtures'),'Ranking y partidos');
 assert(js.includes("tournamentGroupSelect').addEventListener('change'"),'Interacción del desplegable');
-assert(home.includes('Horarios orientativos desde las 09:00')&&home.includes('Clasificación sin resultados.')&&home.includes('Aún no abiertas'),'No presentar el calendario ficticio ni los grupos como resultados o inscripciones oficiales');
+assert(home.includes('Horarios orientativos desde las 09:00')&&home.includes('Clasificación sin resultados')&&home.includes('Aún no abiertas'),'No presentar el calendario ficticio ni los grupos como resultados o inscripciones oficiales');
 assert(!/LABORATORIO|Prototipo de prueba|SIMULACIÓN DE GRUPOS|Personaje ficticio|Referencia de liga A|<span class="demo-suffix">/.test(home),'La interfaz pública no debe mostrar controles ni explicaciones internas');
 assert(!/tournament-person-kind|Referencia liga|Inventado/.test(js),'Los listados públicos solo deben mostrar nombres');
 assert(home.includes('./lab-data.js')&&home.includes('./tournament-groups.js'),'Debe reutilizar los nombres de la liga');
