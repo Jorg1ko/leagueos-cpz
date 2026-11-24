@@ -131,12 +131,12 @@ function renderRanking(parent,ranking){
 function renderFixtures(parent,group,games){
  const section=make('section','tournament-fixtures');
  section.append(make('h5','','Partidos y horarios'),
-  make('p','tournament-explanation','Pista '+group.court+' · 12 de diciembre de 2026 · Turnos ficticios de 20 minutos.'));
+  make('p','tournament-explanation','Pista '+group.court+' · Grupos a 11 puntos · 12 de diciembre de 2026 · Turnos ficticios de 20 minutos.'));
  const list=make('ol','tournament-fixture-list');
  games.forEach(game=>{
   const row=make('li','tournament-fixture');
   const time=make('div','tournament-fixture-time');
-  time.append(make('strong','',game.start),make('small','',game.end+' · Pista '+game.court));
+  time.append(make('strong','',game.start),make('small','',game.end+' · Pista '+game.court+' · A '+game.pointsTo));
   const names=make('div','tournament-fixture-players');
   names.append(make('strong','',game.player1),make('span','','VS'),make('strong','',game.player2));
   row.append(time,names,make('span','tournament-pending','Pendiente'));list.append(row);
@@ -227,7 +227,8 @@ function renderTournamentBracket(){
    players.append(make('div','knockout-match-slot',game.slot1),
                   make('span','knockout-match-vs','VS'),
                   make('div','knockout-match-slot',game.slot2));
-   card.append(heading,players);
+   const format=game.pointsTo===15?'Un set a 15':game.pointsTo===11?'A 11 puntos':'Puntuación por confirmar';
+   card.append(heading,make('p','knockout-score-rule',format),players);
    matchList.append(card);
   });
   block.append(matchList);

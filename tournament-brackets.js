@@ -2,8 +2,8 @@
 (function(root){
 'use strict';
 const MODE=Object.freeze({
- championship:{name:'Cuadro principal',description:'1.º y 2.º de cada grupo',offset:0},
- consolation:{name:'Cuadro de consolación',description:'3.º y 4.º de cada grupo',offset:14}
+ championship:{name:'Nivel superior · ejemplo',description:'1.º y 2.º de cada grupo · categoría por asignar',offset:0},
+ consolation:{name:'Nivel inferior · ejemplo',description:'3.º y 4.º de cada grupo · categoría por asignar',offset:14}
 });
 const placementPairs=[[1,2],[3,4],[5,6],[7,8],[9,10],[11,12],[13,14]];
 function makeBracket(mode){
@@ -53,6 +53,15 @@ function makeBracket(mode){
    match('F13','Perdedor R1','Perdedor R2',[13,14])
   ]}
  ];
+ // Solo semifinal y final tienen un set explícito en el cartel.
+ for(const round of rounds){
+  for(const game of round.matches){
+   const early=round.id==='prelim'||round.id==='quarter';
+   const last=round.id==='semi'||(round.id==='medals'&&game.id==='F1');
+   game.pointsTo=early?11:last?15:null;
+   game.sets=last?1:null;
+  }
+ }
  const matches=rounds.flatMap(r=>r.matches);
  const resultPositions=matches.filter(m=>'winnerPosition' in m).flatMap(m=>[m.winnerPosition,m.loserPosition]);
  if(matches.length!==25||new Set(resultPositions).size!==14||resultPositions.length!==14){

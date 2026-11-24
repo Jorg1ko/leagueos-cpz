@@ -45,7 +45,7 @@ function scheduleForGroup(group){
  return PAIRS.map(([a,b],i)=>({
   number:i+1,player1:names[a],player2:names[b],court:group.court,
   start:clock(9*60+i*20),end:clock(9*60+(i+1)*20),
-  durationMinutes:20,status:'pending'
+  durationMinutes:20,pointsTo:11,status:'pending'
  }));
 }
 function firstWave(individualGroups){

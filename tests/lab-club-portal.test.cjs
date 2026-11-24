@@ -39,6 +39,13 @@ for(const mode of modes){
  assert.equal(bracket.rounds.length,6,'Seis bloques de eliminación por cuadro');
  assert.equal(bracket.matches.length,25,'25 partidos por cuadro para ranking completo');
  assert.equal(bracket.rounds[0].matches.length,6,'Seis partidos de ronda previa');
+ assert(bracket.rounds[0].matches.every(m=>m.pointsTo===11),'Ronda previa a 11');
+ assert(bracket.rounds[1].matches.every(m=>m.pointsTo===11),'Cuartos a 11');
+ assert(bracket.rounds[2].matches.every(m=>m.pointsTo===15&&m.sets===1),'Semifinales: un set a 15');
+ assert.equal(bracket.rounds[3].matches[0].pointsTo,15,'Final a 15');
+ assert.equal(bracket.rounds[3].matches[0].sets,1,'Un set en la final');
+ assert.equal(bracket.rounds[3].matches[1].pointsTo,null,'Tercer puesto no especificado');
+ assert(bracket.rounds[4].matches.every(m=>m.pointsTo===null),'Partidos extra sin puntuación inventada');
  assert.equal(bracket.rounds[1].matches.length,4,'Cuatro cuartos');
  assert.equal(bracket.rounds[2].matches.length,2,'Dos semifinales');
  assert.equal(bracket.rounds[3].matches.length,2,'Final y tercer puesto');
@@ -69,7 +76,7 @@ for(const group of groups){
  assert.equal(matches.length,6,'6 partidos por grupo');
  assert.deepEqual(Array.from(matches,m=>m.start),['09:00','09:20','09:40','10:00','10:20','10:40'],'Turnos 20min desde 9');
  assert.deepEqual(Array.from(matches,m=>m.end),['09:20','09:40','10:00','10:20','10:40','11:00'],'Terminan a las 11');
- assert(matches.every(m=>m.durationMinutes===20&&m.court===group.court&&m.status==='pending'),'Pista y estado');
+ assert(matches.every(m=>m.durationMinutes===20&&m.court===group.court&&m.status==='pending'&&m.pointsTo===11),'Pista, puntuación y estado');
  assert(matches.every(m=>!m.sets&&!m.score&&!m.winner),'No inventar resultados');
  const ids=matches.map(m=>[m.player1,m.player2].sort().join('|'));
  assert.equal(new Set(ids).size,6,'Sin cruces repetidos');
@@ -95,6 +102,13 @@ for(const tag of ['id="homeScreen"','id="areaScreen"','data-go="liga"','data-go=
  assert(home.includes(tag),'Falta función de club: '+tag);
 }
 assert(home.includes('CPZ Open')&&home.includes('CPZ OPEN'),'Nombre oficial del torneo en portada y pantalla TV');
+assert(home.includes('id="traditionalTitle"')&&home.includes('Formato tradicional'),'Formato oficial en el torneo');
+assert(home.includes('Individual')&&home.includes('Dobles'),'Dos modalidades oficiales');
+for(const text of ['4.5 / 5.0','3.5 / 4.0','Suben a <b>5.0</b>','Bajan a <b>4.5</b>','Suben a <b>4.0</b>','Bajan a <b>3.5</b>','A 11 puntos','Un set a 15'])
+ assert(home.includes(text),'Falta regla del cartel: '+text);
+assert(home.includes('categoría asignada')&&home.includes('Puntuación por confirmar')===false,'No inventar niveles individuales ni puntuación global');
+assert(home.includes('sin separación por modalidades y categorías'),'Las eliminatorias siguen como ensayo');
+assert(js.includes('knockout-score-rule'),'Marcador previsto en cada cruce');
 assert(js.includes("torneo:'CPZ Open'"),'Ruta del torneo con nombre oficial');
 assert(!home.includes('Héroes de Ebro Viejo')&&!js.includes('Héroes de Ebro Viejo'),'No conservar el nombre de trabajo');
 const homeEnd=home.indexOf('<section id="areaScreen"');

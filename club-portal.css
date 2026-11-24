@@ -583,3 +583,36 @@ body.tv-mode-open{overflow:hidden}
  .upcoming-match-top strong{color:#b7e2ff}
  .upcoming-match-top span,.upcoming-match-time{color:#afcadc}
 }
+
+/* Bases oficiales: formato tradicional y categorías del cartel. */
+.cpz-traditional{margin-top:24px;border:1px solid #d8e8f3;border-radius:16px;background:#f5fbff;overflow:hidden}
+.cpz-traditional-top{padding:22px;background:linear-gradient(120deg,#0b2c47,#164866);color:white}
+.cpz-traditional-top .small-label{color:#b7dff4}
+.cpz-traditional-top h3{font-size:clamp(23px,3vw,30px);line-height:1.2;letter-spacing:-.5px;margin:8px 0;color:white}
+.cpz-traditional-top p{font-size:15px;font-weight:950;color:#ffdf67;margin:0;letter-spacing:.04em}
+.cpz-traditional-top p span{margin:0 9px}
+.cpz-scoring-grid,.cpz-level-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;padding:16px 18px 0}
+.cpz-scoring-card,.cpz-level-card{padding:17px;border:1px solid #d9e8f3;border-radius:12px;background:#fff}
+.cpz-scoring-card{display:grid;gap:9px}
+.cpz-scoring-card span{font-size:11px;line-height:1.5;font-weight:800;color:#64829a}
+.cpz-scoring-card strong{font-size:21px;color:#0c547f}
+.cpz-category-heading{font-size:15px;color:#174c6d;margin:23px 18px 0}
+.cpz-level-grid{padding-bottom:16px}
+.cpz-level-card h5{font-size:24px;color:#b28509;font-weight:950;margin:0}
+.cpz-level-card>p{font-size:12px;color:#63829a;font-weight:800;margin:7px 0 14px}
+.cpz-movement{display:grid;grid-template-columns:minmax(70px,.6fr) 1fr;gap:12px;align-items:center;border-top:1px solid #e0ebf3;padding:12px 0;font-size:12px;color:#295b7a}
+.cpz-movement strong{font-size:12px;font-weight:950;color:#0a608c}
+.cpz-movement b{color:#0b75ad}
+.cpz-format-note{margin:0;padding:0 18px 20px;font-size:11px;line-height:1.6;color:#66869b}
+.knockout-score-rule{display:inline-block;margin:11px 0 0;background:#e8f4fc;border-radius:8px;color:#146b9c;padding:7px 9px;font-size:11px;font-weight:900}
+@media(max-width:700px){.cpz-scoring-grid,.cpz-level-grid{grid-template-columns:1fr;gap:10px;padding-left:14px;padding-right:14px}.cpz-traditional-top{padding:19px 15px}.cpz-category-heading{margin-left:14px}.cpz-format-note{padding:0 14px 17px}}
+@media(prefers-color-scheme:dark){
+ .cpz-traditional{background:#193549;border-color:#365a71}
+ .cpz-scoring-card,.cpz-level-card{background:#193144;border-color:#3a5a70}
+ .cpz-category-heading,.cpz-scoring-card strong,.cpz-movement strong{color:#deefff}
+ .cpz-scoring-card span,.cpz-level-card>p,.cpz-format-note,.cpz-movement{color:#bbd5e7}
+ .cpz-level-card h5{color:#ffde76}
+ .cpz-movement{border-color:#345b72}
+ .cpz-movement b{color:#97d9ff}
+ .knockout-score-rule{background:#26516e;color:#d9eeff}
+}

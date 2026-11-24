@@ -85,14 +85,39 @@
       <div class="tournament-overview">
         <span class="small-label">CPZ OPEN · 12 DICIEMBRE 2026</span>
         <h2>CPZ Open</h2>
-        <p>El torneo CPZ Open ya tiene fecha. Descubre los grupos, los partidos de ejemplo y los cuadros.</p>
+        <p>Individual y dobles · formato tradicional · grupos y primeras eliminatorias a 11 · semifinal y final a 15.</p>
       </div>
       <div class="tournament-detail-grid">
         <div class="tournament-detail"><span>Cuándo</span><strong>12 de diciembre de 2026</strong><small>Horarios de ejemplo, aún no definitivos</small></div>
-        <div class="tournament-detail"><span>Grupos y pistas</span><strong>7 grupos de 4</strong><small>Pistas 1 a 7</small></div>
+        <div class="tournament-detail"><span>Grupos de prueba</span><strong>7 grupos de 4</strong><small>Individual · pistas 1 a 7</small></div>
         <div class="tournament-detail"><span>Horarios de ejemplo</span><strong>09:00–11:00</strong><small>6 partidos de 20 min por pista</small></div>
-        <div class="tournament-detail"><span>Inscripciones</span><strong>Aún no abiertas</strong><small>Participantes de ejemplo</small></div>
+        <div class="tournament-detail"><span>Modalidades</span><strong>Individual y dobles</strong><small>Inscripciones: Aún no abiertas</small></div>
       </div>
+      <section class="cpz-traditional" aria-labelledby="traditionalTitle">
+        <div class="cpz-traditional-top">
+          <span class="small-label">BASES DEL CPZ OPEN</span>
+          <h3 id="traditionalTitle">Formato tradicional</h3>
+          <p>Individual <span>·</span> Dobles</p>
+        </div>
+        <div class="cpz-scoring-grid">
+          <div class="cpz-scoring-card"><span>Fase de grupos y primeras eliminatorias</span><strong>A 11 puntos</strong></div>
+          <div class="cpz-scoring-card"><span>Semifinal y final</span><strong>Un set a 15</strong></div>
+        </div>
+        <h4 class="cpz-category-heading">Categorías y cambio de nivel</h4>
+        <div class="cpz-level-grid">
+          <article class="cpz-level-card">
+            <h5>4.5 / 5.0</h5><p>Grupos de 4</p>
+            <div class="cpz-movement"><strong>1.º y 2.º</strong><span>Suben a <b>5.0</b></span></div>
+            <div class="cpz-movement"><strong>3.º y 4.º</strong><span>Bajan a <b>4.5</b></span></div>
+          </article>
+          <article class="cpz-level-card">
+            <h5>3.5 / 4.0</h5><p>Grupos de 4</p>
+            <div class="cpz-movement"><strong>1.º y 2.º</strong><span>Suben a <b>4.0</b></span></div>
+            <div class="cpz-movement"><strong>3.º y 4.º</strong><span>Bajan a <b>3.5</b></span></div>
+          </article>
+        </div>
+        <p class="cpz-format-note">Grupos de ejemplo de individual todavía sin categoría asignada. Parejas y grupos de dobles pendientes de confirmar.</p>
+      </section>
       <section class="upcoming-section" aria-labelledby="upcomingTitle">
         <div class="upcoming-section-heading">
           <div>
@@ -103,35 +128,35 @@
           <button type="button" id="openTvBoard" class="tv-open-button" aria-controls="tvBoard"><span aria-hidden="true">▣</span> Ver en TV</button>
         </div>
         <div id="upcomingMatches" class="upcoming-matches" aria-label="Partidos de las siete pistas de 09:00 a 09:20"></div>
-        <p class="upcoming-disclaimer">Partidos y horarios de ejemplo. No son una convocatoria oficial.</p>
+        <p class="upcoming-disclaimer">Fase de grupos a 11 puntos · Nombres y horarios de ejemplo, no una convocatoria oficial.</p>
       </section>
       <section class="tournament-groups-section" aria-labelledby="tournamentGroupsTitle">
         <div class="tournament-groups-heading">
           <div><span class="small-label">FASE DE GRUPOS</span><h3 id="tournamentGroupsTitle">Clasificación y partidos</h3></div>
-          <span class="tournament-count">7 grupos · 7 pistas</span>
+          <span class="tournament-count">Individual · ejemplo</span>
         </div>
         <div class="tournament-select-row">
           <label for="tournamentGroupSelect">Selecciona un grupo</label>
           <select id="tournamentGroupSelect" aria-label="Seleccionar grupo y pista"></select>
         </div>
-        <p class="tournament-explanation">Horarios orientativos desde las 09:00 · 12 de diciembre de 2026 · Clasificación sin resultados.</p>
+        <p class="tournament-explanation">Individual de ejemplo, sin categoría asignada · Grupos a 11 puntos · Horarios orientativos desde las 09:00 · Clasificación sin resultados · Dobles pendiente de parejas.</p>
         <div id="tournamentGroups" class="tournament-group-detail" aria-live="polite"></div>
       </section>
       <section class="tournament-knockout" aria-labelledby="knockoutTitle">
         <div class="tournament-knockout-heading">
           <span class="small-label">FASE FINAL</span>
-          <h3 id="knockoutTitle">Eliminatorias y clasificación final</h3>
-          <p>Los dos primeros de cada grupo juegan el cuadro principal. Los otros dos disputan la consolación.</p>
+          <h3 id="knockoutTitle">Eliminatorias por niveles</h3>
+          <p>Los dos primeros suben de nivel y los dos últimos bajan: a 5.0/4.5 o a 4.0/3.5 según la categoría. Primera fase a 11 y semifinal y final a 15.</p>
         </div>
         <div class="knockout-tabs" role="group" aria-label="Elegir cuadro de eliminatorias">
-          <button type="button" id="knockoutChampionship" class="knockout-tab is-active" data-bracket="championship" aria-pressed="true">Campeonato · 1.º–14.º</button>
-          <button type="button" id="knockoutConsolation" class="knockout-tab" data-bracket="consolation" aria-pressed="false">Consolación · 15.º–28.º</button>
+          <button type="button" id="knockoutChampionship" class="knockout-tab is-active" data-bracket="championship" aria-pressed="true">Nivel superior · ejemplo</button>
+          <button type="button" id="knockoutConsolation" class="knockout-tab" data-bracket="consolation" aria-pressed="false">Nivel inferior · ejemplo</button>
         </div>
-        <p class="knockout-info">14 participantes por cuadro. Los 2 con mejor diferencia de puntos de la fase de grupos pasan directamente a cuartos. Si hay empate exacto, el pase queda pendiente de desempate.</p>
+        <p class="knockout-info">Cuadros ilustrativos sobre 7 grupos de individual, todavía sin separación por modalidades y categorías. Pases directos, rondas extra y desempates son propuestas del laboratorio, no reglas especificadas en el cartel.</p>
         <div id="tournamentBracket" class="knockout-content" aria-live="polite"></div>
         <details class="tournament-placements" id="tournamentPlacements">
-          <summary>Clasificación final · puestos 1.º al 28.º</summary>
-          <p>Los puestos se asignarán cuando se hayan disputado todas las eliminatorias y partidos de clasificación.</p>
+          <summary>Ranking completo de ejemplo · puestos 1.º al 28.º</summary>
+          <p>Propuesta del laboratorio: el cartel no define un ranking global ni estos partidos adicionales de clasificación.</p>
           <div id="tournamentPlacementList"></div>
         </details>
       </section>
@@ -143,7 +168,7 @@
     <div class="tv-board-heading">
       <span class="tv-board-kicker">CLUB PICKLEBALL ZARAGOZA · CPZ OPEN</span>
       <h2 id="tvBoardTitle">Próximos partidos</h2>
-      <p id="tvBoardDescription">Primera franja · 09:00–09:20 · Ejemplo · 12 de diciembre de 2026</p>
+      <p id="tvBoardDescription">Grupos a 11 · 09:00–09:20 · Ejemplo · 12 de diciembre de 2026</p>
     </div>
     <button type="button" id="closeTvBoard" class="tv-close-button" aria-label="Cerrar pantalla de partidos">Salir <span aria-hidden="true">×</span></button>
   </header>
