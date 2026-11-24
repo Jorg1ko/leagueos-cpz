@@ -28,12 +28,14 @@ jobs:
           cp ranking-engine.js lab-static/dist/ranking-engine.js
           cp lab-data.js lab-static/dist/lab-data.js
           cp tournament-groups.js lab-static/dist/tournament-groups.js
+          cp tournament-brackets.js lab-static/dist/tournament-brackets.js
           cp lab-features.js lab-static/dist/lab-features.js
           cp lab-results.js lab-static/dist/lab-results.js
           test ! -e lab-static/functions
           node --check lab-static/dist/club-portal.js
           node --check lab-static/dist/lab-data.js
           node --check lab-static/dist/tournament-groups.js
+          node --check lab-static/dist/tournament-brackets.js
           node --check lab-static/dist/lab-features.js
           node --check lab-static/dist/lab-results.js
           node --check lab-static/dist/ranking-engine.js

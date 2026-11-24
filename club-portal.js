@@ -99,6 +99,71 @@ function renderTournamentGroups(){
  renderFixtures(panel,chosen,demo.scheduleForGroup(chosen));
  root.append(panel);
 }
+
+let selectedBracket='championship';
+function formatPlace(number){return number+'.º'}
+function renderTournamentPlacements(){
+ const root=$('tournamentPlacementList');
+ root.replaceChildren();
+ const model=window.CPZTournamentBrackets;
+ if(!model){root.append(make('p','tournament-error','Clasificación no disponible.'));return}
+ for(const mode of ['championship','consolation']){
+  const bracket=model.makeBracket(mode);
+  const section=make('section','knockout-placement-column');
+  section.append(make('h4','',bracket.name));
+  const list=make('ol','knockout-placement-list');
+  list.start=bracket.positions[0];
+  bracket.positions.forEach(rank=>{
+   const item=make('li','');
+   item.value=rank;
+   item.append(make('strong','',formatPlace(rank)),make('span','','Pendiente'));
+   list.append(item);
+  });
+  section.append(list);root.append(section);
+ }
+}
+function renderTournamentBracket(){
+ const root=$('tournamentBracket');
+ root.replaceChildren();
+ const generator=window.CPZTournamentBrackets;
+ if(!generator){root.append(make('p','tournament-error','El cuadro no está disponible.'));return}
+ let bracket;
+ try{bracket=generator.makeBracket(selectedBracket)}
+ catch{root.append(make('p','tournament-error','No se han podido preparar las eliminatorias.'));return}
+ document.querySelectorAll('[data-bracket]').forEach(button=>{
+  const active=button.dataset.bracket===selectedBracket;
+  button.classList.toggle('is-active',active);
+  button.setAttribute('aria-pressed',String(active));
+ });
+ const header=make('div','knockout-selected-header');
+ header.append(make('h4','',bracket.name),make('span','',bracket.description));
+ root.append(header);
+ bracket.rounds.forEach(round=>{
+  const block=make('details','knockout-round');
+  block.open=['quarter','medals'].includes(round.id);
+  const summary=make('summary','knockout-round-summary');
+  summary.append(make('strong','',round.title),make('span','',round.matches.length+' partidos'));
+  block.append(summary,make('p','knockout-round-desc',round.description));
+  const matchList=make('div','knockout-match-grid');
+  round.matches.forEach(game=>{
+   const card=make('article','knockout-match');
+   const heading=make('div','knockout-match-head');
+   heading.append(make('span','knockout-match-id','Partido '+game.id));
+   if('winnerPosition' in game){
+    heading.append(make('span','knockout-match-place',
+      formatPlace(game.winnerPosition)+' / '+formatPlace(game.loserPosition)));
+   }else heading.append(make('span','knockout-match-state','Pendiente'));
+   const players=make('div','knockout-match-players');
+   players.append(make('div','knockout-match-slot',game.slot1),
+                  make('span','knockout-match-vs','VS'),
+                  make('div','knockout-match-slot',game.slot2));
+   card.append(heading,players);
+   matchList.append(card);
+  });
+  block.append(matchList);
+  root.append(block);
+ });
+}
 function route(){
  let fragment='';
  try{fragment=decodeURIComponent((window.location.hash||'').replace(/^#\/?/,''))}
@@ -121,7 +186,7 @@ function showArea(){
  $('areaEmblem').textContent='🏆';
  $('leaguePlayer').hidden=!league;
  $('tournamentPanel').hidden=league;
- if(!league)renderTournamentGroups();
+ if(!league){renderTournamentGroups();renderTournamentBracket();renderTournamentPlacements();}
  document.title=names[currentArea]+' · Club Pickleball Zaragoza';
 }
 function render(){
@@ -139,6 +204,10 @@ document.querySelectorAll('[data-go]').forEach(btn=>{
  btn.addEventListener('click',()=>navigate(btn.dataset.go));
 });
 $('tournamentGroupSelect').addEventListener('change',event=>{selectedGroup=event.target.value;renderTournamentGroups()});
+document.querySelectorAll('[data-bracket]').forEach(button=>button.addEventListener('click',()=>{
+ selectedBracket=button.dataset.bracket;
+ renderTournamentBracket();
+}));
 window.addEventListener('hashchange',render);
 render();
 })();

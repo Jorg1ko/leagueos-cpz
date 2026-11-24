@@ -18,6 +18,12 @@ La portada muestra **Liga CPZ** y **Torneo de Héroes de Ebro Viejo** (nombre pr
 
 **Reservas:** dos códigos facilitados para **noviembre de 2026**, `RANKINGINDNOV26` y `RANKINGDOBNOV26`. Botones para copiar y para abrir https://pickleballzaragoza.taykus.com/bookingtypes. No se proporciona ni se simula un cupón aplicado automáticamente. La validez final depende de Taykus y del club.
 
+### Fase final de ejemplo: campeonato y consolación
+
+El torneo tiene dos cuadros separados de **14 participantes**: los **1.º y 2.º** de los siete grupos van al principal (puestos **1–14**); los **3.º y 4.º** van al de consolación (puestos **15–28**). En cada cuadro se usan **6 cruces previos** y **2 pases directos** por mejor diferencia de puntos de la fase de grupos para formar cuartos de final de ocho jugadores. Si el corte de pases está empatado también en diferencia de sets y victorias, el sistema deja el desempate pendiente: no sortea ni inventa clasificados.
+
+Además de cuartos, semifinales y final, se incluyen partido por tercero y cruces de clasificación para todas las plazas: **5–8 y 9–14** dentro de cada cuadro. Los 6 eliminados en la previa disputan una fase propia para los puestos 9–14, con dos pases a semifinal por mejores estadísticas. Así cada jugador puede terminar con una **posición única del 1.º al 28.º** una vez registrados todos los resultados, sin limitarse a ordenar por diferencia de puntos. El modelo de estructura está en `tournament-brackets.js`. La web muestra las fases desplegables sin nombres ni resultados, y un listado completo de posiciones pendientes. Los resultados, horarios de eliminación y sistema de desempate definitivo no se han confirmado y **no** se guardan ni se importan a D1.
+
 ## Fuente de resultados y aislamiento
 
 El workflow `.github/workflows/laboratorio-movil.yml` solo responde a cambios de la rama `experimental/laboratorio-cpz` (o ejecución manual controlada). Construye una copia **estática** en `lab-static/dist/` y la publica en Cloudflare Pages, rama `lab-mobile`.
@@ -32,7 +38,7 @@ No modificar D1, la rama `main` ni producción desde cambios del laboratorio.
 
 ## Desarrollo y comprobaciones
 
-Archivos principales: `club-portal.html`, `club-portal.css`, `club-portal.js`, `tournament-groups.js`, `player.html`, `league-lab.css`, `ranking-engine.js`, `lab-features.js`, `lab-data.js`, `lab-results.js`, `scripts/build-lab-snapshot.py` y `tests/`.
+Archivos principales: `club-portal.html`, `club-portal.css`, `club-portal.js`, `tournament-groups.js`, `tournament-brackets.js`, `player.html`, `league-lab.css`, `ranking-engine.js`, `lab-features.js`, `lab-data.js`, `lab-results.js`, `scripts/build-lab-snapshot.py` y `tests/`.
 
 Ejecutar **todos** los tests de Node, incluidos los de autenticación compartida que solo prueban funciones y no escriben en D1:
 

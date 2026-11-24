@@ -453,3 +453,72 @@ input:disabled{background:#e5edf3;color:#7e95a7}
  .tournament-fixture-time small{color:#a9c5d8}
  .tournament-pending{background:#26485f;color:#c2dbed}
 }
+
+/* Cuadros de 14 participantes: campeonato y consolación con todos los puestos. */
+.tournament-knockout{margin-top:27px;border-top:1px solid #ddeaf3;padding-top:25px}
+.tournament-knockout-heading h3{font-size:22px;color:#103e63;letter-spacing:-.3px;margin:7px 0}
+.tournament-knockout-heading p{font-size:12px;color:#608199;line-height:1.6;margin:0}
+.knockout-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:19px;padding:6px;background:#e9f2f9;border-radius:13px}
+.knockout-tab{min-height:49px;padding:10px 12px;background:transparent;color:#47738f;border:1px solid transparent;border-radius:9px;font-size:12px;font-weight:900}
+.knockout-tab.is-active{background:white;border-color:#d5e6f1;color:#09699f;box-shadow:0 3px 12px #0c567414}
+.knockout-info{font-size:11px;line-height:1.65;color:#6e899d;margin:14px 0}
+.knockout-content{border:1px solid #dce9f3;border-radius:15px;background:#fbfdff;padding:16px}
+.knockout-selected-header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:13px}
+.knockout-selected-header h4{margin:0;font-size:18px;color:#103e63}
+.knockout-selected-header span{font-size:11px;font-weight:750;color:#68899e}
+.knockout-round{border:1px solid #dce9f3;border-radius:11px;margin-bottom:11px;overflow:hidden;background:white}
+.knockout-round:last-child{margin-bottom:0}
+.knockout-round-summary{padding:15px;display:flex;align-items:center;justify-content:space-between;gap:9px;background:#edf6fc;cursor:pointer;list-style:none}
+.knockout-round-summary::-webkit-details-marker{display:none}
+.knockout-round-summary:after{content:'⌄';font-size:19px;color:#427b9b}
+.knockout-round[open] .knockout-round-summary:after{transform:rotate(180deg)}
+.knockout-round-summary strong{font-size:14px;color:#15476a}
+.knockout-round-summary span{font-size:10px;font-weight:850;color:#61849d;margin-left:auto}
+.knockout-round-desc{margin:13px 15px 0;color:#64849a;font-size:11px;line-height:1.65}
+.knockout-match-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px}
+.knockout-match{border:1px solid #dceaf4;border-radius:11px;background:#fbfdff;padding:13px;min-width:0}
+.knockout-match-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.knockout-match-id{font-size:11px;font-weight:900;color:#186a9a}
+.knockout-match-place{font-size:10px;color:#1f719f;background:#eaf5fd;padding:5px 7px;border-radius:999px;font-weight:850}
+.knockout-match-state{font-size:10px;color:#738da1;font-weight:850}
+.knockout-match-players{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);gap:5px;align-items:center;margin-top:12px}
+.knockout-match-slot{padding:12px 8px;background:#f0f6fb;border-radius:8px;min-height:49px;display:flex;align-items:center;font-size:11px;font-weight:800;color:#315c79;overflow-wrap:anywhere}
+.knockout-match-vs{text-align:center;font-size:9px;font-weight:950;color:#8da4b4}
+.tournament-placements{border:1px solid #dce9f3;background:#fafdff;border-radius:13px;margin-top:17px;padding:0 15px 14px}
+.tournament-placements summary{padding:17px 0;font-size:13px;font-weight:900;color:#146593;cursor:pointer}
+.tournament-placements>p{font-size:11px;color:#608198;line-height:1.6}
+#tournamentPlacementList{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.knockout-placement-column h4{font-size:13px;margin:10px 0;color:#1a577d}
+.knockout-placement-list{list-style:none;padding:0;margin:0}
+.knockout-placement-list li{display:flex;justify-content:space-between;border-bottom:1px solid #e4edf4;padding:8px 0;font-size:11px;color:#6f8a9d}
+.knockout-placement-list li strong{font-size:12px;color:#1e5e83}
+@media(max-width:700px){
+ .tournament-knockout{margin-top:22px;padding-top:20px}
+ .tournament-knockout-heading h3{font-size:19px}
+ .knockout-tabs{gap:4px;padding:5px}
+ .knockout-tab{font-size:11px;padding:8px 6px}
+ .knockout-content{padding:10px}
+ .knockout-selected-header{align-items:flex-start;flex-direction:column}
+ .knockout-match-grid{grid-template-columns:1fr;padding:10px}
+ .knockout-match{padding:11px}
+ .knockout-round-summary{padding:12px}
+ .knockout-match-slot{padding:10px 7px;min-height:45px}
+ .knockout-match-players{gap:3px}
+ #tournamentPlacementList{grid-template-columns:1fr;gap:8px}
+}
+@media(prefers-color-scheme:dark){
+ .tournament-knockout{border-color:#34526b}
+ .tournament-knockout-heading h3,.knockout-selected-header h4{color:#eaf6ff}
+ .tournament-knockout-heading p,.knockout-info,.knockout-selected-header span{color:#aec7d8}
+ .knockout-tabs{background:#1e384c}
+ .knockout-tab{color:#a9c5d7}
+ .knockout-tab.is-active{background:#284d66;color:#e5f6ff;border-color:#47718b}
+ .knockout-content,.knockout-round,.knockout-match,.tournament-placements{background:#1c3549;border-color:#37566e}
+ .knockout-round-summary{background:#24455c}
+ .knockout-round-summary strong,.knockout-match-id,.tournament-placements summary,.knockout-placement-column h4{color:#d9efff}
+ .knockout-round-summary span,.knockout-round-desc,.knockout-match-state,.tournament-placements>p{color:#adcadf}
+ .knockout-match-slot{background:#284a61;color:#e4f4ff}
+ .knockout-match-place{background:#2b5875;color:#d0edff}
+ .knockout-placement-list li{border-color:#3b576d;color:#b6cddf}
+ .knockout-placement-list li strong{color:#d3efff}
+}

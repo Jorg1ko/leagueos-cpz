@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="./club-portal.css">
 <script defer src="./lab-data.js"></script>
 <script defer src="./tournament-groups.js"></script>
+<script defer src="./tournament-brackets.js"></script>
 <script defer src="./ranking-engine.js"></script>
 <script defer src="./club-portal.js"></script>
 </head>
@@ -102,6 +103,24 @@
         </div>
         <p class="tournament-explanation">Horarios orientativos desde las 09:00 · Fecha por confirmar · Clasificación sin resultados.</p>
         <div id="tournamentGroups" class="tournament-group-detail" aria-live="polite"></div>
+      </section>
+      <section class="tournament-knockout" aria-labelledby="knockoutTitle">
+        <div class="tournament-knockout-heading">
+          <span class="small-label">FASE FINAL</span>
+          <h3 id="knockoutTitle">Eliminatorias y clasificación final</h3>
+          <p>Los dos primeros de cada grupo juegan el cuadro principal. Los otros dos disputan la consolación.</p>
+        </div>
+        <div class="knockout-tabs" role="group" aria-label="Elegir cuadro de eliminatorias">
+          <button type="button" id="knockoutChampionship" class="knockout-tab is-active" data-bracket="championship" aria-pressed="true">Campeonato · 1.º–14.º</button>
+          <button type="button" id="knockoutConsolation" class="knockout-tab" data-bracket="consolation" aria-pressed="false">Consolación · 15.º–28.º</button>
+        </div>
+        <p class="knockout-info">14 participantes por cuadro. Los 2 con mejor diferencia de puntos de la fase de grupos pasan directamente a cuartos. Si hay empate exacto, el pase queda pendiente de desempate.</p>
+        <div id="tournamentBracket" class="knockout-content" aria-live="polite"></div>
+        <details class="tournament-placements" id="tournamentPlacements">
+          <summary>Clasificación final · puestos 1.º al 28.º</summary>
+          <p>Los puestos se asignarán cuando se hayan disputado todas las eliminatorias y partidos de clasificación.</p>
+          <div id="tournamentPlacementList"></div>
+        </details>
       </section>
     </div>
   </section>
