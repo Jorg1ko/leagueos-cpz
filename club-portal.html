@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="./club-portal.css">
 <script defer src="./lab-data.js"></script>
 <script defer src="./tournament-groups.js"></script>
+<script defer src="./ranking-engine.js"></script>
 <script defer src="./club-portal.js"></script>
 </head>
 <body>
@@ -86,16 +87,21 @@
       </div>
       <div class="tournament-detail-grid">
         <div class="tournament-detail"><span>Cuándo</span><strong>Diciembre de 2026</strong><small>Día y horario por confirmar</small></div>
-        <div class="tournament-detail"><span>Grupos</span><strong>7 grupos de 4</strong><small>28 plazas</small></div>
-        <div class="tournament-detail"><span>Inscripciones</span><strong>Aún no abiertas</strong><small>El sistema de inscripción está pendiente</small></div>
+        <div class="tournament-detail"><span>Grupos y pistas</span><strong>7 grupos de 4</strong><small>Pistas 1 a 7</small></div>
+        <div class="tournament-detail"><span>Horarios de ejemplo</span><strong>09:00–11:00</strong><small>6 partidos de 20 min por pista</small></div>
+        <div class="tournament-detail"><span>Inscripciones</span><strong>Aún no abiertas</strong><small>Participantes de ejemplo</small></div>
       </div>
       <section class="tournament-groups-section" aria-labelledby="tournamentGroupsTitle">
         <div class="tournament-groups-heading">
-          <div><span class="small-label">FASE DE GRUPOS</span><h3 id="tournamentGroupsTitle">Grupos del torneo</h3></div>
-          <span class="tournament-count">7 grupos · 28 plazas</span>
+          <div><span class="small-label">FASE DE GRUPOS</span><h3 id="tournamentGroupsTitle">Clasificación y partidos</h3></div>
+          <span class="tournament-count">7 grupos · 7 pistas</span>
         </div>
-        <p class="tournament-explanation">Distribución de ejemplo · Inscripciones por confirmar</p>
-        <div id="tournamentGroups" class="tournament-groups-grid" aria-live="polite"></div>
+        <div class="tournament-select-row">
+          <label for="tournamentGroupSelect">Selecciona un grupo</label>
+          <select id="tournamentGroupSelect" aria-label="Seleccionar grupo y pista"></select>
+        </div>
+        <p class="tournament-explanation">Horarios orientativos desde las 09:00 · Fecha por confirmar · Clasificación sin resultados.</p>
+        <div id="tournamentGroups" class="tournament-group-detail" aria-live="polite"></div>
       </section>
     </div>
   </section>

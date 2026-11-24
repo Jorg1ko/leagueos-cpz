@@ -16,6 +16,20 @@ vm.runInNewContext(groupCode,scope);
 const demo=scope.CPZTournamentDemo;
 const groups=demo.makeGroups(scope.CPZ_LAB_DATA.individualGroups);
 assert.equal(groups.length,7,'Deben existir 7 grupos');
+assert.deepEqual(Array.from(groups,g=>g.court),[1,2,3,4,5,6,7],'Pistas 1–7');
+let totalMatches=0;
+for(const group of groups){
+ const matches=demo.scheduleForGroup(group);totalMatches+=matches.length;
+ assert.equal(matches.length,6,'6 partidos por grupo');
+ assert.deepEqual(Array.from(matches,m=>m.start),['09:00','09:20','09:40','10:00','10:20','10:40'],'Turnos 20min desde 9');
+ assert.deepEqual(Array.from(matches,m=>m.end),['09:20','09:40','10:00','10:20','10:40','11:00'],'Terminan a las 11');
+ assert(matches.every(m=>m.durationMinutes===20&&m.court===group.court&&m.status==='pending'),'Pista y estado');
+ assert(matches.every(m=>!m.sets&&!m.score&&!m.winner),'No inventar resultados');
+ const ids=matches.map(m=>[m.player1,m.player2].sort().join('|'));
+ assert.equal(new Set(ids).size,6,'Sin cruces repetidos');
+ assert(group.people.every(p=>matches.filter(m=>m.player1===p.name||m.player2===p.name).length===3),'Todos juegan 3');
+}
+assert.equal(totalMatches,42,'42 partidos en 7 pistas');
 assert.deepEqual(Array.from(groups,g=>g.label),['A','B','C','D','E','F','G'],'Grupos A-G');
 assert(groups.every(g=>g.people.length===4),'4 participantes por grupo');
 const people=Array.from(groups,g=>g.people).flat();
@@ -37,7 +51,12 @@ for(const tag of ['id="homeScreen"','id="areaScreen"','data-go="liga"','data-go=
 assert(home.includes('Torneo de Héroes de Ebro Viejo'),'Nombre provisional del torneo');
 assert(home.includes('Diciembre 2026')&&home.includes('Diciembre de 2026'),'El torneo está previsto para diciembre de 2026');
 assert(home.includes('Aún no abiertas')&&home.includes('Día y horario por confirmar'),'No deben anunciarse fechas ni inscripciones inventadas');
-assert(home.includes('7 grupos de 4')&&home.includes('id="tournamentGroups"'),'La ficha del torneo debe mostrar siete grupos de cuatro');
+assert(home.includes('7 grupos de 4')&&home.includes('id="tournamentGroups"'),'7 grupos de 4');
+assert(home.includes('id="tournamentGroupSelect"')&&home.includes('<select'),'Selector desplegable');
+assert(home.includes('09:00–11:00')&&home.includes('20 min'),'Horario ejemplo');
+assert(home.includes('./ranking-engine.js')&&js.includes('rankCompetition(chosen.people.map(p=>p.name),[])'),'Usa motor de liga sin resultados');
+assert(js.includes('statsDetails')&&js.includes('renderRanking')&&js.includes('renderFixtures'),'Ranking y partidos');
+assert(js.includes("tournamentGroupSelect').addEventListener('change'"),'Interacción del desplegable');
 assert(home.includes('Distribución de ejemplo · Inscripciones por confirmar'),'No confundir grupos de ejemplo con participantes inscritos');
 assert(!/LABORATORIO|Prototipo de prueba|SIMULACIÓN DE GRUPOS|Personaje ficticio|Referencia de liga A|<span class="demo-suffix">/.test(home),'La interfaz pública no debe mostrar controles ni explicaciones internas');
 assert(!/tournament-person-kind|Referencia liga|Inventado/.test(js),'Los listados públicos solo deben mostrar nombres');

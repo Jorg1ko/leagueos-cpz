@@ -376,3 +376,80 @@ input:disabled{background:#e5edf3;color:#7e95a7}
 .tournament-person-name{font-size:13px}
 @media(max-width:700px){.tournament-group-card{border-radius:13px}.tournament-people{padding:5px 15px 11px 38px}.tournament-person{padding:11px 0}}
 @media(prefers-color-scheme:dark){.tournament-group-card{background:#1b3245}.tournament-group-top{background:linear-gradient(105deg,#224a67,#1c405b);border-bottom-color:#3a5b73}.tournament-explanation{color:#aec9dd}}
+
+/* Grupos de torneo: una pista por grupo, clasificación y horario. */
+.tournament-detail-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tournament-select-row{display:grid;gap:8px;max-width:430px;margin:20px 0 12px}
+.tournament-select-row label{font-size:12px;font-weight:900;color:#175279}
+.tournament-select-row select{font:inherit;font-size:15px;font-weight:800;min-height:48px;width:100%;border:1px solid #bcd8ec;border-radius:10px;padding:11px 14px;background:#fff;color:#144866}
+.tournament-group-detail{display:block}
+.tournament-selected{border:1px solid #d7e8f5;border-radius:14px;background:#fff;overflow:hidden}
+.tournament-selected-title{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#e7f4fe;padding:18px}
+.tournament-selected-title h4{font-size:22px;color:#0d4d79;margin:0}
+.tournament-selected-title span{font-size:12px;color:#246a94;font-weight:850}
+.tournament-ranking,.tournament-fixtures{padding:20px}
+.tournament-ranking h5,.tournament-fixtures h5{font-size:17px;color:#10466b;margin:0 0 8px}
+.tournament-ranking .tournament-explanation,.tournament-fixtures .tournament-explanation{margin:0 0 14px}
+.tournament-ranking-wrap{border:1px solid #d9e8f3;border-radius:10px;overflow-x:auto}
+.tournament-ranking-table{min-width:780px;width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tournament-ranking-table th{background:#eaf4fc;text-align:center;color:#547892;padding:11px 6px;font-size:10px}
+.tournament-ranking-table th:nth-child(2){text-align:left}
+.tournament-ranking-table td{text-align:center;padding:10px 7px;font-size:11px;font-weight:800;border-top:1px solid #e5eef6;color:#204a68}
+.tournament-ranking-table td.tournament-ranking-name{text-align:left;min-width:158px}
+.tournament-ranking-name{font-weight:900;overflow-wrap:anywhere}
+.tournament-info{display:inline-block;vertical-align:middle;margin-left:7px}
+.tournament-info summary{display:inline-flex;justify-content:center;align-items:center;cursor:pointer;list-style:none;min-width:35px;height:35px;border:1px solid #c5ddeb;border-radius:9px;background:#e7f4fd;color:#1870a3;font-size:14px}
+.tournament-info summary::-webkit-details-marker{display:none}
+.tournament-info[open]{display:block;margin:7px 0 0}
+.tournament-info p{font-size:10.5px;line-height:1.6;font-weight:500;color:#587c95;margin:6px 0 0;max-width:330px}
+.tournament-ranking-mobile{display:none}
+.tournament-fixtures{border-top:1px solid #dbeaf5}
+.tournament-fixture-list{list-style:none;padding:0;margin:0;display:grid;gap:9px}
+.tournament-fixture{display:grid;grid-template-columns:105px minmax(0,1fr) auto;align-items:center;gap:15px;padding:13px;border:1px solid #d9e9f5;border-radius:11px;background:#f9fcff}
+.tournament-fixture-time{display:grid;gap:3px}
+.tournament-fixture-time strong{font-size:16px;color:#0a6b9f;font-variant-numeric:tabular-nums}
+.tournament-fixture-time small{font-size:10px;color:#63839c;font-weight:700}
+.tournament-fixture-players{display:flex;align-items:center;gap:10px;overflow-wrap:anywhere}
+.tournament-fixture-players strong{font-size:12px;font-weight:850;flex:1;min-width:0}
+.tournament-fixture-players span{font-size:10px;color:#879fb3;font-weight:950}
+.tournament-pending{font-size:10px;font-weight:800;padding:6px 9px;border-radius:999px;color:#668298;background:#edf2f7}
+@media(max-width:950px){.tournament-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+ .tournament-detail-grid{grid-template-columns:1fr}
+ .tournament-selected-title{padding:14px}
+ .tournament-selected-title h4{font-size:20px}
+ .tournament-selected-title span{font-size:10px}
+ .tournament-ranking,.tournament-fixtures{padding:14px 11px}
+ .tournament-ranking-wrap{display:none}
+ .tournament-ranking-mobile{display:block;border:1px solid #dbeaf5;border-radius:10px;overflow:hidden}
+ .tournament-ranking-mobile-head,.tournament-ranking-mobile-row{display:grid;grid-template-columns:25px minmax(0,1fr) 27px 27px 27px;gap:4px;align-items:center}
+ .tournament-ranking-mobile-head{padding:10px 8px;background:#eaf4fc;color:#547994;font-size:9px;font-weight:900;text-align:center}
+ .tournament-ranking-mobile-head span:nth-child(2){text-align:left}
+ .tournament-ranking-mobile-card{padding:9px 8px;border-top:1px solid #e2edf5}
+ .tournament-ranking-mobile-row{font-size:11px;text-align:center;font-weight:800}
+ .tournament-ranking-mobile-row span:nth-child(2){text-align:left}
+ .tournament-ranking-mobile-more{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:7px 0 0 29px;padding-top:7px;border-top:1px dashed #e3edf4;font-size:10px;color:#66839a}
+ .tournament-ranking-mobile-more .tournament-info{margin-left:0}
+ .tournament-fixture{grid-template-columns:minmax(0,1fr) auto;gap:9px;padding:12px}
+ .tournament-fixture-time{grid-column:1/-1;display:flex;gap:9px;align-items:baseline}
+ .tournament-fixture-players{gap:5px}
+ .tournament-fixture-players strong{font-size:11px}
+ .tournament-pending{font-size:9px;padding:6px}
+}
+@media(prefers-color-scheme:dark){
+ .tournament-select-row label,.tournament-ranking h5,.tournament-fixtures h5{color:#eaf6ff}
+ .tournament-select-row select{background:#1b3449;color:#e5f5ff;border-color:#42637c}
+ .tournament-selected{background:#152a3d;border-color:#34566d}
+ .tournament-selected-title,.tournament-ranking-table th,.tournament-ranking-mobile-head{background:#23465d}
+ .tournament-selected-title h4,.tournament-ranking-table td{color:#e7f6ff}
+ .tournament-selected-title span{color:#b9dcf3}
+ .tournament-ranking-wrap,.tournament-ranking-mobile{border-color:#3a566d}
+ .tournament-ranking-table td,.tournament-ranking-mobile-card{border-color:#37536a}
+ .tournament-info summary{background:#284a61;color:#d9edff;border-color:#477088}
+ .tournament-info p,.tournament-ranking-mobile-more{color:#aec9dc}
+ .tournament-fixtures,.tournament-ranking-mobile-more{border-color:#385569}
+ .tournament-fixture{background:#1b3449;border-color:#38576c}
+ .tournament-fixture-time strong{color:#9bd8ff}
+ .tournament-fixture-time small{color:#a9c5d8}
+ .tournament-pending{background:#26485f;color:#c2dbed}
+}
