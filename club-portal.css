@@ -636,3 +636,21 @@ body.tv-mode-open{overflow:hidden}
  .cpz-open-cover .tournament-overview{padding:20px 17px}
  .cpz-open-cover .tournament-overview h2{font-size:28px}
 }
+
+/* Liga CPZ: portada visual propia, coordinada con la del CPZ Open. */
+.service-card.league-card{background-image:none;background-color:#07375a}
+.league-card-poster{margin:-23px -23px 14px;height:280px;background:#082840;display:grid;place-items:center;overflow:hidden;border-radius:20px 20px 0 0}
+.league-card-poster img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
+.league-player-intro{display:grid;grid-template-columns:minmax(190px,260px) minmax(0,1fr);gap:20px;align-items:stretch}
+.league-player-poster{display:grid;place-items:center;min-width:0;border-radius:16px;overflow:hidden;background:#082840}
+.league-player-poster img{display:block;width:100%;height:100%;max-height:335px;object-fit:contain}
+.league-player-content{display:flex;flex-direction:column;justify-content:center;gap:16px;min-width:0}
+.league-player-content .feature-strip{margin:0}
+.league-player-content .primary-action{margin:0}
+@media(max-width:900px){.league-card-poster{margin:-19px -19px 14px}}
+@media(max-width:700px){
+ .league-card-poster{margin:-18px -18px 12px;height:235px;border-radius:16px 16px 0 0}
+ .league-player-intro{grid-template-columns:1fr;gap:14px}
+ .league-player-poster{max-width:370px;width:100%;justify-self:center}
+ .league-player-poster img{height:265px;max-height:none}
+}

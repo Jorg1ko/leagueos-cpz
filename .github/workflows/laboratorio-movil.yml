@@ -58,6 +58,7 @@ jobs:
               ast.parse(path.read_text(encoding='utf-8'),filename=str(path))
           print('Sintaxis Python comprobada:',len(scripts),'scripts')
           PY
+          test -s lab-static/dist/lab-assets/liga-cpz-poster.webp
           test -s lab-static/dist/lab-assets/cpz-open-poster.webp
           test -s lab-static/dist/lab-assets/escudo-cpz.webp
           test -s lab-static/dist/lab-assets/pistas-cpz.jpg

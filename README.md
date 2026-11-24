@@ -10,6 +10,10 @@ Este repositorio incluye la web de **RANKINGS CPZ** y una vista independiente de
 
 La portada muestra **Liga CPZ** y **CPZ Open** (nombre oficial indicado por el cartel compartido), previsto para el **12 de diciembre de 2026**, con fotografías locales del club en `lab-assets/`. La fecha indicada en el cartel es **12 DIC**; el año 2026 viene del contexto del torneo en el laboratorio. El formato concreto de la maqueta, los horarios, las inscripciones y los datos de participantes siguen en fase de prueba. Hay navegación de ida y vuelta entre portada y liga, diseño adaptable a móvil y modo oscuro automático.
 
+## Portada de Liga CPZ
+
+El laboratorio incluye `lab-assets/liga-cpz-poster.webp`, una imagen nueva de la liga con los colores del club, trofeo y pelota de pickleball. Se muestra en la tarjeta de **Liga CPZ** de la portada y dentro de la sección de acceso a clasificaciones y resultados. Se conserva toda la información real de la liga y no se modifican `main`, la D1 de producción ni los resultados.
+
 ## Portada del CPZ Open
 
 El laboratorio incluye `lab-assets/cpz-open-poster.webp`, una versión ligera del cartel visual creado a partir de la publicación compartida. Se muestra completo al abrir el torneo y como imagen de cabecera en su tarjeta de la portada; no sustituye el escudo ni las fotos de la liga. El recurso queda en el repositorio experimental y se publica mediante la copia ya existente de `lab-assets` en GitHub Actions.

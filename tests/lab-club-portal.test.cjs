@@ -160,6 +160,13 @@ assert(league.includes('href="./" aria-label="Volver al inicio'),'La liga debe e
 assert(!home.includes('id="leagueAdmin"')&&!home.includes('id="roleSwitch"'),'No debe mostrarse administración de prueba');
 assert(css.includes('grid-template-columns:repeat(2,minmax(0,1fr))'),'Portada con dos actividades');
 assert(css.includes('.service-card.tournament-card .service-top'),'Tarjeta del torneo con imagen');
+assert(home.includes('class="league-card-poster"')&&home.includes('src="./lab-assets/liga-cpz-poster.webp"'),'La tarjeta de Liga CPZ debe mostrar su propia portada');
+assert(home.includes('class="league-player-poster"')&&home.includes('id="leaguePlayer"'),'Portada visible también al entrar en Liga CPZ');
+assert(css.includes('.league-card-poster')&&css.includes('.league-player-intro'),'Diseño responsive para ambas vistas de liga');
+const leaguePoster=fs.readFileSync('lab-assets/liga-cpz-poster.webp');
+assert(leaguePoster.length>15000&&leaguePoster.length<250000,'Portada de liga optimizada');
+assert(leaguePoster.subarray(0,4).toString('ascii')==='RIFF'&&leaguePoster.subarray(8,12).toString('ascii')==='WEBP','Portada de liga WebP auténtica');
+
 assert(css.includes('@media(max-width:700px)'),'Diseño adaptado a móvil');
 assert(css.includes('prefers-color-scheme:dark'),'Debe conservar el modo oscuro');
 assert(home.includes('./lab-assets/escudo-cpz.webp'),'Escudo local');
