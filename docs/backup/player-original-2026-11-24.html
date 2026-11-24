@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#084c80">
+<title>Clasificaciones CPZ · Área de jugadores</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#173c57;background:#f1f6fa}
+*{box-sizing:border-box}body{margin:0}button,select{font:inherit}button{cursor:pointer}
+a{color:inherit}.shell{max-width:1240px;margin:auto;padding:24px 22px 70px}
+.top{background:linear-gradient(125deg,#073762,#0c6caa);color:#fff;padding:25px 30px;border-radius:0 0 24px 24px;box-shadow:0 15px 40px #0b345328}
+.top-inner{max-width:1240px;margin:auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{width:75px;height:80px;display:grid;place-items:center;background:#ffffffed;border-radius:16px;color:#075b91;font-weight:900;font-size:23px;overflow:hidden}
+.brand img{width:100%;height:100%;object-fit:contain}.top h1{margin:0;font-size:clamp(21px,3vw,31px)}.top p{margin:6px 0 0;color:#d8efff;font-size:13px}.grow{flex:1}
+.btn{border:1px solid #cbdfed;background:white;border-radius:11px;padding:11px 17px;color:#13527d;font-weight:800}.btn:hover{background:#e6f6ff}
+.nav{display:flex;gap:10px;flex-wrap:wrap;margin:25px 0 20px}.nav button{padding:13px 18px;border-radius:12px;border:1px solid #b8d9ef;background:white;color:#194c70;font-weight:800}
+.nav button[aria-current="page"]{background:#086cae;border-color:#086cae;color:white}
+.card{padding:22px;border:1px solid #d0e3f1;background:white;border-radius:18px;box-shadow:0 7px 24px #0a3f6510;margin-bottom:18px}
+h2{margin:0 0 10px;color:#0c4977}h3{color:#135b88;margin:20px 0 10px}.muted{color:#55758a;font-size:13px;line-height:1.6}
+.filters{display:flex;gap:15px;flex-wrap:wrap;align-items:end;margin:20px 0}.filters label{display:grid;gap:6px;color:#285370;font-size:12px;font-weight:800}
+select{padding:12px 14px;border-radius:11px;border:1px solid #b5d3e7;background:#fff;min-width:150px;color:#173f61}
+.table-wrap{max-width:100%;overflow-x:auto;border-radius:11px;border:1px solid #d7e7f1}
+table{border-collapse:collapse;width:100%;font-size:13px;background:white;min-width:660px}
+th{background:#eaf4fb;color:#285579;font-size:11px;text-align:left;padding:12px 10px}
+td{padding:12px 10px;border-top:1px solid #e1edf5}
+tbody tr:nth-child(even){background:#f7fafc}
+.pos{font-weight:900;color:#0b73b5;font-size:16px}
+.up{box-shadow:inset 4px 0 #269b61}.down{box-shadow:inset 4px 0 #df5454}
+.tag{display:inline-block;border-radius:7px;background:#e3f1fd;padding:4px 7px;font-size:10px;font-weight:800;color:#125986}
+.tag.warn{background:#fff0d3;color:#7c5419}
+.explain{display:inline-block;margin-left:7px;vertical-align:middle;font-size:12px;color:#0b6ba9}
+.explain summary{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:1px solid #badcf0;border-radius:50%;background:#eaf6ff;color:#09669d;font-size:13px;font-weight:850;line-height:1;cursor:pointer;list-style:none}
+.explain summary::-webkit-details-marker{display:none}
+.explain summary:hover,.explain[open] summary{background:#d5edfc;border-color:#79bde8}
+.explain summary:focus-visible{outline:3px solid #298fd0;outline-offset:2px}
+.explain[open]{display:block;margin:8px 0 0;max-width:440px}
+.explain p{margin:8px 0 2px;padding:11px 13px;font-size:12px;font-weight:400;line-height:1.65;color:#3e5d71;background:#ebf6fd;border:1px solid #d0e8f8;border-radius:10px}
+.rules{margin:0 0 16px;padding:14px 17px;background:#edf7fd;border-radius:12px;color:#285c7d;font-size:13px;line-height:1.65}
+.rules summary{font-weight:800;cursor:pointer}.rules p{margin:10px 0 0}
+.message{padding:13px;background:#fff7e9;border:1px solid #f1ddb3;border-radius:11px;font-size:12px;color:#825724;margin-top:12px}
+.scores{white-space:nowrap}.mini{color:#6c8ba2;font-size:12px}.hidden{display:none!important}
+@media(max-width:700px){.shell{padding:16px 12px 50px}.top{padding:20px}.card{padding:16px}.top-inner{gap:13px}.brand{height:60px;width:58px}.top .btn{width:100%}}
+</style>
+</head><body>
+<header class="top"><div class="top-inner"><div class="brand"><img alt="Escudo oficial Club Pickleball Zaragoza" src="https://clubpickleballzaragoza.com/wp-content/uploads/2025/11/cropped-LOGO_CLUB_PICKLEBALL_ZARAGOZA_page-0001-removebg-preview.webp" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></div><div><h1>RANKINGS CPZ</h1><p>Clasificaciones y resultados · Temporada 2026/27 · Acceso de jugadores</p></div><div class="grow"></div><button class="btn" id="refreshRankings" type="button">Actualizar resultados</button><button class="btn" id="logout" type="button">Cerrar sesión</button></div></header>
+<main class="shell">
+ <nav class="nav" aria-label="Secciones de consulta"><button type="button" data-page="individual" aria-current="page">Ranking individual</button><button type="button" data-page="doubles">Ranking dobles</button><button type="button" data-page="results">Todos los resultados</button><button type="button" data-page="booking">Reservas</button><button type="button" data-page="rules">Normas y reglas oficiales</button></nav>
+ <section id="loading" class="card" role="status">Cargando clasificaciones…</section>
+ <section id="app" hidden>
+ <div id="overview" class="card"><h2 id="sectionTitle">Ranking individual CPZ</h2><p class="muted" id="sectionSubtitle">Consulta cualquier categoría y grupo. Las posiciones se actualizan cuando se registran resultados.</p>
+  <details class="rules"><summary>¿Cómo se decide el orden de clasificación?</summary><p>Primero se compara quién ha ganado más partidos. Si dos participantes tienen las mismas victorias, queda por delante quien ganó su partido entre ellos. Si empatan tres, se comparan solo los partidos jugados entre esos tres: diferencia de sets, después diferencia de puntos y, por último, puntos a favor. Si todavía hay un empate sin resolver o faltan partidos, la posición es provisional y la organización debe confirmarla. Las franjas verde y roja muestran las plazas de ascenso y descenso, no resultados definitivos.</p></details>
+  <div class="filters"><label>Categoría<select id="category"></select></label><label>Grupo<select id="group"></select></label></div>
+  <div id="ranking"></div>
+ </div>
+ <div id="resultsPanel" class="card hidden"><h2>Todos los resultados</h2><p class="muted">Partidos registrados por la organización. No se muestran datos privados de cuentas ni opciones de administración.</p><div class="filters"><label>Modalidad<select id="resultType"><option value="individual">Individual</option><option value="doubles">Dobles</option><option value="all">Ambas modalidades</option></select></label><label>Grupo<select id="resultGroup"><option value="all">Todos los grupos</option></select></label></div><div id="allResults"></div></div>
+ </section>
+<div id="bookingPanel" class="card hidden">
+ <h2>Reserva de pistas</h2>
+ <p class="muted">Las reservas y los pagos se gestionan directamente a través de Taykus, la plataforma de reservas del Club Pickleball Zaragoza. Este ranking no cobra ni gestiona los pagos.</p>
+ <div class="rules" style="margin-top:20px">
+  <h3 style="margin-top:0">Cómo reservar</h3>
+  <p>Entra en la plataforma de reservas del club, consulta la disponibilidad, elige el tipo de reserva y completa el proceso con las condiciones indicadas allí.</p>
+  <a class="btn" style="display:inline-block;text-decoration:none;margin-top:14px" href="https://pickleballzaragoza.taykus.com/bookingtypes" target="_blank" rel="noopener noreferrer">Abrir reservas del club ↗</a>
+ </div>
+ <p class="muted">Si necesitas información sobre instalaciones, clases u otras actividades, visita la <a href="https://clubpickleballzaragoza.com/" target="_blank" rel="noopener noreferrer">web del Club Pickleball Zaragoza</a>.</p>
+</div>
+<div id="rulesPanel" class="card hidden">
+ <h2>Normas y reglas oficiales</h2>
+ <p class="muted">Consulta por separado las normas del ranking del club y las reglas técnicas del pickleball. Las reglas RFET no sustituyen las bases específicas de ascensos, descensos y desempates del ranking CPZ.</p>
+ <h3>Normas del ranking CPZ · Noviembre 2026</h3>
+ <div class="rules">
+  <p><strong>Enfrentamientos:</strong> en individual, cada grupo tiene cuatro jugadores y se juega una vez contra cada rival (tres partidos por persona). En dobles, los grupos de cuatro parejas disputan tres partidos por pareja, y los grupos C1 y C2, con tres parejas, disputan dos.</p>
+  <p><strong>Ascensos y descensos:</strong> la primera posición asciende al grupo inmediatamente superior y la última desciende al grupo inmediatamente inferior, salvo cuando no exista un grupo superior o inferior. Los movimientos se confirman al cerrar la clasificación.</p>
+  <p><strong>Fecha límite:</strong> 30 de noviembre de 2026. Los números del listado inicial son solo para organizar los cruces; no son resultados ni posiciones ganadas.</p>
+ </div>
+ <h3>¿Cómo se decide la clasificación?</h3>
+ <div class="rules">
+  <p>Primero cuenta el número de <strong>partidos ganados</strong>. Si empatan exactamente dos jugadores o parejas, se coloca delante quien ganó el enfrentamiento directo. Después se compara la diferencia de sets, la diferencia de puntos y, finalmente, los puntos a favor.</p>
+  <p><strong>Empate entre tres:</strong> se forma una clasificación solo con los partidos entre esos tres. En esa miniclasificación se compara primero la diferencia de sets, después la diferencia de puntos y por último los puntos a favor.</p>
+  <p>Si faltan partidos, empatan cuatro participantes o los criterios no resuelven el empate, se señala como <strong>provisional o pendiente de decisión del club</strong>. Los colores verde y rojo muestran zonas de ascenso y descenso, no movimientos ya confirmados.</p>
+ </div>
+ <h3>Reglas oficiales de juego · RFET</h3>
+ <div class="rules">
+  <p><strong>Pista y zona de no volea:</strong> la pista mide 6,10 × 13,41 m; la zona de no volea se extiende 2,13 m desde la red a cada lado.</p>
+  <p><strong>Saque y doble bote:</strong> el saque se efectúa en diagonal; tanto el saque como la devolución deben botar antes de realizar una volea.</p>
+  <p><strong>Puntuación:</strong> habitualmente, los juegos se disputan a 11 puntos, con dos de diferencia, aunque el reglamento contempla otros formatos.</p>
+  <p><strong>Líneas y juego limpio:</strong> las líneas forman parte de la pista, con las excepciones establecidas para el saque. Las dudas sobre líneas se resuelven beneficiando al adversario.</p>
+  <p>Se trata de un resumen de consulta. Para detalles sobre faltas, tiempos muertos, arbitraje y formatos de competición, consulta el documento oficial.</p>
+ </div>
+ <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:20px">
+  <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.rfet.es/descargar/file-pickleball/18_Adjunto/reglas-oficiales-de-pickleball-2026.pdf" style="text-decoration:none">Reglas oficiales RFET 2026 ↗</a>
+  <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.rfet.es/descargar/file-pickleball/1_Adjunto/reglas-oficiales-de-pickleball-2025.pdf" style="text-decoration:none">Edición RFET 2025 ↗</a>
+ </div>
+</div>
+</main>
+<script src="/ranking-engine.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+let data=null,page='individual';
+const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');
+function option(select,value,label){const o=document.createElement('option');o.value=value;o.textContent=label;select.append(o)}
+function element(tag,className,text){const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=String(text);return e}
+function records(type,group){const list=type==='individual'?data.individualResults:data.doublesResults;return list.filter(r=>!group||r.groupLabel===group)}
+function names(type,group){const roster=(type==='individual'?data.individualGroups:data.doublesGroups)[group]||[];return roster.map(p=>Array.isArray(p)?p.join(' / '):p)}
+function criterionText(p,groupInfo){
+ const label=p.name;
+ if(!p.pj)return label+' todavía no tiene partidos registrados. La posición refleja solamente el orden inicial del listado y no una clasificación ganada.';
+ let text=label+' ha ganado '+p.pg+' de '+p.pj+' partidos. Tiene '+(p.sf-p.sc)+' sets de diferencia, '+(p.pf-p.pc)+' puntos de diferencia y '+p.pf+' puntos a favor. ';
+ if(p.criterion.includes('directo ganado'))text+='Se sitúa por delante de otro participante con las mismas victorias porque ganó el enfrentamiento directo entre ambos.';
+ else if(p.criterion.includes('directo perdido'))text+='Se sitúa por detrás del otro participante empatado porque perdió su enfrentamiento directo.';
+ else if(p.criterion.includes('triple')||p.criterion.includes('entre 3'))text+='Hay tres participantes empatados en victorias. Para separarlos solo se cuentan sus partidos entre sí. '+p.criterion.replace(' (provisional: faltan enfrentamientos)','')+'.';
+ else if(p.unresolved)text+='Todavía no hay un desempate definitivo aplicable: '+p.criterion+'.';
+ else text+='El criterio principal es el número de victorias. Si hay empate se utilizan las normas de desempate del club.';
+ if(p.unresolved||!groupInfo.complete)text+=' Esta clasificación es provisional; faltan partidos o una decisión del club.';
+ return text;
+}
+function renderRank(){
+ const type=page,groups=type==='individual'?data.individualGroups:data.doublesGroups;
+ const cats=[...new Set(Object.keys(groups).map(k=>k[0]))],cat=$('category'),grp=$('group');
+ const priorCat=cat.value,priorGroup=grp.value;cat.replaceChildren();
+ cats.forEach(k=>option(cat,k,'Categoría '+k));cat.value=cats.includes(priorCat)?priorCat:cats[0];
+ const labels=Object.keys(groups).filter(k=>k.startsWith(cat.value));grp.replaceChildren();labels.forEach(k=>option(grp,k,'Grupo '+k));
+ grp.value=labels.includes(priorGroup)?priorGroup:labels[0];
+ renderSelected();
+}
+function renderSelected(){
+ const group=$('group').value,type=page,people=names(type,group),result=CPZRanking.rankCompetition(people,records(type,group));
+ const root=$('ranking');root.replaceChildren();
+ const headline=element('h3','', 'Grupo '+group+' · '+result.played+' de '+result.expected+' partidos registrados');root.append(headline);
+ const wrap=element('div','table-wrap'),table=element('table');
+ const th=element('thead');th.innerHTML='<tr><th>Pos.</th><th>Jugador / pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets F/C</th><th>Dif. sets</th><th>Puntos F/C</th><th>Dif. puntos</th><th>PTS*</th></tr>';table.append(th);
+ const body=element('tbody');
+ result.rows.forEach((p,i)=>{
+  const tr=element('tr',i===0&&group!=='A1'?'up':i===result.rows.length-1&&group!==(type==='individual'?'B5':'C2')?'down':'');
+  const pos=element('td','pos',i+1);tr.append(pos);
+  const name=element('td','',p.name),details=element('details','explain'),summary=element('summary','', 'ⓘ');
+  summary.setAttribute('aria-label','Explicar la posición de '+p.name);
+  summary.setAttribute('title','Ver explicación de la posición');
+  details.append(summary,element('p','',criterionText(p,result)));name.append(details);tr.append(name);
+  [p.pj,p.pg,p.pp,p.sf+' / '+p.sc,p.sf-p.sc,p.pf+' / '+p.pc,p.pf-p.pc,p.pts].forEach(value=>tr.append(element('td','',value)));
+  body.append(tr);
+ });
+ table.append(body);wrap.append(table);root.append(wrap);
+ root.append(element('p','muted','*PTS indica 3 puntos informativos por victoria; el orden oficial se decide por partidos ganados y los desempates. Los números iniciales no son una clasificación oficial.'));
+ if(result.warnings.length)root.append(element('p','message','Revisión pendiente: '+result.warnings.join(' · ')));
+ if(!result.complete)root.append(element('p','message','Clasificación provisional. No están registrados todos los encuentros o hay empates sin resolver.'));
+ const matchTitle=element('h3','', 'Resultados del grupo');root.append(matchTitle);
+ const scores=records(type,group);renderResultsTable(root,scores);
+}
+function renderResultsTable(root,list){
+ if(!list.length){root.append(element('p','muted','Aún no hay resultados registrados.'));return}
+ const wrap=element('div','table-wrap'),table=element('table'),thead=element('thead'),tbody=element('tbody');
+ thead.innerHTML='<tr><th>Fecha</th><th>Modalidad</th><th>Grupo</th><th>Enfrentamiento</th><th>Marcadores</th></tr>';table.append(thead);
+ list.forEach(r=>{const tr=element('tr');const type=data.doublesResults.includes(r)?'Dobles':'Individual';[r.date,type,r.groupLabel,r.player1+' contra '+r.player2,r.sets.map(s=>s.join('–')).join(' · ')].forEach(v=>tr.append(element('td','',v)));tbody.append(tr)});
+ table.append(tbody);wrap.append(table);root.append(wrap);
+}
+function renderAll(){
+ const type=$('resultType').value,select=$('resultGroup'),previous=select.value;
+ select.replaceChildren();option(select,'all','Todos los grupos');
+ const valid=type==='all'?new Set([...Object.keys(data.individualGroups),...Object.keys(data.doublesGroups)]):new Set(Object.keys(type==='individual'?data.individualGroups:data.doublesGroups));
+ [...valid].sort().forEach(g=>option(select,g,'Grupo '+g));
+ select.value=valid.has(previous)?previous:'all';
+ const list=[...(type==='doubles'?[]:data.individualResults),...(type==='individual'?[]:data.doublesResults)].filter(r=>select.value==='all'||r.groupLabel===select.value).sort((a,b)=>b.date.localeCompare(a.date));
+ const root=$('allResults');root.replaceChildren();renderResultsTable(root,list);
+}
+function switchPage(next){
+ page=next;document.querySelectorAll('[data-page]').forEach(b=>{if(b.dataset.page===next)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ const ranking=next==='individual'||next==='doubles';
+ $('overview').classList.toggle('hidden',!ranking);
+ $('resultsPanel').classList.toggle('hidden',next!=='results');
+ $('bookingPanel').classList.toggle('hidden',next!=='booking');
+ $('rulesPanel').classList.toggle('hidden',next!=='rules');
+ if(next==='results')renderAll();
+ else if(ranking){$('sectionTitle').textContent=next==='individual'?'Ranking individual CPZ':'Ranking dobles CPZ';$('sectionSubtitle').textContent='Selecciona una categoría y un grupo para ver la clasificación, los resultados y el motivo de cada posición.';renderRank()}
+}
+$('category').addEventListener('change',()=>{$('group').value='';renderRank()});
+$('group').addEventListener('change',renderSelected);
+$('resultType').addEventListener('change',renderAll);$('resultGroup').addEventListener('change',renderAll);
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.page)));
+$('logout').addEventListener('click',async()=>{try{await fetch('/api/shared/logout',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:'{}'})}finally{location.replace('/?role=player')}});
+async function refreshRankings(initial=false){
+ const button=$('refreshRankings');button.disabled=true;button.textContent='Actualizando…';
+ try{
+  const response=await fetch('/api/shared/data',{credentials:'same-origin',cache:'no-store'});
+  const updated=await response.json();
+  if(!response.ok)throw Error(updated.error||'No se han podido actualizar los datos.');
+  data=updated;$('loading').hidden=true;$('app').hidden=false;
+  switchPage(initial?'individual':page);
+  button.textContent='Actualizar resultados';
+ }catch(error){
+  if(initial)$('loading').textContent='No se pueden consultar los rankings: '+error.message+'. Vuelve a iniciar sesión.';
+  else {button.textContent='Error al actualizar';alert('No se han podido actualizar las clasificaciones: '+error.message)}
+ }finally{button.disabled=false}
+}
+$('refreshRankings').addEventListener('click',()=>refreshRankings(false));
+refreshRankings(true);
+})();
+</script>
+</body></html>
