@@ -7,7 +7,6 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <title>Club Pickleball Zaragoza · Espacio del club (laboratorio)</title>
 <link rel="stylesheet" href="./club-portal.css">
-<script defer src="./club-portal-model.js"></script>
 <script defer src="./club-portal.js"></script>
 </head>
 <body>
@@ -20,74 +19,70 @@
     <span class="lab-pill">LABORATORIO</span>
   </div>
 </header>
-<div class="demo-banner" role="note"><strong>Prototipo de prueba.</strong> Acceso al club libre; las áreas de administración no tienen todavía contraseñas reales. Las altas y fechas del drop-in solo se guardan en este navegador.</div>
+<div class="demo-banner" role="note"><strong>Prototipo de prueba.</strong> La liga se consulta sin modificar resultados. El torneo de diciembre está en preparación: todavía no hay fecha exacta, bases ni inscripciones abiertas.</div>
 <main class="shell">
- <section id="homeScreen" class="screen">
-   <div class="hero">
-     <div class="hero-content">
-       <span class="eyebrow"><span class="pulse"></span> TU CLUB, TODO EN UN SITIO</span>
-       <h1>¿A qué jugamos hoy?</h1>
-       <p>Accede a la liga, consulta los próximos drop-in y apúntate a jugar sin complicaciones.</p>
-       <div class="hero-badges"><span>Liga y clasificaciones</span><span>Partidas y actividades</span></div>
-     </div>
-     <div class="hero-art" aria-hidden="true">
-       <svg viewBox="0 0 190 190" width="178" height="178" fill="none">
-         <circle cx="95" cy="95" r="82" stroke="#ffffff38" stroke-width="2"/>
-         <circle cx="95" cy="95" r="59" stroke="#ffffff25" stroke-width="2"/>
-         <path d="M55 138L94 99" stroke="#ecfbff" stroke-width="11" stroke-linecap="round"/>
-         <rect x="79" y="34" width="72" height="72" rx="26" transform="rotate(28 79 34)" fill="#a2f272" stroke="#ffffff8a" stroke-width="3"/>
-         <g fill="#0b4f78" opacity=".62">
-           <circle cx="90" cy="60" r="4"/><circle cx="109" cy="69" r="4"/><circle cx="71" cy="79" r="4"/><circle cx="90" cy="88" r="4"/><circle cx="109" cy="98" r="4"/>
-         </g>
-         <circle cx="149" cy="142" r="19" fill="#ffdf58"/><path d="M137 138l20 10m-18 2 14-18" stroke="#e3b838" stroke-width="2" stroke-linecap="round"/>
-       </svg>
-     </div>
-   </div>
-   <div class="section-heading">
-    <div><span class="small-label">ACTIVIDADES</span><h2>Elige dónde entrar</h2></div>
-    <span class="section-counter">3 espacios</span>
-   </div>
-   <div class="service-grid">
-    <article class="service-card league-card">
-      <div class="service-top"><span class="service-icon league-icon" aria-hidden="true">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v7a5 5 0 0 1-10 0V4Z"/><path d="M7 7H4v2a4 4 0 0 0 4 4M17 7h3v2a4 4 0 0 1-4 4"/><path d="m12 8 1.1 2.2 2.4.4-1.8 1.7.4 2.4-2.1-1.1-2.1 1.1.4-2.4-1.8-1.7 2.4-.4Z"/></svg>
-      </span><span class="card-tag green-tag">Temporada 2026/27</span></div>
-      <h3>Liga CPZ</h3><p>Clasificaciones individuales y dobles, resultados y partidos pendientes.</p>
-      <div class="service-meta"><span>Individual + dobles</span><span>Resultados reales</span></div>
-      <button type="button" class="card-link" data-go="liga">Entrar a la liga <span aria-hidden="true">↗</span></button>
-    </article>
-    <article class="service-card drop-card">
-      <div class="service-top"><span class="service-icon tuesday-icon" aria-hidden="true">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 16 2 2 4-5"/></svg></span><span class="card-tag blue-tag">Cada martes</span></div>
-      <h3>Drop-in martes</h3><p>Consulta la sesión y escribe tu nombre para apuntarte a jugar.</p>
-      <p id="homeTuesdayDate" class="activity-date">Fecha por publicar</p>
-      <button type="button" class="card-link" data-go="martes">Ver drop-in <span aria-hidden="true">↗</span></button>
-    </article>
-    <article class="service-card drop-card">
-      <div class="service-top"><span class="service-icon thursday-icon" aria-hidden="true">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2M8 2l-2 3M16 2l2 3"/></svg></span><span class="card-tag violet-tag">Cada jueves</span></div>
-      <h3>Drop-in jueves</h3><p>Consulta la fecha publicada y reserva tu sitio escribiendo tu nombre.</p>
-      <p id="homeThursdayDate" class="activity-date">Fecha por publicar</p>
-      <button type="button" class="card-link" data-go="jueves">Ver drop-in <span aria-hidden="true">↗</span></button>
-    </article>
-   </div>
-   <div class="home-footer"><span class="footer-dot"></span> Más actividades del club podrán añadirse aquí más adelante.</div>
- </section>
- <section id="areaScreen" class="screen" hidden>
-   <a href="#inicio" class="back-link"><span aria-hidden="true">←</span> Volver a actividades</a>
-   <div class="area-hero">
-     <div class="area-emblem" id="areaEmblem" aria-hidden="true">🏓</div>
-     <div><span id="areaEyebrow" class="small-label">ACTIVIDAD DEL CLUB</span><h1 id="areaTitle">Actividad</h1><p id="areaDescription"></p></div>
-   </div>
-   <div class="role-switch" role="group" aria-label="Elegir tipo de acceso">
-     <button type="button" id="playerRole" data-role="jugador" class="role-button is-active" aria-pressed="true">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg> Como jugador
-     </button>
-     <button type="button" id="adminRole" data-role="admin" class="role-button" aria-pressed="false">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Administración <span class="demo-suffix">demo</span>
-     </button>
-   </div>
+  <section id="homeScreen" class="screen">
+    <div class="hero">
+      <div class="hero-content">
+        <span class="eyebrow"><span class="pulse"></span> TU CLUB, TODO EN UN SITIO</span>
+        <h1>¿A qué jugamos?</h1>
+        <p>Consulta tu liga y descubre el próximo torneo que estamos preparando para diciembre.</p>
+        <div class="hero-badges"><span>Liga y clasificaciones</span><span>Próximo torneo · diciembre 2026</span></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 190 190" width="178" height="178" fill="none">
+          <circle cx="95" cy="95" r="82" stroke="#ffffff38" stroke-width="2"/>
+          <circle cx="95" cy="95" r="59" stroke="#ffffff25" stroke-width="2"/>
+          <path d="M55 138L94 99" stroke="#ecfbff" stroke-width="11" stroke-linecap="round"/>
+          <rect x="79" y="34" width="72" height="72" rx="26" transform="rotate(28 79 34)" fill="#a2f272" stroke="#ffffff8a" stroke-width="3"/>
+          <g fill="#0b4f78" opacity=".62">
+            <circle cx="90" cy="60" r="4"/><circle cx="109" cy="69" r="4"/><circle cx="71" cy="79" r="4"/><circle cx="90" cy="88" r="4"/><circle cx="109" cy="98" r="4"/>
+          </g>
+          <circle cx="149" cy="142" r="19" fill="#ffdf58"/><path d="M137 138l20 10m-18 2 14-18" stroke="#e3b838" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="section-heading">
+      <div><span class="small-label">ACTIVIDADES</span><h2>Elige dónde entrar</h2></div>
+      <span class="section-counter">2 espacios</span>
+    </div>
+    <div class="service-grid">
+      <article class="service-card league-card">
+        <div class="service-top"><span class="service-icon league-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v7a5 5 0 0 1-10 0V4Z"/><path d="M7 7H4v2a4 4 0 0 0 4 4M17 7h3v2a4 4 0 0 1-4 4"/><path d="m12 8 1.1 2.2 2.4.4-1.8 1.7.4 2.4-2.1-1.1-2.1 1.1.4-2.4-1.8-1.7 2.4-.4Z"/></svg>
+        </span><span class="card-tag green-tag">Temporada 2026/27</span></div>
+        <h3>Liga CPZ</h3>
+        <p>Clasificaciones individuales y de dobles, resultados y partidos pendientes.</p>
+        <div class="service-meta"><span>Individual + dobles</span><span>Resultados reales</span></div>
+        <button type="button" class="card-link" data-go="liga">Entrar a la liga <span aria-hidden="true">↗</span></button>
+      </article>
+      <article class="service-card tournament-card">
+        <div class="service-top"><span class="service-icon tournament-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v7a5 5 0 0 1-10 0V4Z"/><path d="M7 7H4v2a4 4 0 0 0 4 4M17 7h3v2a4 4 0 0 1-4 4"/></svg>
+        </span><span class="card-tag blue-tag">Diciembre 2026</span></div>
+        <h3>Torneo de Héroes de Ebro Viejo</h3>
+        <p>Estamos preparando un torneo para diciembre. Pronto anunciaremos sus detalles.</p>
+        <p class="activity-date">En preparación · Fecha por confirmar</p>
+        <button type="button" class="card-link" data-go="torneo">Conocer el torneo <span aria-hidden="true">↗</span></button>
+      </article>
+    </div>
+    <div class="home-footer"><span class="footer-dot"></span> El nombre y la información del torneo son provisionales.</div>
+  </section>
 
+  <section id="areaScreen" class="screen" hidden>
+    <a href="#inicio" class="back-link"><span aria-hidden="true">←</span> Volver a actividades</a>
+    <div class="area-hero">
+      <div class="area-emblem" id="areaEmblem" aria-hidden="true">🏆</div>
+      <div><span id="areaEyebrow" class="small-label">ACTIVIDAD DEL CLUB</span><h1 id="areaTitle">Actividad</h1><p id="areaDescription"></p></div>
+    </div>
+    <div id="roleSwitch" class="role-switch" role="group" aria-label="Elegir tipo de acceso">
+      <button type="button" id="playerRole" data-role="jugador" class="role-button is-active" aria-pressed="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg> Como jugador
+      </button>
+      <button type="button" id="adminRole" data-role="admin" class="role-button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Administración <span class="demo-suffix">demo</span>
+      </button>
+    </div>
    <div id="leaguePlayer" class="module-panel" hidden>
      <div class="feature-strip"><span class="feature-icon">🏆</span><div><strong>Tu liga, como siempre</strong><p>Conservamos el ranking individual y de dobles, los marcadores por set y los enfrentamientos pendientes que ya preparamos.</p></div></div>
      <a class="primary-action full" href="./liga.html">Abrir clasificaciones y resultados <span aria-hidden="true">↗</span></a>
@@ -99,35 +94,22 @@
      <div class="preview-features"><span>Participantes y grupos</span><span>Resultados y clasificaciones</span><span>Calendario de encuentros</span></div>
      <p class="micro-note">Esta pantalla no concede permisos de administrador ni permite modificar los resultados oficiales.</p>
    </div>
-   <div id="dropPlayer" class="module-panel" hidden>
-     <div class="session-summary">
-       <span class="small-label">PRÓXIMA SESIÓN</span>
-       <h2 id="sessionDate">Fecha por publicar</h2>
-       <p id="sessionTime" class="session-time">El administrador indicará el día.</p>
-       <span id="sessionCount" class="count-pill">0 apuntados</span>
-     </div>
-     <form id="signupForm" class="signup-form">
-      <label for="playerName">Apúntate a jugar</label>
-      <p>Escribe tu nombre para aparecer en la lista de esta sesión.</p>
-      <div class="form-row"><input id="playerName" name="playerName" type="text" minlength="2" maxlength="70" autocomplete="name" placeholder="Nombre y apellidos" required><button type="submit" id="signupButton" class="primary-action">Guardar mi nombre</button></div>
-      <p id="signupFeedback" class="feedback" role="status" aria-live="polite"></p>
-     </form>
-     <div class="attendee-section"><div class="attendee-heading"><h3>Personas apuntadas</h3><span id="attendeeCount">0</span></div><div id="attendeeList" class="attendee-list"></div></div>
-     <p class="micro-note">Demostración: las inscripciones se guardan solo en este navegador. No las verán otros jugadores ni constituyen una inscripción real.</p>
-   </div>
-   <div id="dropAdmin" class="module-panel" hidden>
-     <div class="panel-heading"><span class="small-label">SIMULADOR DE ADMINISTRACIÓN</span><h2>Publicar la sesión</h2><p>El administrador podrá cambiar la fecha del martes o jueves y gestionar las personas apuntadas.</p></div>
-     <div class="security-note"><strong>Contraseña independiente, pendiente.</strong><span>El panel se puede probar sin autenticar únicamente en este laboratorio. En la versión real necesitará identificación y una base de datos compartida.</span></div>
-     <form id="sessionForm" class="admin-form">
-       <div class="form-grid"><label>Fecha de la actividad <input id="sessionDateInput" type="date" required></label><label>Hora (opcional) <input id="sessionTimeInput" type="time"></label></div>
-       <button type="submit" class="primary-action">Guardar y publicar fecha</button>
-       <p id="adminFeedback" class="feedback" role="status" aria-live="polite"></p>
-     </form>
-     <div class="attendee-section admin-people"><div class="attendee-heading"><h3>Lista de esta sesión</h3><span id="adminAttendeeCount">0</span></div><div id="adminAttendeeList" class="attendee-list"></div></div>
-     <p class="micro-note">Si cambias la fecha, comienza una lista nueva para esa sesión. Los cambios son únicamente locales a este dispositivo.</p>
-   </div>
- </section>
+
+    <div id="tournamentPanel" class="module-panel tournament-panel" hidden>
+      <div class="tournament-overview">
+        <span class="small-label">PRÓXIMO TORNEO · BORRADOR</span>
+        <h2>Torneo de Héroes de Ebro Viejo</h2>
+        <p>Estamos preparando esta competición para diciembre de 2026. Esta página servirá para comunicar la información definitiva cuando esté confirmada.</p>
+      </div>
+      <div class="tournament-detail-grid">
+        <div class="tournament-detail"><span>Cuándo</span><strong>Diciembre de 2026</strong><small>Día y horario por confirmar</small></div>
+        <div class="tournament-detail"><span>Formato</span><strong>Por definir</strong><small>Modalidades y bases pendientes</small></div>
+        <div class="tournament-detail"><span>Inscripciones</span><strong>Aún no abiertas</strong><small>El sistema de inscripción está pendiente</small></div>
+      </div>
+      <p class="micro-note tournament-note">Información provisional del laboratorio. No se están recogiendo reservas, pagos ni datos de participantes.</p>
+    </div>
+  </section>
 </main>
-<footer class="site-footer">Club Pickleball Zaragoza <span>·</span> Boceto de actividades <span>·</span> Laboratorio independiente</footer>
+<footer class="site-footer">Club Pickleball Zaragoza <span>·</span> Actividades y liga <span>·</span> Laboratorio independiente</footer>
 </body>
 </html>

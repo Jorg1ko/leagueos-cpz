@@ -23,7 +23,6 @@ jobs:
           cp club-portal.css lab-static/dist/club-portal.css
           cp -R lab-assets lab-static/dist/lab-assets
           cp club-portal.js lab-static/dist/club-portal.js
-          cp club-portal-model.js lab-static/dist/club-portal-model.js
           cp player.html lab-static/dist/liga.html
           cp league-lab.css lab-static/dist/league-lab.css
           cp ranking-engine.js lab-static/dist/ranking-engine.js
@@ -32,7 +31,6 @@ jobs:
           cp lab-results.js lab-static/dist/lab-results.js
           test ! -e lab-static/functions
           node --check lab-static/dist/club-portal.js
-          node --check lab-static/dist/club-portal-model.js
           node --check lab-static/dist/lab-data.js
           node --check lab-static/dist/lab-features.js
           node --check lab-static/dist/lab-results.js
