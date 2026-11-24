@@ -17,6 +17,19 @@ vm.runInNewContext(groupCode,scope);
 vm.runInNewContext(bracketCode,scope);
 const demo=scope.CPZTournamentDemo;
 const groups=demo.makeGroups(scope.CPZ_LAB_DATA.individualGroups);
+const firstWave=demo.firstWave(scope.CPZ_LAB_DATA.individualGroups);
+assert.equal(firstWave.length,7,'Una tarjeta por pista en portada y pantalla TV');
+assert.deepEqual(Array.from(firstWave,m=>m.court),[1,2,3,4,5,6,7],'Pistas 1–7, sin duplicados');
+assert(firstWave.every(m=>m.start==='09:00'&&m.end==='09:20'&&m.number===1),'Solo la primera franja horaria');
+for(const game of firstWave){
+ const group=groups.find(g=>g.court===game.court);
+ assert(group,'Cada partido corresponde a un grupo existente');
+ const expected=demo.scheduleForGroup(group)[0];
+ assert.equal(game.player1,expected.player1,'Los nombres de portada deben coincidir con el calendario');
+ assert.equal(game.player2,expected.player2,'Los nombres de portada deben coincidir con el calendario');
+ assert.equal(game.groupLabel,group.label,'La pista se corresponde con su grupo');
+}
+
 const bracketModel=scope.CPZTournamentBrackets;
 const modes=['championship','consolation'];
 let bracketTotal=0;
@@ -82,6 +95,14 @@ for(const tag of ['id="homeScreen"','id="areaScreen"','data-go="liga"','data-go=
  assert(home.includes(tag),'Falta función de club: '+tag);
 }
 assert(home.includes('Torneo de Héroes de Ebro Viejo'),'Nombre provisional del torneo');
+for(const anchor of ['id="upcomingMatches"','id="openTvBoard"','id="tvBoard"','id="tvMatches"','id="closeTvBoard"'])
+ assert(home.includes(anchor),'Debe haber vista de próximos partidos y modo TV: '+anchor);
+assert(home.includes('09:00–09:20')&&home.includes('Fecha por confirmar')&&home.includes('Horarios de ejemplo'),'La primera franja no debe confundirse con una convocatoria real');
+assert(js.includes('getFirstWave')&&js.includes('renderUpcoming')&&js.includes('openTvBoard'),'Ambas vistas necesitan los datos de los siete partidos');
+assert(js.includes('requestFullscreen')&&js.includes('exitFullscreen')&&js.includes('fullscreenchange'),'Botón pantalla completa y salida sin bloqueo');
+assert(js.includes("event.key==='Escape'")&&js.includes('closeTvBoard'),'Escape sale de vista TV');
+assert(!/document\.write|window\.open|setInterval|fetch\(|localStorage/i.test(js),'La TV no requiere escrituras, ventanas ni actualizaciones de producción');
+assert(css.includes('.tv-board:fullscreen')&&css.includes('.tv-matches'),'Estilo para televisión');
 assert(home.includes('Diciembre 2026')&&home.includes('Diciembre de 2026'),'El torneo está previsto para diciembre de 2026');
 assert(home.includes('Aún no abiertas')&&home.includes('Día y horario por confirmar'),'No deben anunciarse fechas ni inscripciones inventadas');
 assert(home.includes('7 grupos de 4')&&home.includes('id="tournamentGroups"'),'7 grupos de 4');

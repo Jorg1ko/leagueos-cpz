@@ -10,6 +10,10 @@ Este repositorio incluye la web de **RANKINGS CPZ** y una vista independiente de
 
 La portada muestra **Liga CPZ** y **Torneo de Héroes de Ebro Viejo** (nombre provisional), anunciado únicamente como proyecto **en preparación para diciembre de 2026**, con fotografías locales del club en `lab-assets/`. La fecha exacta, formato e inscripciones aún no están confirmados. Hay navegación de ida y vuelta entre portada y liga, diseño adaptable a móvil y modo oscuro automático.
 
+## Vista de próximos partidos para televisión
+
+La portada del laboratorio muestra los **siete partidos de ejemplo de la primera franja 09:00–09:20**, uno por pista. Los cruces y nombres derivan de `CPZTournamentDemo.firstWave`, la misma fuente que el calendario de los grupos A–G; no se duplican datos ni se inventan nuevos participantes. Pulsar **«Ver en TV»** o cualquiera de las siete tarjetas abre un panel de alto contraste y tipografía grande, optimizado para una televisión. Solicita la Fullscreen API tras el clic; cuando el navegador la impide, mantiene la vista ampliada como superposición. Se cierra con **Salir** o **Escape**. No hay autoavance, inscripción ni consulta de resultados adicionales. El día, el horario y los partidos siguen marcados como **ejemplos no confirmados**. Sin cambios en D1 ni en `main`.
+
 ## Qué funciona y qué es una demostración
 
 **Liga** (`player.html` publicado como `liga.html`): grupos individuales y de dobles, clasificaciones provisionales y desempates, zonas potenciales de ascenso y descenso, partidos pendientes, marcadores reales por set y acceso a reservas de Taykus. La explicación de cada posición se abre con ⓘ. El navegador no tiene privilegios de escritura sobre D1.

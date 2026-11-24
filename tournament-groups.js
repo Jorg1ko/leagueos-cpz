@@ -48,5 +48,12 @@ function scheduleForGroup(group){
   durationMinutes:20,status:'pending'
  }));
 }
-root.CPZTournamentDemo={makeGroups,scheduleForGroup,SOURCE_GROUPS,FICTIONAL_NAMES};
+function firstWave(individualGroups){
+ return makeGroups(individualGroups).map(group=>{
+  const game=scheduleForGroup(group)[0];
+  if(!game||game.start!=='09:00'||game.end!=='09:20')throw Error('La primera franja no coincide con el calendario.');
+  return {...game,groupLabel:group.label};
+ });
+}
+root.CPZTournamentDemo={makeGroups,scheduleForGroup,firstWave,SOURCE_GROUPS,FICTIONAL_NAMES};
 })(globalThis);

@@ -15,6 +15,76 @@ function make(tag,className,text){
  return node;
 }
 
+
+let tvOpen=false;
+function getFirstWave(){
+ const source=window.CPZ_LAB_DATA&&window.CPZ_LAB_DATA.individualGroups;
+ const model=window.CPZTournamentDemo;
+ if(!source||!model||typeof model.firstWave!=='function')return null;
+ try{return model.firstWave(source)}
+ catch{return null}
+}
+function matchCard(game,isTv){
+ const card=make(isTv?'article':'button',isTv?'tv-match':'upcoming-match');
+ if(!isTv){
+  card.type='button';card.setAttribute('aria-label','Ver en TV la pista '+game.court+
+  ', '+game.player1+' contra '+game.player2);
+  card.addEventListener('click',openTvBoard);
+ }
+ const header=make('div',isTv?'tv-match-top':'upcoming-match-top');
+ header.append(make('strong','', 'PISTA '+game.court),make('span','', 'GRUPO '+game.groupLabel));
+ const pairing=make('div',isTv?'tv-match-players':'upcoming-match-players');
+ pairing.append(make('strong','',game.player1),make('span','','VS'),make('strong','',game.player2));
+ const time=make('span',isTv?'tv-match-time':'upcoming-match-time','09:00 – 09:20');
+ card.append(header,pairing,time);
+ return card;
+}
+function renderUpcoming(){
+ const games=getFirstWave();
+ const home=$('upcomingMatches'),tv=$('tvMatches');
+ home.replaceChildren();tv.replaceChildren();
+ if(!games||games.length!==7){
+  home.append(make('p','tournament-error','No se ha podido cargar el calendario de ejemplo.'));
+  $('openTvBoard').disabled=true;
+  return false;
+ }
+ $('openTvBoard').disabled=false;
+ games.forEach(game=>{
+  home.append(matchCard(game,false));
+  tv.append(matchCard(game,true));
+ });
+ return true;
+}
+function closeTvBoard(){
+ const board=$('tvBoard');
+ tvOpen=false;
+ board.hidden=true;
+ document.body.classList.remove('tv-mode-open');
+ if(document.fullscreenElement===board&&typeof document.exitFullscreen==='function'){
+  Promise.resolve(document.exitFullscreen()).catch(()=>{});
+ }
+ $('openTvBoard').focus({preventScroll:true});
+}
+function openTvBoard(){
+ if(!renderUpcoming())return;
+ const board=$('tvBoard');
+ board.hidden=false;tvOpen=true;
+ document.body.classList.add('tv-mode-open');
+ board.focus({preventScroll:true});
+ // El navegador solo permite pantalla completa tras interacción del visitante.
+ if(typeof board.requestFullscreen==='function'){
+  Promise.resolve(board.requestFullscreen()).catch(()=>{});
+ }
+}
+$('openTvBoard').addEventListener('click',openTvBoard);
+$('closeTvBoard').addEventListener('click',closeTvBoard);
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape'&&tvOpen)closeTvBoard();
+});
+document.addEventListener('fullscreenchange',()=>{
+ if(tvOpen&&!document.fullscreenElement)closeTvBoard();
+});
+
 let selectedGroup='A';
 function statsDetails(p){
  const d=make('details','tournament-info');
@@ -174,6 +244,7 @@ function route(){
 function showHome(){
  $('homeScreen').hidden=false;
  $('areaScreen').hidden=true;
+ renderUpcoming();
  document.title='Club Pickleball Zaragoza · Actividades';
 }
 function showArea(){

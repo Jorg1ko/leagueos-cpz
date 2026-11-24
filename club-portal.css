@@ -522,3 +522,64 @@ input:disabled{background:#e5edf3;color:#7e95a7}
  .knockout-placement-list li{border-color:#3b576d;color:#b6cddf}
  .knockout-placement-list li strong{color:#d3efff}
 }
+
+/* Portada: primera franja de siete pistas. Todas las tarjetas abren modo TV. */
+.upcoming-section{margin-top:30px;padding:24px;border:1px solid #d8e6f2;border-radius:19px;background:#fff;box-shadow:0 6px 18px #174e7010}
+.upcoming-section-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:18px}
+.upcoming-section-heading h2{font-size:24px;letter-spacing:-.5px;color:#0b3c61;margin:5px 0}
+.upcoming-section-heading p{font-size:12px;color:#6a8599;margin:0;line-height:1.5}
+.tv-open-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;min-height:48px;padding:12px 17px;background:#0877b8;color:white;font-size:13px;font-weight:900;border:0;border-radius:11px}
+.tv-open-button:hover{background:#08679f}
+.tv-open-button span{font-size:22px}
+.upcoming-matches{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:11px}
+.upcoming-match{display:grid;gap:10px;text-align:left;background:#f8fbfe;color:#144266;border:1px solid #d8e7f3;border-radius:13px;min-height:132px;padding:14px;cursor:pointer}
+.upcoming-match:hover{background:#edf7ff;border-color:#7fbce5}
+.upcoming-match-top,.tv-match-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.upcoming-match-top strong{font-size:12px;letter-spacing:.04em;color:#0b6a9e}
+.upcoming-match-top span{font-size:10px;color:#7391a5;font-weight:900}
+.upcoming-match-players{display:flex;align-items:center;gap:8px;min-width:0;overflow-wrap:anywhere}
+.upcoming-match-players strong{flex:1;min-width:0;font-size:12px;line-height:1.32}
+.upcoming-match-players span{font-size:9px;color:#7895aa;font-weight:950}
+.upcoming-match-time{font-size:11px;color:#4c7691;font-weight:800;font-variant-numeric:tabular-nums}
+.upcoming-disclaimer{font-size:11px;color:#708da2;line-height:1.5;margin:15px 0 0}
+@media(max-width:700px){
+ .upcoming-section{margin-top:20px;padding:17px 13px}
+ .upcoming-section-heading{flex-direction:column;align-items:stretch;gap:13px}
+ .upcoming-section-heading h2{font-size:22px}
+ .tv-open-button{width:100%}
+ .upcoming-matches{grid-template-columns:1fr;gap:9px}
+ .upcoming-match{min-height:105px}
+}
+/* Pantalla de televisión: ocupa todo el viewport, con o sin Fullscreen API. */
+body.tv-mode-open{overflow:hidden}
+.tv-board{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;gap:clamp(12px,2vh,24px);width:100%;height:100vh;height:100dvh;overflow:auto;padding:clamp(16px,2.2vw,38px);background:#061d34;color:#fff}
+.tv-board[hidden]{display:none!important}
+.tv-board:fullscreen{width:100vw;height:100vh;overflow:auto;background:#061d34}
+.tv-board-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.tv-board-kicker{display:block;color:#9fd6ff;font-size:clamp(11px,1.25vw,17px);font-weight:900;letter-spacing:.1em}
+.tv-board-heading h2{font-size:clamp(34px,4.2vw,72px);letter-spacing:-.035em;margin:5px 0 2px;line-height:1.07;color:#fff}
+.tv-board-heading p{font-size:clamp(15px,1.7vw,26px);color:#c0e6ff;margin:9px 0 0;font-variant-numeric:tabular-nums;font-weight:800}
+.tv-close-button{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:12px 18px;background:#244967;color:#fff;border:1px solid #5986a7;border-radius:12px;min-height:48px;font-size:14px;font-weight:850}
+.tv-close-button span{font-size:27px;line-height:1}
+.tv-matches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(185px,1fr);gap:clamp(10px,1.2vw,22px);flex:1;min-height:0}
+.tv-match{display:flex;flex-direction:column;justify-content:space-between;gap:12px;min-width:0;border:1px solid #42749c;background:linear-gradient(138deg,#13486e,#0b304d);border-radius:17px;padding:clamp(14px,1.5vw,26px)}
+.tv-match-top strong{font-size:clamp(17px,1.7vw,28px);font-weight:950;letter-spacing:.04em;color:#fff}
+.tv-match-top span{font-size:clamp(12px,1vw,18px);font-weight:900;color:#a3d6f6}
+.tv-match-players{display:flex;flex-direction:column;justify-content:center;gap:clamp(4px,.6vw,12px);flex:1;overflow-wrap:anywhere;text-align:center}
+.tv-match-players strong{font-size:clamp(17px,1.7vw,29px);font-weight:900;line-height:1.18;color:#fff}
+.tv-match-players span{font-size:clamp(13px,1.1vw,18px);font-weight:900;color:#79c7f3}
+.tv-match-time{display:block;text-align:center;padding:9px;background:#d5edff;border-radius:10px;color:#0e466a;font-size:clamp(16px,1.5vw,25px);font-weight:950;font-variant-numeric:tabular-nums}
+.tv-board-footer{font-size:clamp(11px,1vw,17px);color:#a7cde7;font-weight:750;text-align:center;letter-spacing:.09em}
+@media(min-width:1200px) and (min-height:700px){.tv-matches{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}}
+@media(max-width:1199px){.tv-matches{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(210px,1fr)}}
+@media(max-width:760px){.tv-board{padding:15px}.tv-board-header{gap:10px}.tv-board-kicker{font-size:10px}.tv-board-heading h2{font-size:31px}.tv-board-heading p{font-size:13px}.tv-close-button{font-size:12px;padding:8px 11px}.tv-matches{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(185px,1fr)}.tv-match{padding:12px}.tv-match-players strong{font-size:15px}.tv-match-time{font-size:14px}.tv-match-top strong{font-size:15px}.tv-match-top span{font-size:10px}}
+@media(max-width:460px){.tv-matches{grid-template-columns:1fr;grid-auto-rows:minmax(135px,1fr)}.tv-match-players strong{font-size:18px}.tv-board-footer{font-size:10px}}
+@media(prefers-color-scheme:dark){
+ .upcoming-section{background:#152a3d;border-color:#2d4b62}
+ .upcoming-section-heading h2{color:#f2f8ff}
+ .upcoming-section-heading p,.upcoming-disclaimer{color:#b1c7d9}
+ .upcoming-match{background:#1b3449;border-color:#375a71;color:#e3f5ff}
+ .upcoming-match:hover{background:#234b65}
+ .upcoming-match-top strong{color:#b7e2ff}
+ .upcoming-match-top span,.upcoming-match-time{color:#afcadc}
+}

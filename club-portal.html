@@ -68,6 +68,18 @@
         <button type="button" class="card-link" data-go="torneo">Conocer el torneo <span aria-hidden="true">↗</span></button>
       </article>
     </div>
+    <section class="upcoming-section" aria-labelledby="upcomingTitle">
+      <div class="upcoming-section-heading">
+        <div>
+          <span class="small-label">TORNEO DE HÉROES DE EBRO VIEJO</span>
+          <h2 id="upcomingTitle">Próximos partidos</h2>
+          <p>Ejemplo de primera franja · 09:00–09:20 · Fecha por confirmar</p>
+        </div>
+        <button type="button" id="openTvBoard" class="tv-open-button" aria-controls="tvBoard"><span aria-hidden="true">▣</span> Ver en TV</button>
+      </div>
+      <div id="upcomingMatches" class="upcoming-matches" aria-label="Partidos de las siete pistas de 09:00 a 09:20"></div>
+      <p class="upcoming-disclaimer">Partidos y horarios de ejemplo. No son una convocatoria oficial.</p>
+    </section>
   </section>
 
   <section id="areaScreen" class="screen" hidden>
@@ -125,6 +137,18 @@
     </div>
   </section>
 </main>
+<section id="tvBoard" class="tv-board" role="dialog" aria-modal="true" aria-labelledby="tvBoardTitle" aria-describedby="tvBoardDescription" hidden tabindex="-1">
+  <header class="tv-board-header">
+    <div class="tv-board-heading">
+      <span class="tv-board-kicker">CLUB PICKLEBALL ZARAGOZA · TORNEO DE HÉROES DE EBRO VIEJO</span>
+      <h2 id="tvBoardTitle">Próximos partidos</h2>
+      <p id="tvBoardDescription">Primera franja · 09:00–09:20 · Ejemplo · Fecha por confirmar</p>
+    </div>
+    <button type="button" id="closeTvBoard" class="tv-close-button" aria-label="Cerrar pantalla de partidos">Salir <span aria-hidden="true">×</span></button>
+  </header>
+  <div id="tvMatches" class="tv-matches" aria-label="Siete pistas y partidos de las 09:00"></div>
+  <footer class="tv-board-footer">HORARIOS DE EJEMPLO · TODAVÍA SIN CONVOCATORIA CONFIRMADA</footer>
+</section>
 <footer class="site-footer">Club Pickleball Zaragoza <span>·</span> Liga y torneos</footer>
 </body>
 </html>
