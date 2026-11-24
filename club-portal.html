@@ -7,6 +7,8 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <title>Club Pickleball Zaragoza · Espacio del club (laboratorio)</title>
 <link rel="stylesheet" href="./club-portal.css">
+<script defer src="./lab-data.js"></script>
+<script defer src="./tournament-groups.js"></script>
 <script defer src="./club-portal.js"></script>
 </head>
 <body>
@@ -103,10 +105,19 @@
       </div>
       <div class="tournament-detail-grid">
         <div class="tournament-detail"><span>Cuándo</span><strong>Diciembre de 2026</strong><small>Día y horario por confirmar</small></div>
-        <div class="tournament-detail"><span>Formato</span><strong>Por definir</strong><small>Modalidades y bases pendientes</small></div>
+        <div class="tournament-detail"><span>Grupos de prueba</span><strong>7 grupos de 4</strong><small>Distribución provisional · 28 nombres</small></div>
         <div class="tournament-detail"><span>Inscripciones</span><strong>Aún no abiertas</strong><small>El sistema de inscripción está pendiente</small></div>
       </div>
-      <p class="micro-note tournament-note">Información provisional del laboratorio. No se están recogiendo reservas, pagos ni datos de participantes.</p>
+      <section class="tournament-groups-section" aria-labelledby="tournamentGroupsTitle">
+        <div class="tournament-groups-heading">
+          <div><span class="small-label">SIMULACIÓN DE GRUPOS</span><h3 id="tournamentGroupsTitle">Los 7 grupos del torneo</h3></div>
+          <span class="tournament-count">28 plazas de prueba</span>
+        </div>
+        <p class="tournament-explanation">Tomamos como referencia los <strong>20 nombres</strong> de los grupos A1 a A5 de la liga individual y añadimos <strong>8 personajes inventados</strong> con rimas gamberras. Esta lista es una maqueta; <strong>ninguna persona aparece aquí como inscrita oficialmente.</strong></p>
+        <div id="tournamentGroups" class="tournament-groups-grid" aria-live="polite"></div>
+        <p class="tournament-legend"><span class="legend-reference">Referencia de liga A</span> <span class="legend-fictional">Personaje ficticio</span></p>
+      </section>
+      <p class="micro-note tournament-note">Grupos, nombres de relleno y distribución sujetos a cambios. Sin inscripciones oficiales, pagos ni registros de participantes.</p>
     </div>
   </section>
 </main>

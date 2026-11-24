@@ -328,3 +328,39 @@ input:disabled{background:#e5edf3;color:#7e95a7}
 .tournament-note{margin-top:19px}
 @media(max-width:700px){.tournament-overview{padding:19px 17px}.tournament-detail-grid{grid-template-columns:1fr;gap:9px}.tournament-detail{padding:15px 16px;gap:5px}}
 @media(prefers-color-scheme:dark){.tournament-detail{background:#1c3449;border-color:#35566e}.tournament-detail strong{color:#f0f8ff}.tournament-detail span{color:#92ceef}.tournament-detail small{color:#abc8dc}}
+
+/* Maqueta del torneo: 7 grupos de 4, participantes de referencia y ficticios. */
+.tournament-groups-section{margin-top:27px;border-top:1px solid #e1edf6;padding-top:24px}
+.tournament-groups-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tournament-groups-heading h3{font-size:21px;line-height:1.25;color:#113e61;margin:6px 0 0}
+.tournament-count{padding:8px 11px;border-radius:999px;background:#edf5fd;color:#176b9d;font-size:11px;font-weight:850;white-space:nowrap}
+.tournament-explanation{margin:15px 0 19px;color:#5e7e95;font-size:12.5px;line-height:1.7}
+.tournament-groups-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.tournament-group-card{min-width:0;border:1px solid #dce9f4;border-radius:14px;overflow:hidden;background:#fbfdff}
+.tournament-group-top{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#e8f3fc;padding:13px 16px}
+.tournament-group-top h4{font-size:16px;margin:0;color:#0b4c79}
+.tournament-group-size{font-size:10px;font-weight:800;color:#4d7b9c}
+.tournament-people{list-style:decimal;margin:0;padding:7px 15px 10px 37px}
+.tournament-person{padding:10px 0;border-bottom:1px solid #e4edf4;font-size:12px;color:#204d6b;line-height:1.45}
+.tournament-person:last-child{border:0}
+.tournament-person-name{font-weight:800}
+.tournament-person-kind{display:inline-block;margin-left:8px;font-size:9px;font-weight:850;padding:3px 6px;border-radius:999px;color:#276788;background:#e6f3fc;vertical-align:middle}
+.tournament-person-kind.is-fictional{color:#7a4b84;background:#f7eaf8}
+.tournament-legend{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;color:#5e7e95;font-size:10px}
+.tournament-legend span{padding:5px 9px;border-radius:999px;background:#e6f3fc;color:#276788;font-weight:800}
+.tournament-legend .legend-fictional{background:#f7eaf8;color:#7a4b84}
+.tournament-error{grid-column:1/-1;padding:17px;background:#fff6ea;color:#735425;border-radius:10px}
+@media(max-width:700px){.tournament-groups-grid{grid-template-columns:1fr}.tournament-groups-heading{align-items:start;flex-direction:column}.tournament-count{white-space:normal}.tournament-group-top{padding:12px 14px}}
+@media(prefers-color-scheme:dark){
+ .tournament-groups-section{border-color:#34526b}
+ .tournament-groups-heading h3{color:#ecf7ff}
+ .tournament-count{background:#25475e;color:#d8ecff}
+ .tournament-explanation{color:#b4cbdc}
+ .tournament-group-card{background:#1b3245;border-color:#35536b}
+ .tournament-group-top{background:#24475f}
+ .tournament-group-top h4{color:#e0f3ff}
+ .tournament-group-size{color:#bed8ea}
+ .tournament-person{color:#e6f5fd;border-color:#385367}
+ .tournament-person-kind,.tournament-legend span{background:#25516a;color:#d7f2ff}
+ .tournament-person-kind.is-fictional,.tournament-legend .legend-fictional{background:#523650;color:#ffe2fc}
+}

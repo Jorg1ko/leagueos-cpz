@@ -8,6 +8,45 @@ const descriptions={
  torneo:'Estamos preparando una competición para diciembre de 2026. Fecha, formato e inscripciones aún por confirmar.'
 };
 let currentArea='liga',currentRole='jugador';
+function make(tag,className,text){
+ const node=document.createElement(tag);
+ if(className)node.className=className;
+ if(text!==undefined)node.textContent=String(text);
+ return node;
+}
+function renderTournamentGroups(){
+ const container=$('tournamentGroups');
+ container.replaceChildren();
+ const data=window.CPZ_LAB_DATA&&window.CPZ_LAB_DATA.individualGroups;
+ const generator=window.CPZTournamentDemo;
+ if(!generator||!data){
+  container.append(make('p','tournament-error','No se ha podido cargar la plantilla de referencia.'));
+  return;
+ }
+ let groups;
+ try{groups=generator.makeGroups(data)}
+ catch{
+  container.append(make('p','tournament-error','No se ha podido preparar la simulación de grupos.'));
+  return;
+ }
+ groups.forEach(group=>{
+  const card=make('section','tournament-group-card');
+  card.setAttribute('aria-label','Grupo '+group.label);
+  const top=make('div','tournament-group-top');
+  top.append(make('h4','','Grupo '+group.label),make('span','tournament-group-size','4 personas'));
+  card.append(top);
+  const list=make('ol','tournament-people');
+  group.people.forEach(person=>{
+   const item=make('li','tournament-person');
+   item.append(make('span','tournament-person-name',person.name));
+   item.append(make('span',person.kind==='fictional'?'tournament-person-kind is-fictional':'tournament-person-kind',
+                   person.kind==='fictional'?'Inventado':'Referencia liga'));
+   list.append(item);
+  });
+  card.append(list);
+  container.append(card);
+ });
+}
 function route(){
  let fragment='';
  try{fragment=decodeURIComponent((window.location.hash||'').replace(/^#\/?/,''))}
@@ -36,6 +75,7 @@ function showArea(){
  $('leaguePlayer').hidden=!(league&&player);
  $('leagueAdmin').hidden=!(league&&!player);
  $('tournamentPanel').hidden=league;
+ if(!league)renderTournamentGroups();
  document.title=names[currentArea]+' · Club Pickleball Zaragoza (laboratorio)';
 }
 function render(){

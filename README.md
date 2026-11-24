@@ -14,7 +14,7 @@ La portada muestra **Liga CPZ** y **Torneo de Héroes de Ebro Viejo** (nombre pr
 
 **Liga** (`player.html` publicado como `liga.html`): grupos individuales y de dobles, clasificaciones provisionales y desempates, zonas potenciales de ascenso y descenso, partidos pendientes, marcadores reales por set y acceso a reservas de Taykus. La explicación de cada posición se abre con ⓘ. El navegador no tiene privilegios de escritura sobre D1.
 
-**Torneo de Héroes de Ebro Viejo** (`club-portal.html`, `club-portal.js`): ficha informativa provisional para diciembre de 2026. No se muestran fechas exactas, horarios, precios, formato ni lugar sin confirmación y no se habilitan inscripciones o pagos. Se han retirado las vistas y el modelo de inscripciones locales de los Drop-ins del laboratorio.
+**Torneo de Héroes de Ebro Viejo** (`club-portal.html`, `club-portal.js`, `tournament-groups.js`): simulación de **7 grupos de 4** (28 plazas). Los 20 nombres proceden directamente de los grupos A1, A2, A3, A4 y A5 de la **liga individual** en `lab-data.js`; las 8 plazas restantes usan personajes ficticios con nombres gamberros y se identifican visualmente como **inventados**. Los 20 nombres reales son **solo referencias para la maqueta, no personas inscritas**. La distribución es de prueba, no un sorteo ni una clasificación definitiva. La competición se prepara para diciembre de 2026 sin día, horario, sede, precios, modalidad concreta ni bases confirmadas y sin inscripción ni pagos. Los Drop-ins han sido retirados.
 
 **Reservas:** dos códigos facilitados para **noviembre de 2026**, `RANKINGINDNOV26` y `RANKINGDOBNOV26`. Botones para copiar y para abrir https://pickleballzaragoza.taykus.com/bookingtypes. No se proporciona ni se simula un cupón aplicado automáticamente. La validez final depende de Taykus y del club.
 
@@ -32,7 +32,7 @@ No modificar D1, la rama `main` ni producción desde cambios del laboratorio.
 
 ## Desarrollo y comprobaciones
 
-Archivos principales: `club-portal.html`, `club-portal.css`, `club-portal.js`, `player.html`, `league-lab.css`, `ranking-engine.js`, `lab-features.js`, `lab-data.js`, `lab-results.js`, `scripts/build-lab-snapshot.py` y `tests/`.
+Archivos principales: `club-portal.html`, `club-portal.css`, `club-portal.js`, `tournament-groups.js`, `player.html`, `league-lab.css`, `ranking-engine.js`, `lab-features.js`, `lab-data.js`, `lab-results.js`, `scripts/build-lab-snapshot.py` y `tests/`.
 
 Ejecutar **todos** los tests de Node, incluidos los de autenticación compartida que solo prueban funciones y no escriben en D1:
 

@@ -27,11 +27,13 @@ jobs:
           cp league-lab.css lab-static/dist/league-lab.css
           cp ranking-engine.js lab-static/dist/ranking-engine.js
           cp lab-data.js lab-static/dist/lab-data.js
+          cp tournament-groups.js lab-static/dist/tournament-groups.js
           cp lab-features.js lab-static/dist/lab-features.js
           cp lab-results.js lab-static/dist/lab-results.js
           test ! -e lab-static/functions
           node --check lab-static/dist/club-portal.js
           node --check lab-static/dist/lab-data.js
+          node --check lab-static/dist/tournament-groups.js
           node --check lab-static/dist/lab-features.js
           node --check lab-static/dist/lab-results.js
           node --check lab-static/dist/ranking-engine.js
@@ -63,6 +65,7 @@ jobs:
           const fs=require('fs'),vm=require('vm');
           const portal=fs.readFileSync('lab-static/dist/index.html','utf8');
           if(!portal.includes('id="homeScreen"')||!portal.includes('./liga.html'))throw Error('Falta la nueva portada del club');
+          if(!portal.includes('id="tournamentGroups"')||!portal.includes('./tournament-groups.js'))throw Error('Faltan los grupos del torneo de prueba');
           if(!fs.existsSync('lab-static/dist/club-portal.js'))throw Error('Falta la aplicación del club');
           if(!fs.existsSync('lab-static/dist/league-lab.css'))throw Error('Falta el estilo móvil de la liga');
           if(!portal.includes('./lab-assets/escudo-cpz.webp'))throw Error('La portada debe usar un escudo local');
