@@ -1,4 +1,4 @@
-/* CLUB CPZ · Laboratorio estático. Liga de consulta y próximo torneo provisional. */
+/* CLUB CPZ · Vista pública de liga y próximo torneo. Sin altas ni escrituras. */
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
@@ -7,7 +7,7 @@ const descriptions={
  liga:'Clasificaciones individuales y de dobles, partidos disputados y próximos enfrentamientos.',
  torneo:'Estamos preparando una competición para diciembre de 2026. Fecha, formato e inscripciones aún por confirmar.'
 };
-let currentArea='liga',currentRole='jugador';
+let currentArea='liga';
 function make(tag,className,text){
  const node=document.createElement(tag);
  if(className)node.className=className;
@@ -39,8 +39,6 @@ function renderTournamentGroups(){
   group.people.forEach(person=>{
    const item=make('li','tournament-person');
    item.append(make('span','tournament-person-name',person.name));
-   item.append(make('span',person.kind==='fictional'?'tournament-person-kind is-fictional':'tournament-person-kind',
-                   person.kind==='fictional'?'Inventado':'Referencia liga'));
    list.append(item);
   });
   card.append(list);
@@ -50,51 +48,41 @@ function renderTournamentGroups(){
 function route(){
  let fragment='';
  try{fragment=decodeURIComponent((window.location.hash||'').replace(/^#\/?/,''))}
- catch{return {area:null,role:'jugador'}}
- const [first,role]=fragment.split('/');
- return {area:Object.prototype.hasOwnProperty.call(names,first)?first:null,role:first==='liga'&&role==='admin'?'admin':'jugador'};
+ catch{return {area:null}}
+ const [first]=fragment.split('/');
+ return {area:Object.prototype.hasOwnProperty.call(names,first)?first:null};
 }
 function showHome(){
  $('homeScreen').hidden=false;
  $('areaScreen').hidden=true;
- document.title='Club Pickleball Zaragoza · Espacio del club (laboratorio)';
+ document.title='Club Pickleball Zaragoza · Actividades';
 }
 function showArea(){
- const league=currentArea==='liga',player=currentRole==='jugador';
+ const league=currentArea==='liga';
  $('homeScreen').hidden=true;
  $('areaScreen').hidden=false;
  $('areaTitle').textContent=names[currentArea];
  $('areaDescription').textContent=descriptions[currentArea];
  $('areaEyebrow').textContent=league?'COMPETICIÓN · LIGA':'TORNEO · DICIEMBRE 2026';
  $('areaEmblem').textContent='🏆';
- $('roleSwitch').hidden=!league;
- $('playerRole').classList.toggle('is-active',player);
- $('adminRole').classList.toggle('is-active',!player);
- $('playerRole').setAttribute('aria-pressed',String(player));
- $('adminRole').setAttribute('aria-pressed',String(!player));
- $('leaguePlayer').hidden=!(league&&player);
- $('leagueAdmin').hidden=!(league&&!player);
+ $('leaguePlayer').hidden=!league;
  $('tournamentPanel').hidden=league;
  if(!league)renderTournamentGroups();
- document.title=names[currentArea]+' · Club Pickleball Zaragoza (laboratorio)';
+ document.title=names[currentArea]+' · Club Pickleball Zaragoza';
 }
 function render(){
  const next=route();
  if(!next.area){showHome();return}
  currentArea=next.area;
- currentRole=next.role;
  showArea();
 }
-function navigate(area,role='jugador'){
- const hash='#'+area+(area==='liga'?'/'+role:'');
+function navigate(area){
+ const hash='#'+area;
  if(window.location.hash===hash){render();return}
  window.location.hash=hash;
 }
 document.querySelectorAll('[data-go]').forEach(btn=>{
  btn.addEventListener('click',()=>navigate(btn.dataset.go));
-});
-document.querySelectorAll('[data-role]').forEach(btn=>{
- btn.addEventListener('click',()=>navigate(currentArea,btn.dataset.role));
 });
 window.addEventListener('hashchange',render);
 render();

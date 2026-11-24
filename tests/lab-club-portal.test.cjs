@@ -31,14 +31,16 @@ assert.throws(()=>demo.makeGroups({}),/plantilla/i,'No fabricar listas si faltan
 assert(workflow.includes('cp tournament-groups.js lab-static/dist/tournament-groups.js'),'El modelo debe desplegarse');
 
 
-for(const tag of ['id="homeScreen"','id="areaScreen"','data-go="liga"','data-go="torneo"','id="leaguePlayer"','id="leagueAdmin"','id="tournamentPanel"','id="roleSwitch"']){
+for(const tag of ['id="homeScreen"','id="areaScreen"','data-go="liga"','data-go="torneo"','id="leaguePlayer"','id="tournamentPanel"']){
  assert(home.includes(tag),'Falta función de club: '+tag);
 }
 assert(home.includes('Torneo de Héroes de Ebro Viejo'),'Nombre provisional del torneo');
 assert(home.includes('Diciembre 2026')&&home.includes('Diciembre de 2026'),'El torneo está previsto para diciembre de 2026');
 assert(home.includes('Aún no abiertas')&&home.includes('Día y horario por confirmar'),'No deben anunciarse fechas ni inscripciones inventadas');
 assert(home.includes('7 grupos de 4')&&home.includes('id="tournamentGroups"'),'La ficha del torneo debe mostrar siete grupos de cuatro');
-assert(home.includes('ninguna persona aparece aquí como inscrita oficialmente'),'La simulación no puede insinuar inscripciones reales');
+assert(home.includes('Distribución de ejemplo · Inscripciones por confirmar'),'No confundir grupos de ejemplo con participantes inscritos');
+assert(!/LABORATORIO|Prototipo de prueba|SIMULACIÓN DE GRUPOS|Personaje ficticio|Referencia de liga A|<span class="demo-suffix">/.test(home),'La interfaz pública no debe mostrar controles ni explicaciones internas');
+assert(!/tournament-person-kind|Referencia liga|Inventado/.test(js),'Los listados públicos solo deben mostrar nombres');
 assert(home.includes('./lab-data.js')&&home.includes('./tournament-groups.js'),'Debe reutilizar los nombres de la liga');
 assert(!/drop.?in|dropPlayer|dropAdmin|signupForm|sessionForm|homeTuesdayDate|homeThursdayDate|data-go="martes"|data-go="jueves"/i.test(home),'Los Drop-ins ya no deben figurar en la vista');
 assert(!/drop.?in|localStorage|signupForm|sessionForm|fetch\(|XMLHttpRequest|\/api\//i.test(js),'El portal es solo informativo, sin altas ni acceso a API');
@@ -47,7 +49,7 @@ assert(!/<form\b/i.test(home),'No se recogerán inscripciones ni datos de visita
 assert(!home.includes('club-portal-model.js')&&!workflow.includes('club-portal-model.js'),'Modelo antiguo no desplegado');
 assert(home.includes('href="./liga.html"'),'La liga sigue accesible');
 assert(league.includes('href="./" aria-label="Volver al inicio'),'La liga debe enlazar al portal');
-assert(home.includes('disabled>'),'La contraseña demo de administración no puede activarse');
+assert(!home.includes('id="leagueAdmin"')&&!home.includes('id="roleSwitch"'),'No debe mostrarse administración de prueba');
 assert(css.includes('grid-template-columns:repeat(2,minmax(0,1fr))'),'Portada con dos actividades');
 assert(css.includes('.service-card.tournament-card .service-top'),'Tarjeta del torneo con imagen');
 assert(css.includes('@media(max-width:700px)'),'Diseño adaptado a móvil');

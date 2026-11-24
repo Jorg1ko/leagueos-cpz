@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#073e70">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<title>Club Pickleball Zaragoza · Espacio del club (laboratorio)</title>
+<title>Club Pickleball Zaragoza · Actividades</title>
 <link rel="stylesheet" href="./club-portal.css">
 <script defer src="./lab-data.js"></script>
 <script defer src="./tournament-groups.js"></script>
@@ -18,10 +18,8 @@
       <span class="brand-image"><img src="./lab-assets/escudo-cpz.webp" alt="" onerror="this.hidden=true;this.parentElement.textContent='CPZ'"></span>
       <span class="brand-text"><strong>CLUB PICKLEBALL<br>ZARAGOZA</strong><small>Espacio del club</small></span>
     </a>
-    <span class="lab-pill">LABORATORIO</span>
   </div>
 </header>
-<div class="demo-banner" role="note"><strong>Prototipo de prueba.</strong> La liga se consulta sin modificar resultados. El torneo de diciembre está en preparación: todavía no hay fecha exacta, bases ni inscripciones abiertas.</div>
 <main class="shell">
   <section id="homeScreen" class="screen">
     <div class="hero">
@@ -68,7 +66,6 @@
         <button type="button" class="card-link" data-go="torneo">Conocer el torneo <span aria-hidden="true">↗</span></button>
       </article>
     </div>
-    <div class="home-footer"><span class="footer-dot"></span> El nombre y la información del torneo son provisionales.</div>
   </section>
 
   <section id="areaScreen" class="screen" hidden>
@@ -77,50 +74,32 @@
       <div class="area-emblem" id="areaEmblem" aria-hidden="true">🏆</div>
       <div><span id="areaEyebrow" class="small-label">ACTIVIDAD DEL CLUB</span><h1 id="areaTitle">Actividad</h1><p id="areaDescription"></p></div>
     </div>
-    <div id="roleSwitch" class="role-switch" role="group" aria-label="Elegir tipo de acceso">
-      <button type="button" id="playerRole" data-role="jugador" class="role-button is-active" aria-pressed="true">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg> Como jugador
-      </button>
-      <button type="button" id="adminRole" data-role="admin" class="role-button" aria-pressed="false">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Administración <span class="demo-suffix">demo</span>
-      </button>
-    </div>
    <div id="leaguePlayer" class="module-panel" hidden>
-     <div class="feature-strip"><span class="feature-icon">🏆</span><div><strong>Tu liga, como siempre</strong><p>Conservamos el ranking individual y de dobles, los marcadores por set y los enfrentamientos pendientes que ya preparamos.</p></div></div>
+     <div class="feature-strip"><span class="feature-icon">🏆</span><div><strong>Clasificaciones y resultados</strong><p>Consulta la liga individual y de dobles, los marcadores por set y los próximos enfrentamientos.</p></div></div>
      <a class="primary-action full" href="./liga.html">Abrir clasificaciones y resultados <span aria-hidden="true">↗</span></a>
-     <p class="micro-note">El acceso del jugador está abierto en esta maqueta. Las contraseñas de cada sección se implementarán en la versión definitiva.</p>
    </div>
-   <div id="leagueAdmin" class="module-panel" hidden>
-     <div class="panel-heading"><span class="small-label">ACCESO DE ADMINISTRACIÓN</span><h2>Gestión de la liga</h2><p>Así quedaría el acceso del administrador con contraseña propia de la liga.</p></div>
-     <div class="password-preview"><label for="leaguePassword">Contraseña de la liga</label><input id="leaguePassword" type="password" placeholder="Acceso no activado en el laboratorio" disabled><span class="not-active">Acceso real pendiente de configurar</span></div>
-     <div class="preview-features"><span>Participantes y grupos</span><span>Resultados y clasificaciones</span><span>Calendario de encuentros</span></div>
-     <p class="micro-note">Esta pantalla no concede permisos de administrador ni permite modificar los resultados oficiales.</p>
-   </div>
-
     <div id="tournamentPanel" class="module-panel tournament-panel" hidden>
       <div class="tournament-overview">
-        <span class="small-label">PRÓXIMO TORNEO · BORRADOR</span>
+        <span class="small-label">PRÓXIMO TORNEO · DICIEMBRE 2026</span>
         <h2>Torneo de Héroes de Ebro Viejo</h2>
-        <p>Estamos preparando esta competición para diciembre de 2026. Esta página servirá para comunicar la información definitiva cuando esté confirmada.</p>
+        <p>Una nueva cita para disfrutar del pickleball. Descubre los grupos y la información del torneo.</p>
       </div>
       <div class="tournament-detail-grid">
         <div class="tournament-detail"><span>Cuándo</span><strong>Diciembre de 2026</strong><small>Día y horario por confirmar</small></div>
-        <div class="tournament-detail"><span>Grupos de prueba</span><strong>7 grupos de 4</strong><small>Distribución provisional · 28 nombres</small></div>
+        <div class="tournament-detail"><span>Grupos</span><strong>7 grupos de 4</strong><small>28 plazas</small></div>
         <div class="tournament-detail"><span>Inscripciones</span><strong>Aún no abiertas</strong><small>El sistema de inscripción está pendiente</small></div>
       </div>
       <section class="tournament-groups-section" aria-labelledby="tournamentGroupsTitle">
         <div class="tournament-groups-heading">
-          <div><span class="small-label">SIMULACIÓN DE GRUPOS</span><h3 id="tournamentGroupsTitle">Los 7 grupos del torneo</h3></div>
-          <span class="tournament-count">28 plazas de prueba</span>
+          <div><span class="small-label">FASE DE GRUPOS</span><h3 id="tournamentGroupsTitle">Grupos del torneo</h3></div>
+          <span class="tournament-count">7 grupos · 28 plazas</span>
         </div>
-        <p class="tournament-explanation">Tomamos como referencia los <strong>20 nombres</strong> de los grupos A1 a A5 de la liga individual y añadimos <strong>8 personajes inventados</strong> con rimas gamberras. Esta lista es una maqueta; <strong>ninguna persona aparece aquí como inscrita oficialmente.</strong></p>
+        <p class="tournament-explanation">Distribución de ejemplo · Inscripciones por confirmar</p>
         <div id="tournamentGroups" class="tournament-groups-grid" aria-live="polite"></div>
-        <p class="tournament-legend"><span class="legend-reference">Referencia de liga A</span> <span class="legend-fictional">Personaje ficticio</span></p>
       </section>
-      <p class="micro-note tournament-note">Grupos, nombres de relleno y distribución sujetos a cambios. Sin inscripciones oficiales, pagos ni registros de participantes.</p>
     </div>
   </section>
 </main>
-<footer class="site-footer">Club Pickleball Zaragoza <span>·</span> Actividades y liga <span>·</span> Laboratorio independiente</footer>
+<footer class="site-footer">Club Pickleball Zaragoza <span>·</span> Liga y torneos</footer>
 </body>
 </html>

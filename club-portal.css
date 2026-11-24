@@ -364,3 +364,15 @@ input:disabled{background:#e5edf3;color:#7e95a7}
  .tournament-person-kind,.tournament-legend span{background:#25516a;color:#d7f2ff}
  .tournament-person-kind.is-fictional,.tournament-legend .legend-fictional{background:#523650;color:#ffe2fc}
 }
+
+/* Vista pública: nombres limpios y grupos destacados, sin paneles de demostración. */
+.tournament-groups-section{margin-top:24px}
+.tournament-explanation{margin:11px 0 19px;font-size:11px;font-weight:700;color:#6c8aa2}
+.tournament-group-card{box-shadow:0 5px 17px rgba(15,68,102,.07);background:#fff}
+.tournament-group-top{background:linear-gradient(105deg,#e3f2ff,#f0f8ff);border-bottom:1px solid #d8eaf7}
+.tournament-group-top h4{font-size:17px;letter-spacing:-.2px}
+.tournament-people{padding:8px 19px 13px 40px}
+.tournament-person{font-size:13px;padding:12px 0}
+.tournament-person-name{font-size:13px}
+@media(max-width:700px){.tournament-group-card{border-radius:13px}.tournament-people{padding:5px 15px 11px 38px}.tournament-person{padding:11px 0}}
+@media(prefers-color-scheme:dark){.tournament-group-card{background:#1b3245}.tournament-group-top{background:linear-gradient(105deg,#224a67,#1c405b);border-bottom-color:#3a5b73}.tournament-explanation{color:#aec9dd}}
