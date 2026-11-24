@@ -2,10 +2,10 @@
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
-const names={liga:'Liga CPZ',torneo:'Torneo de Héroes de Ebro Viejo'};
+const names={liga:'Liga CPZ',torneo:'CPZ Open'};
 const descriptions={
  liga:'Clasificaciones individuales y de dobles, partidos disputados y próximos enfrentamientos.',
- torneo:'Estamos preparando una competición para diciembre de 2026. Fecha, formato e inscripciones aún por confirmar.'
+ torneo:'Torneo del 12 de diciembre de 2026. Grupos, enfrentamientos y cuadros de ejemplo; inscripciones pendientes.'
 };
 let currentArea='liga';
 function make(tag,className,text){
@@ -131,7 +131,7 @@ function renderRanking(parent,ranking){
 function renderFixtures(parent,group,games){
  const section=make('section','tournament-fixtures');
  section.append(make('h5','','Partidos y horarios'),
-  make('p','tournament-explanation','Pista '+group.court+' · Turnos ficticios de 20 minutos · Día por confirmar.'));
+  make('p','tournament-explanation','Pista '+group.court+' · 12 de diciembre de 2026 · Turnos ficticios de 20 minutos.'));
  const list=make('ol','tournament-fixture-list');
  games.forEach(game=>{
   const row=make('li','tournament-fixture');
@@ -252,7 +252,7 @@ function showArea(){
  $('areaScreen').hidden=false;
  $('areaTitle').textContent=names[currentArea];
  $('areaDescription').textContent=descriptions[currentArea];
- $('areaEyebrow').textContent=league?'COMPETICIÓN · LIGA':'TORNEO · DICIEMBRE 2026';
+ $('areaEyebrow').textContent=league?'COMPETICIÓN · LIGA':'CPZ OPEN · 12 DIC 2026';
  $('areaEmblem').textContent='🏆';
  $('leaguePlayer').hidden=!league;
  $('tournamentPanel').hidden=league;

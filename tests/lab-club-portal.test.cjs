@@ -94,7 +94,9 @@ assert(workflow.includes('cp tournament-groups.js lab-static/dist/tournament-gro
 for(const tag of ['id="homeScreen"','id="areaScreen"','data-go="liga"','data-go="torneo"','id="leaguePlayer"','id="tournamentPanel"']){
  assert(home.includes(tag),'Falta función de club: '+tag);
 }
-assert(home.includes('Torneo de Héroes de Ebro Viejo'),'Nombre provisional del torneo');
+assert(home.includes('CPZ Open')&&home.includes('CPZ OPEN'),'Nombre oficial del torneo en portada y pantalla TV');
+assert(js.includes("torneo:'CPZ Open'"),'Ruta del torneo con nombre oficial');
+assert(!home.includes('Héroes de Ebro Viejo')&&!js.includes('Héroes de Ebro Viejo'),'No conservar el nombre de trabajo');
 const homeEnd=home.indexOf('<section id="areaScreen"');
 const tournamentStart=home.indexOf('<div id="tournamentPanel"');
 const upcomingStart=home.indexOf('<section class="upcoming-section"');
@@ -107,14 +109,14 @@ assert(!/function showHome\(\)\{[\s\S]*?function showArea\(\)/.exec(js)?.[0]?.in
 
 for(const anchor of ['id="upcomingMatches"','id="openTvBoard"','id="tvBoard"','id="tvMatches"','id="closeTvBoard"'])
  assert(home.includes(anchor),'Debe haber vista de próximos partidos y modo TV: '+anchor);
-assert(home.includes('09:00–09:20')&&home.includes('Fecha por confirmar')&&home.includes('Horarios de ejemplo'),'La primera franja no debe confundirse con una convocatoria real');
+assert(home.includes('09:00–09:20')&&home.includes('12 de diciembre de 2026')&&home.includes('Horarios de ejemplo'),'La primera franja sigue siendo ejemplo aunque la fecha esté indicada');
 assert(js.includes('getFirstWave')&&js.includes('renderUpcoming')&&js.includes('openTvBoard'),'Ambas vistas necesitan los datos de los siete partidos');
 assert(js.includes('requestFullscreen')&&js.includes('exitFullscreen')&&js.includes('fullscreenchange'),'Botón pantalla completa y salida sin bloqueo');
 assert(js.includes("event.key==='Escape'")&&js.includes('closeTvBoard'),'Escape sale de vista TV');
 assert(!/document\.write|window\.open|setInterval|fetch\(|localStorage/i.test(js),'La TV no requiere escrituras, ventanas ni actualizaciones de producción');
 assert(css.includes('.tv-board:fullscreen')&&css.includes('.tv-matches'),'Estilo para televisión');
-assert(home.includes('Diciembre 2026')&&home.includes('Diciembre de 2026'),'El torneo está previsto para diciembre de 2026');
-assert(home.includes('Aún no abiertas')&&home.includes('Día y horario por confirmar'),'No deben anunciarse fechas ni inscripciones inventadas');
+assert(home.includes('12 DIC 2026')&&home.includes('12 de diciembre de 2026'),'La fecha indicada en el cartel es 12 diciembre 2026');
+assert(home.includes('Aún no abiertas')&&home.includes('Horarios de ejemplo, aún no definitivos'),'Las inscripciones y horarios siguen pendientes');
 assert(home.includes('7 grupos de 4')&&home.includes('id="tournamentGroups"'),'7 grupos de 4');
 assert(home.includes('id="tournamentGroupSelect"')&&home.includes('<select'),'Selector desplegable');
 assert(home.includes('09:00–11:00')&&home.includes('20 min'),'Horario ejemplo');
@@ -151,4 +153,4 @@ for(const filename of photoNames){
 }
 assert(!css.includes('clubpickleballzaragoza.com/wp-content/uploads/'),'Fotos externas no permitidas');
 new vm.Script(js);
-console.log('OK: liga conservada, torneo provisional diciembre, sin Drop-ins ni formularios, móvil y modo oscuro');
+console.log('OK: liga conservada, CPZ Open 12 diciembre, inscripciones y horarios de ejemplo, sin Drop-ins ni cambios en producción');
