@@ -260,6 +260,64 @@
     }
     if([...select.options].some(o=>o.value===prior))select.value=prior;
   }
+
+  // Solo accesible desde el panel administrador: ambos GET requieren sesión
+  // administrativa en las APIs. Se usa textContent para los nombres.
+  async function loadTrash(kind){
+    const doubles=kind==='doubles';
+    const endpoint=doubles?'/api/doubles-results':'/api/results';
+    const root=$(doubles?'doubleTrashList':'individualTrashList');
+    const status=doubles?'doubleTrashStatus':'individualTrashStatus';
+    if(!root)return;
+    root.replaceChildren();
+    try{
+      const data=await api(endpoint+'?trash=1');
+      const deleted=data.results||[];
+      if(!deleted.length){
+        root.textContent='La papelera está vacía.';say(status,'');
+        return;
+      }
+      const table=document.createElement('table');
+      const head=document.createElement('thead');
+      head.innerHTML='<tr><th>Fecha</th><th>Grupo</th><th>Enfrentamiento</th><th>Borrado</th><th>Acción</th></tr>';
+      const body=document.createElement('tbody');
+      for(const match of deleted){
+        const row=document.createElement('tr');
+        const label=doubles
+          ?pairLabel(match.groupLabel,match.pair1)+' vs '+pairLabel(match.groupLabel,match.pair2)
+          :match.player1+' vs '+match.player2;
+        for(const value of [match.date,match.groupLabel,label,match.deletedAt||'—']){
+          const cell=document.createElement('td');
+          cell.textContent=String(value);
+          row.append(cell);
+        }
+        const cell=document.createElement('td');
+        cell.append(b('Restaurar','secondary',async()=>{
+          if(!confirm('¿Restaurar este resultado en la clasificación?'))return;
+          try{
+            const restored=await api(endpoint,{action:'restore',id:match.id});
+            if(doubles){
+              doubleResults=restored.results||[];
+              renderDoubles();renderDoubleHistory();
+            }else{
+              results=restored.results||[];
+              renderResults();renderGroups();renderSeasonHistory();
+              updateOperations();manualFixtures();stats();
+            }
+            await loadTrash(kind);
+            say(status,'Resultado restaurado. Clasificación recalculada.');
+          }catch(error){say(status,error.message)}
+        }));
+        row.append(cell);body.append(row);
+      }
+      table.append(head,body);root.append(table);
+    }catch(error){root.textContent='Papelera no disponible hasta aplicar la migración de seguridad.';say(status,error.message)}
+  }
+  const loadTrashDoubles=()=>loadTrash('doubles');
+  const loadTrashIndividuals=()=>loadTrash('individual');
+  $('doubleTrashRefresh')?.addEventListener('click',loadTrashDoubles);
+  $('individualTrashRefresh')?.addEventListener('click',loadTrashIndividuals);
+
   function renderDoubleHistory(){
     const root=$('doubleResultHistory');if(!root)return;root.replaceChildren();
     if(!doubleResults.length){root.textContent='Aún no hay resultados de dobles registrados.';return}
@@ -271,9 +329,9 @@
       for(const value of vals){const td=document.createElement('td');td.textContent=String(value);tr.append(td)}
       const cell=document.createElement('td');
       cell.append(b('Editar','secondary',()=>editDouble(r)),b('Eliminar','warning',async()=>{
-        if(!confirm('¿Eliminar este resultado de dobles?'))return;
+        if(!confirm('¿Enviar este resultado de dobles a la papelera? Se podrá restaurar.'))return;
         try{const data=await api('/api/doubles-results',{action:'delete',id:r.id});
-          doubleResults=data.results||[];renderDoubles();renderDoubleHistory();say('doubleStatus','Resultado eliminado.')}
+          doubleResults=data.results||[];renderDoubles();renderDoubleHistory();await loadTrashDoubles();say('doubleStatus','Resultado enviado a la papelera.')}
         catch(error){say('doubleStatus',error.message)}
       }));tr.append(cell);body.append(tr);
     }
@@ -339,7 +397,7 @@
     $('doubleSave').textContent='Guardar cambios';$('doubleResultForm').scrollIntoView({behavior:'smooth',block:'center'});
   }
   async function loadDoubleResults(){
-    try{const data=await api('/api/doubles-results');doubleResults=data.results||[];renderDoubles();renderDoubleHistory();say('doubleStatus','')}
+    try{const data=await api('/api/doubles-results');doubleResults=data.results||[];renderDoubles();renderDoubleHistory();await loadTrashDoubles();say('doubleStatus','')}
     catch(error){say('doubleStatus',error.message)}
   }
   $('doubleResultForm').addEventListener('submit',async event=>{
@@ -881,8 +939,8 @@
       const cell=document.createElement('td');
       cell.append(b('Editar','secondary',()=>editManual(r)));
       cell.append(b('Eliminar','warning',async()=>{
-        if(!confirm('¿Eliminar este resultado?'))return;
-        try{const d=await api('/api/results',{action:'delete',id:r.id});results=d.results||[];renderResults();renderGroups();manualFixtures()}
+        if(!confirm('¿Enviar este resultado a la papelera? Se podrá restaurar.'))return;
+        try{const d=await api('/api/results',{action:'delete',id:r.id});results=d.results||[];renderResults();renderGroups();renderSeasonHistory();updateOperations();manualFixtures();await loadTrashIndividuals();say('manualStatus','Resultado enviado a la papelera.')}
         catch(e){say('manualStatus',e.message)}
       }));tr.append(cell);body.append(tr);
     }
@@ -899,6 +957,7 @@
       renderGroups();
       renderSeasonHistory();
       updateOperations();
+      await loadTrashIndividuals();
     }catch(e){$('resultTable').innerHTML='<div class="empty">'+H(e.message)+'</div>'}
   }
   $('refreshResults').onclick=loadResults;

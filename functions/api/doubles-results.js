@@ -1,4 +1,5 @@
 // Resultados de dobles CPZ, independientes de los partidos individuales.
+import {previousResult,auditAfter} from '../result-audit.js';
 const COOKIE='__Host-leagueos_admin',AGE=8*60*60,te=new TextEncoder();
 const respond=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
 const fail=(error,status=400,details)=>respond({ok:false,error,...(details?{details}:{})},status);
@@ -50,9 +51,9 @@ function parseSets(value){
 async function create(db){
  await db.prepare("CREATE TABLE IF NOT EXISTS cpz_doubles_results (id INTEGER PRIMARY KEY AUTOINCREMENT, group_label TEXT NOT NULL, pair_one INTEGER NOT NULL, pair_two INTEGER NOT NULL, played_at TEXT NOT NULL, round_label TEXT NOT NULL, sets_json TEXT NOT NULL, winner_pair INTEGER NOT NULL, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, UNIQUE(group_label,pair_one,pair_two))").run();
 }
-async function read(db){
- const rows=await db.prepare("SELECT id,group_label AS groupLabel,pair_one AS pair1,pair_two AS pair2,played_at AS date,round_label AS round,sets_json AS setsJson,winner_pair AS winnerPair FROM cpz_doubles_results ORDER BY played_at DESC,id DESC LIMIT 200").all();
- return {ok:true,results:(rows.results||[]).map(x=>({id:x.id,groupLabel:x.groupLabel,pair1:x.pair1,pair2:x.pair2,date:x.date,round:x.round,sets:JSON.parse(x.setsJson),winnerPair:x.winnerPair}))};
+async function read(db,trashed=false){
+ const rows=await db.prepare("SELECT id,group_label AS groupLabel,pair_one AS pair1,pair_two AS pair2,played_at AS date,round_label AS round,sets_json AS setsJson,winner_pair AS winnerPair,deleted_at AS deletedAt FROM cpz_doubles_results WHERE deleted_at IS "+(trashed?'NOT NULL':'NULL')+" ORDER BY played_at DESC,id DESC LIMIT 200").all();
+ return {ok:true,results:(rows.results||[]).map(x=>({id:x.id,groupLabel:x.groupLabel,pair1:x.pair1,pair2:x.pair2,date:x.date,round:x.round,sets:JSON.parse(x.setsJson),winnerPair:x.winnerPair,...(trashed?{deletedAt:x.deletedAt}:{})}))};
 }
 export async function onRequest({request,env}){
  try{
@@ -60,13 +61,22 @@ export async function onRequest({request,env}){
   if(!['GET','POST'].includes(request.method))return fail('Método no permitido.',405);
   if(request.method==='POST'&&!sameOrigin(request))return fail('Origen o formato incorrecto.',403);
   await create(env.LEAGUE_DB);
-  if(request.method==='GET')return respond(await read(env.LEAGUE_DB));
+  if(request.method==='GET')return respond(await read(env.LEAGUE_DB,new URL(request.url).searchParams.get('trash')==='1'));
   const raw=await request.text();if(raw.length>10000)return fail('Solicitud demasiado grande.',413);
   let body;try{body=JSON.parse(raw)}catch{return fail('Datos JSON inválidos.')}
-  if(body?.action==='delete'){
+  if(body?.action==='delete'||body?.action==='restore'){
    const id=Number(body.id);if(!Number.isSafeInteger(id)||id<1)return fail('Resultado inválido.');
-   const result=await env.LEAGUE_DB.prepare('DELETE FROM cpz_doubles_results WHERE id=?').bind(id).run();
-   if(!result.meta?.changes)return fail('Resultado inexistente.',404);
+   const existing=await previousResult(env.LEAGUE_DB,'doubles','id',id);
+   const deleting=body.action==='delete';
+   if(!existing||(deleting?existing.deleted_at!==null:existing.deleted_at===null))
+     return fail('Resultado inexistente en la lista correspondiente.',404);
+   await env.LEAGUE_DB.batch([
+     env.LEAGUE_DB.prepare(deleting
+       ?'UPDATE cpz_doubles_results SET deleted_at=CURRENT_TIMESTAMP WHERE id=? AND deleted_at IS NULL'
+       :'UPDATE cpz_doubles_results SET deleted_at=NULL WHERE id=? AND deleted_at IS NOT NULL').bind(id),
+     auditAfter(env.LEAGUE_DB,'doubles',body.action,existing,'id',id,
+       deleting?' AND deleted_at IS NOT NULL':' AND deleted_at IS NULL')
+   ]);
    return respond(await read(env.LEAGUE_DB));
   }
   if(body?.action!=='save')return fail('Acción desconocida.');
@@ -79,14 +89,22 @@ export async function onRequest({request,env}){
   if(!validDate(date)||!date.startsWith('2026-11-')||round.length<1||round.length>60||/[<>\u0000-\u001f]/.test(round))return fail('Fecha de noviembre de 2026 o jornada inválida.');
   const parsed=parseSets(body.sets);if(!parsed)return fail('Sets inválidos: dos sets ganados a un mínimo de 11 y diferencia de 2.');
   const winner=parsed.winner===1?a:b;
-  const existing=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_doubles_results WHERE group_label=? AND pair_one=? AND pair_two=?').bind(group,first,second).first();
+  const existing=await env.LEAGUE_DB.prepare('SELECT id,deleted_at FROM cpz_doubles_results WHERE group_label=? AND pair_one=? AND pair_two=?').bind(group,first,second).first();
+  if(existing?.deleted_at!==null&&existing?.deleted_at!==undefined)return fail('El cruce está en la papelera. Restáuralo primero.',409);
   if(existing?.id&&existing.id!==id)return fail('Este partido ya tiene resultado. Pulsa Editar para corregirlo.',409);
+  const normalizedSets=JSON.stringify(a===first?parsed.sets:parsed.sets.map(s=>[s[1],s[0]]));
   if(id!==null){
-   const previous=await env.LEAGUE_DB.prepare('SELECT id FROM cpz_doubles_results WHERE id=?').bind(id).first();
-   if(!previous)return fail('Resultado no encontrado.',404);
-   await env.LEAGUE_DB.prepare('UPDATE cpz_doubles_results SET group_label=?,pair_one=?,pair_two=?,played_at=?,round_label=?,sets_json=?,winner_pair=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(group,first,second,date,round,JSON.stringify(a===first?parsed.sets:parsed.sets.map(s=>[s[1],s[0]])),winner,id).run();
+   const previous=await previousResult(env.LEAGUE_DB,'doubles','id',id);
+   if(!previous||previous.deleted_at!==null)return fail('Resultado activo no encontrado.',404);
+   await env.LEAGUE_DB.batch([
+     env.LEAGUE_DB.prepare('UPDATE cpz_doubles_results SET group_label=?,pair_one=?,pair_two=?,played_at=?,round_label=?,sets_json=?,winner_pair=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND deleted_at IS NULL').bind(group,first,second,date,round,normalizedSets,winner,id),
+     auditAfter(env.LEAGUE_DB,'doubles','edit',previous,'id',id,' AND deleted_at IS NULL')
+   ]);
   }else{
-   await env.LEAGUE_DB.prepare('INSERT INTO cpz_doubles_results(group_label,pair_one,pair_two,played_at,round_label,sets_json,winner_pair) VALUES(?,?,?,?,?,?,?)').bind(group,first,second,date,round,JSON.stringify(a===first?parsed.sets:parsed.sets.map(s=>[s[1],s[0]])),winner).run();
+   await env.LEAGUE_DB.batch([
+     env.LEAGUE_DB.prepare('INSERT INTO cpz_doubles_results(group_label,pair_one,pair_two,played_at,round_label,sets_json,winner_pair) VALUES(?,?,?,?,?,?,?)').bind(group,first,second,date,round,normalizedSets,winner),
+     env.LEAGUE_DB.prepare("INSERT INTO cpz_result_audit(competition,action,result_id,before_json,after_json) SELECT 'doubles','create',id,NULL,json_object('id',id,'group_label',group_label,'pair_one',pair_one,'pair_two',pair_two,'played_at',played_at,'round_label',round_label,'sets_json',sets_json,'winner_pair',winner_pair,'updated_at',updated_at,'deleted_at',deleted_at) FROM cpz_doubles_results WHERE group_label=? AND pair_one=? AND pair_two=? AND deleted_at IS NULL").bind(group,first,second)
+   ]);
   }
   return respond(await read(env.LEAGUE_DB));
  }catch(error){console.error('Doubles result error',error?.name||'unknown');return fail('No se ha podido guardar el resultado de dobles.',500)}

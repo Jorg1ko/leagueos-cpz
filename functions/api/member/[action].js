@@ -210,7 +210,7 @@ export async function onRequest({request,env,params}){
         const publicIdentity=!!(account&&legal&&account.share_name===1&&account.ack>=legal.revision);return {index,self,name:self?row.player_name:(publicIdentity?account.player_name:'Jugador X'),id:account?.id||null,hasPhoto:!!(account?.has_photo&&(self||(publicIdentity&&account.share_social===1)))};
       });
       let games=[];
-      try{const results=await env.LEAGUE_DB.prepare("SELECT player_one_id AS p1,player_two_id AS p2,sets_json AS sets FROM cpz_match_results WHERE upper(trim(group_label))=? AND played_at>='2026-11-01' AND played_at<'2026-12-01' LIMIT 30").bind(group).all();games=results.results||[]}catch(_){}
+      try{const results=await env.LEAGUE_DB.prepare("SELECT player_one_id AS p1,player_two_id AS p2,sets_json AS sets FROM cpz_match_results WHERE deleted_at IS NULL AND upper(trim(group_label))=? AND played_at>='2026-11-01' AND played_at<'2026-12-01' LIMIT 30").bind(group).all();games=results.results||[]}catch(_){}
       const entries=games.flatMap(game=>{
         const x=people.findIndex(p=>p.id===game.p1),y=people.findIndex(p=>p.id===game.p2);
         if(x<0||y<0||x===y)return [];
@@ -254,7 +254,7 @@ export async function onRequest({request,env,params}){
         await contactSchema(env.LEAGUE_DB);
         const legal=await env.LEAGUE_DB.prepare('SELECT revision FROM cpz_legal_settings WHERE id=1 AND approved=1').first();
         const data=await env.LEAGUE_DB.prepare(
-          "SELECT r.played_at AS date,r.round_label AS round,r.group_label AS groupLabel,r.player_one_id AS player1Id,r.player_two_id AS player2Id,a.player_name AS player1,b.player_name AS player2,COALESCE(i1.share_name,0) AS share1,COALESCE(i2.share_name,0) AS share2,COALESCE(k1.revision,0) AS ack1,COALESCE(k2.revision,0) AS ack2,r.sets_json AS setsJson,r.winner_id AS winnerId FROM cpz_match_results r JOIN cpz_player_accounts a ON a.id=r.player_one_id JOIN cpz_player_accounts b ON b.id=r.player_two_id LEFT JOIN cpz_player_identity i1 ON i1.account_id=a.id LEFT JOIN cpz_player_identity i2 ON i2.account_id=b.id LEFT JOIN cpz_player_privacy_ack k1 ON k1.account_id=a.id LEFT JOIN cpz_player_privacy_ack k2 ON k2.account_id=b.id WHERE r.player_one_id=? OR r.player_two_id=? ORDER BY r.played_at DESC,r.id DESC LIMIT 150"
+          "SELECT r.played_at AS date,r.round_label AS round,r.group_label AS groupLabel,r.player_one_id AS player1Id,r.player_two_id AS player2Id,a.player_name AS player1,b.player_name AS player2,COALESCE(i1.share_name,0) AS share1,COALESCE(i2.share_name,0) AS share2,COALESCE(k1.revision,0) AS ack1,COALESCE(k2.revision,0) AS ack2,r.sets_json AS setsJson,r.winner_id AS winnerId FROM cpz_match_results r JOIN cpz_player_accounts a ON a.id=r.player_one_id JOIN cpz_player_accounts b ON b.id=r.player_two_id LEFT JOIN cpz_player_identity i1 ON i1.account_id=a.id LEFT JOIN cpz_player_identity i2 ON i2.account_id=b.id LEFT JOIN cpz_player_privacy_ack k1 ON k1.account_id=a.id LEFT JOIN cpz_player_privacy_ack k2 ON k2.account_id=b.id WHERE r.deleted_at IS NULL AND (r.player_one_id=? OR r.player_two_id=?) ORDER BY r.played_at DESC,r.id DESC LIMIT 150"
         ).bind(row.id,row.id).all();
         const displayName=(id,name,share,ack)=>id===row.id||(legal&&share===1&&ack>=legal.revision)?name:'Jugador X';
         return respond({ok:true,results:(data.results||[]).map(r=>({

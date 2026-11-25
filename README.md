@@ -82,3 +82,8 @@ GitHub Actions comprueba las vistas, los scripts, los tests y las imágenes **an
 - Autenticación real, permisos por actividad, inscripciones reales del torneo, borrado de resultados y copias de seguridad D1.
 - **Protección de la vista previa:** opciones a evaluar sin aplicar aún: Cloudflare Access con identidad y lista de correos autorizados (preferible), o un middleware de autenticación en Pages Functions/Worker. Una URL poco conocida y `noindex` **no son controles de seguridad**.
 - **Propuesta de limpieza para un commit separado, sin ejecutar:** revisar y retirar `.github/workflows/recover-d1-20261109.yml` si se confirma que la exportación puntual de recuperación ya no es necesaria. Es un workflow histórico con permiso de lectura/exportación D1, disparado al modificarse su propio archivo y con retención del artefacto de solo un día. No debe eliminarse sin revisar primero que no se necesita para recuperación o auditoría. Cualquier retirada se hará únicamente con autorización y en un commit exclusivo.
+
+
+## Fase 1 de protección de resultados (PR de revisión)
+
+La protección reversible de resultados se desarrolla en una **rama separada**, sin tocar `main`, D1 real ni credenciales. Incluye auditoría, papelera y un workflow propuesto de copia cifrada. **No está instalada ni migrada en producción.** Ver `docs/fase1-proteccion-d1.md` antes de cualquier aprobación; la migración `migrations/2026-11-22_soft_delete_audit.sql` requiere copia verificada y consentimiento expreso. Las copias nocturnas permanecen desactivadas hasta autorización y no se ejecutan desde ramas no predeterminadas de GitHub Actions.

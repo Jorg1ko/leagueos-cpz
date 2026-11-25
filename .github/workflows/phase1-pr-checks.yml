@@ -1,0 +1,101 @@
+name: Validación fase 1 (sin desplegar ni acceder a D1)
+on:
+  pull_request:
+    branches:
+      - experimental/laboratorio-cpz
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node 22 para SQLite temporal en memoria
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Comprobar scripts de aplicación
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --version
+          find functions -type f -name '*.js' -print0 | xargs -0 -n 1 node --check
+          for file in ./*.js; do
+            [ -f "$file" ] || continue
+            node --check "$file"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import ast
+          for path in Path('scripts').glob('*.py'):
+              ast.parse(path.read_text(encoding='utf-8'),filename=str(path))
+              print('Sintaxis OK:',path)
+          PY
+      - name: Ejecutar TODOS los tests sobre datos sintéticos locales
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          for test in tests/*.cjs tests/*.mjs tests/*.js; do
+            echo "TEST: $test"
+            node "$test"
+          done
+      - name: Probar backups D1 en SQLite temporal sin red ni credenciales
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests -p 'test_backup_*.py' -v
+          python3 - <<'PY'
+          from pathlib import Path
+          flow=Path('.github/workflows/d1-backup-cifrada.yml').read_text()
+          assert "vars.CPZ_D1_BACKUP_APPROVED == 'true'" in flow
+          assert 'trap ' in flow and 'D1_EXPORT_OUTPUT' in flow
+          assert 'retention-days: 14' in flow
+          assert 'age -r "$AGE_RECIPIENT"' in flow
+          assert 'secrets.CLOUDFLARE_D1_BACKUP_TOKEN' in flow
+          print('Workflow de backup bloqueado hasta autorización y cifrado antes de subir')
+          PY
+      - name: Cifrado y recuperación de ejemplo OFFLINE con claves efímeras
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v age >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y age
+          fi
+          work="$(mktemp -d)"
+          trap 'rm -rf "$work"' EXIT
+          chmod 700 "$work"
+          age-keygen -o "$work/key.txt" >/dev/null 2>&1
+          age-keygen -y "$work/key.txt" > "$work/public.txt"
+          # Solo un esquema de test vacío: no contiene jugadores ni partidos.
+          printf 'CREATE TABLE cpz_match_results (id INTEGER PRIMARY KEY);\\nCREATE TABLE cpz_doubles_results (id INTEGER PRIMARY KEY);\\n' > "$work/schema.sql"
+          age -r "$(cat "$work/public.txt")" -o "$work/schema.sql.age" "$work/schema.sql"
+          test -s "$work/schema.sql.age"
+          age -d -i "$work/key.txt" -o "$work/roundtrip.sql" "$work/schema.sql.age"
+          cmp "$work/schema.sql" "$work/roundtrip.sql"
+          echo "Cifrado age, descifrado y comparación exacta: OK (solo esquema local)"
+      - name: Comprobar JS incrustado y migración inofensiva
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('node:fs'),vm=require('node:vm');
+          for(const path of ['index.html','player.html','club-portal.html','lab-preview.html','legal.html']){
+            const source=fs.readFileSync(path,'utf8');
+            const re=/<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+            let match;while((match=re.exec(source)))if(match[1].trim())new vm.Script(match[1],{filename:path});
+          }
+          console.log('JavaScript inline validado');
+          NODE
+          python3 - <<'PY'
+          from pathlib import Path
+          sql=Path('migrations/2026-11-22_soft_delete_audit.sql').read_text()
+          body='\n'.join(x for x in sql.splitlines() if not x.strip().startswith('--')).upper()
+          assert 'DROP TABLE' not in body and 'DELETE FROM' not in body
+          assert body.count('ADD COLUMN DELETED_AT')==2
+          print('Migración comprobada: solo columnas nuevas y tabla de auditoría')
+          PY
+
